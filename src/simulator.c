@@ -3,7 +3,7 @@
 #include <math.h>
 #include "simulator.h"
 
-// Reserve continous memory blocks on Heap
+// Reserve continuous memory blocks on Heap
 Grid* create_grid(int height, int width)
 {
     Grid *grid = (Grid *)malloc(sizeof(Grid));
@@ -42,13 +42,13 @@ void init_population(Grid *grid, int initial_infected)
     }
 }
 
-// Main loop: updates cells (Data parelelisim / Stencil)
+// Main loop: updates cells (Data parallelism / Stencil)
 void update_grid(Grid *grid, float effective_beta, float excess_mortality_factor) 
 {
-    int heigth = grid->height;
+    int height = grid->height;
     int width  = grid->width;
 
-    for (int i = 0; i < heigth; i++) {
+    for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
             int idx = i * width + j;
             int state = grid->current_grid[idx];
@@ -64,7 +64,7 @@ void update_grid(Grid *grid, float effective_beta, float excess_mortality_factor
                         int nj = j + dj;
 
                         // Check grid limits
-                        if (ni >= 0 && ni < heigth && nj >= 0 && nj < width)
+                        if (ni >= 0 && ni < height && nj >= 0 && nj < width)
                             if (grid->current_grid[ni * width + nj] == INFECTED)
                                 infected_residents++;
                     }
@@ -89,10 +89,10 @@ void update_grid(Grid *grid, float effective_beta, float excess_mortality_factor
 
                 // If the critical recovery period is exceeded
                 if (grid->days_infected[idx] >= RECOVERY_DAYS) {
-                    float p_muerte = BASE_DEATH_RATE * excess_mortality_factor;
+                    float p_death = BASE_DEATH_RATE * excess_mortality_factor;
                     float r = (float)rand() / (float)RAND_MAX;
 
-                    if (r < p_muerte) {
+                    if (r < p_death) {
                         grid->next_grid[idx] = DEAD;
                     } else {
                         grid->next_grid[idx] = RECOVERED;

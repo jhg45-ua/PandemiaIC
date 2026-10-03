@@ -2,7 +2,7 @@
 #include <math.h>
 #include "healthcare.h"
 
-float evaluate_health_impact(int num_I, int total_population, PolicyMetrics *metrics) {
+float evaluate_healthcare_impact(int num_I, int total_population, PolicyMetrics *metrics) {
     // 5% of active cases require ICU care and 15% require a general hospital bed
     int icu_demand = (int)ceilf(num_I * 0.05f);
     int general_beds = (int)ceilf(num_I * 0.15f);

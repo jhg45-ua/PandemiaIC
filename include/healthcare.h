@@ -2,9 +2,8 @@
 #define HEALTHCARE_H
 
 #include "policy.h"
-#include "simulator.h"
 
-// Evaluates UCI occupancy, clinical costs and escess mortality rate due to system collapse
-float evaluate_healthcare_system(const Grid *grid, const PolicyConfig *policy, PolicyMetrics *metrics);
+// Evaluates ICU occupancy, clinical costs and excess mortality rate due to system collapse
+float evaluate_healthcare_impact(int num_I, int total_population, PolicyMetrics *metrics);
 
 #endif // HEALTHCARE_H
