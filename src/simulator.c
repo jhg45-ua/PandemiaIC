@@ -48,12 +48,22 @@ void update_grid(Grid *grid, float effective_beta, float excess_mortality_factor
     int height = grid->height;
     int width  = grid->width;
 
+    // [ASM_LABEL] update_grid: outer loop over rows (i)
+    __asm__ volatile("# =====================================================================");
+    __asm__ volatile("# [update_grid] BEGIN: outer row loop (i = 0..height)");
+    __asm__ volatile("# VECTORIZATION TARGET: inner j-loop over current_grid[] (stride-1, row-major)");
+    __asm__ volatile("# BARRIER: rand() call and powf() prevent auto-vectorization at -O3");
+    __asm__ volatile("# =====================================================================");
+
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
             int idx = i * width + j;
             int state = grid->current_grid[idx];
 
             if (state == SUSCEPTIBLE) {
+                // [ASM_LABEL] SUSCEPTIBLE branch: Moore neighborhood scan
+                __asm__ volatile("# --- [SUSCEPTIBLE] Moore neighborhood scan (di=-1..1, dj=-1..1) ---");
+
                 // Count the number of infected residents in the Moore neighborhood (8 adjacent cells)
                 int infected_residents = 0;
                 for (int di = -1; di <= 1; di++) {
@@ -70,6 +80,9 @@ void update_grid(Grid *grid, float effective_beta, float excess_mortality_factor
                     }
                 }
 
+                // [ASM_LABEL] Stochastic transition: Monte Carlo sampling
+                __asm__ volatile("# --- [SUSCEPTIBLE] Stochastic Monte Carlo: powf() + rand() ---");
+
                 // Stochastic transition based on the probability of the complementary event
                 if (infected_residents > 0) {
                     float p_contagion = 1.0f - powf(1.0f - effective_beta, (float)infected_residents);
@@ -84,7 +97,11 @@ void update_grid(Grid *grid, float effective_beta, float excess_mortality_factor
                 } else {
                     grid->next_grid[idx] = SUSCEPTIBLE;
                 }
+
             } else if (state == INFECTED) {
+                // [ASM_LABEL] INFECTED branch: convalescence counter + recovery/death roll
+                __asm__ volatile("# --- [INFECTED] Convalescence counter + death/recovery Monte Carlo ---");
+
                 grid->days_infected[idx]++;
 
                 // If the critical recovery period is exceeded
@@ -107,6 +124,8 @@ void update_grid(Grid *grid, float effective_beta, float excess_mortality_factor
             }
         }
     }
+
+    __asm__ volatile("# [update_grid] END ===================================================");
 }
 
 void swap_buffer(Grid *grid)
@@ -125,6 +144,12 @@ void get_counts(const Grid *grid, int *num_S, int *num_I, int *num_R, int *num_D
 
     int total_cells = grid->height * grid->width;
 
+    // [ASM_LABEL] get_counts: reduction loop over current_grid[]
+    __asm__ volatile("# =====================================================================");
+    __asm__ volatile("# [get_counts] BEGIN: reduction loop (idx = 0..total_cells)");
+    __asm__ volatile("# VECTORIZATION TARGET: simple switch/accumulator, no side effects");
+    __asm__ volatile("# =====================================================================");
+
     for (int idx = 0; idx < total_cells; idx++) {
         switch (grid->current_grid[idx]) {
             case SUSCEPTIBLE: (*num_S)++; break;
@@ -133,4 +158,6 @@ void get_counts(const Grid *grid, int *num_S, int *num_I, int *num_R, int *num_D
             case DEAD:        (*num_D)++; break;
         }
     }
+
+    __asm__ volatile("# [get_counts] END ====================================================");
 }

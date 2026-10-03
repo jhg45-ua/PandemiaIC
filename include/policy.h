@@ -13,20 +13,20 @@
 
 // Policy/scenario parameters
 typedef struct {
-    char name[32];
-    float beta;                     // Base transmission rate per contact
-    float trade_restriction;        // Proportion of the economy at a halt (0.0 to 1.0)
-    double daily_subsidy_expense;   // Daily tax assistance/subsidies
-    float dynamic_ICU_threshold;    // ICU occupancy threshold (-1.0f if not applicable)
+    char name[32];                      // Name of the policy/scenario
+    float beta;                         // Base transmission rate per contact
+    float trade_restriction;            // Proportion of the economy at a halt (0.0 to 1.0)
+    double daily_subsidy_expense;       // Daily tax assistance/subsidies
+    float dynamic_ICU_threshold;        // ICU occupancy threshold (-1.0f if not applicable)
 } PolicyConfig;
 
 // Accumulated metrics for the scenario
 typedef struct {
-    double total_economic_cost;
-    int icu_overcrowding_days;
-    int total_deaths;
-    int total_recoveries;
-    float accumulated_social_fatigue;
+    double total_economic_cost;         // Total economic cost of the policy
+    int icu_overcrowding_days;          // Number of days ICU occupancy exceeded the threshold
+    int total_deaths;                   // Total number of deaths
+    int total_recoveries;               // Total number of recoveries
+    float accumulated_social_fatigue;   // Accumulated social fatigue
 
     // Execution time & profiling metrics (in seconds)
     double time_update_grid;

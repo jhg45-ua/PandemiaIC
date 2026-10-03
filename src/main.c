@@ -23,12 +23,14 @@ static inline double get_time_sec(void) {
 
 // Load policy configurations from a file
 int load_policy_config(const char *filename, PolicyConfig *policies, int max_policies) {
+    // Open the file for reading
     FILE *file = fopen(filename, "r");
     if (!file) {
         perror("Error opening policy configuration file");
         return -1;
     }
 
+    // Read each line and parse the policy parameters
     char line[256];
     int count = 0;
     
@@ -36,6 +38,9 @@ int load_policy_config(const char *filename, PolicyConfig *policies, int max_pol
         if (line[0] == '#' || strlen(line) < 5) { // Skip comments and empty lines
             continue;
         }
+
+        // Parse the line into the PolicyConfig structure
+        // Expected format: name beta trade_restriction daily_subsidy_expense dynamic_ICU_threshold
         sscanf(line, "%31s %f %f %lf %f", 
                policies[count].name, 
                &policies[count].beta, 
@@ -57,6 +62,7 @@ int main(int argc, char *argv[]) {
     int initial_infected = (argc > 4) ? atoi(argv[4]) : 10;
 
     // Adaptation to 2D square grid dimensions
+    // Ensure the grid is square and the total population matches n_hab
     int width = (int)sqrt(n_hab);
     int height = width;
     int total_population = height * width;
@@ -64,14 +70,13 @@ int main(int argc, char *argv[]) {
     // Load policies from the configuration file
     PolicyConfig policies[MAX_POLICIES];
     int num_policies = load_policy_config(conf_file, policies, MAX_POLICIES);
-
     if (num_policies <= 0) {
         fprintf(stderr, "Error: No valid policies loaded from %s\n", conf_file);
         return EXIT_FAILURE;
     }
 
     printf("=================================================================\n");
-    printf("  EPIDEMIOLOGICAL SIMULATOR PANDEMICSIM (P2 - Sequential)\n");
+    printf("  EPIDEMIOLOGICAL SIMULATOR PANDEMICSIM \n");
     printf("=================================================================\n");
     printf("Simulated population : %d inhabitants (%dx%d cells)\n", total_population, height, width);
     printf("Simulation days      : %d days\n", days);
@@ -85,8 +90,8 @@ int main(int argc, char *argv[]) {
     double total_sim_start = get_time_sec();
 
     // Inter-scenario loop (Global Functional Parallelism)
-    for (int p = 0; p < num_policies; p++) {
-        PolicyConfig cfg = policies[p];
+    for (int policy = 0; policy < num_policies; policy++) {
+        PolicyConfig cfg = policies[policy];
         PolicyMetrics metrics = {0};
 
         double t_scenario_start = get_time_sec();
@@ -107,6 +112,7 @@ int main(int argc, char *argv[]) {
             float current_beta = cfg.beta;
             float base_restriction = cfg.trade_restriction;
 
+            // If dynamic ICU threshold is set, adjust trade restrictions based on ICU occupancy
             if (cfg.dynamic_ICU_threshold > 0.0f) {
                 float icu_occupancy = ((float)num_I * 0.05f) / ((float)total_population * 0.005f);
                 if (icu_occupancy >= cfg.dynamic_ICU_threshold) {
@@ -148,7 +154,7 @@ int main(int argc, char *argv[]) {
 
         double t_scenario_end = get_time_sec();
         metrics.time_total = t_scenario_end - t_scenario_start;
-        all_metrics[p] = metrics;
+        all_metrics[policy] = metrics;
 
         printf("--- Scenario: %-16s ---\n", cfg.name);
         printf("  Execution Time        : %.4f s\n", metrics.time_total);
@@ -170,11 +176,11 @@ int main(int argc, char *argv[]) {
     double sum_get_counts = 0.0;
     double sum_analytics = 0.0;
 
-    for (int p = 0; p < num_policies; p++) {
-        sum_scenario_time += all_metrics[p].time_total;
-        sum_update_grid   += all_metrics[p].time_update_grid;
-        sum_get_counts    += all_metrics[p].time_get_counts;
-        sum_analytics     += all_metrics[p].time_analytics;
+    for (int policy = 0; policy < num_policies; policy++) {
+        sum_scenario_time += all_metrics[policy].time_total;
+        sum_update_grid   += all_metrics[policy].time_update_grid;
+        sum_get_counts    += all_metrics[policy].time_get_counts;
+        sum_analytics     += all_metrics[policy].time_analytics;
     }
 
     printf("====================================================================================================\n");

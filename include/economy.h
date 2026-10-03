@@ -6,4 +6,4 @@
 // Evaluates costs associated with sick leave, business closures, and tax subsidies
 void evaluate_economic_impact(int num_I, int total_population, const PolicyConfig *policy, PolicyMetrics *metrics);
 
-#endif
+#endif // ECONOMY_H
