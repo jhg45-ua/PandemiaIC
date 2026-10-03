@@ -27,6 +27,12 @@ typedef struct {
     int total_deaths;
     int total_recoveries;
     float accumulated_social_fatigue;
+
+    // Execution time & profiling metrics (in seconds)
+    double time_update_grid;
+    double time_get_counts;
+    double time_analytics;
+    double time_total;
 } PolicyMetrics;
 
 #endif // POLICY_H
