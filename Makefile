@@ -32,7 +32,7 @@ CONFIG_FILE := config/policies.conf
 N_HAB		:= 100000 # 100,000 Inhabitants
 DAYS		:= 150 # 150 Days
 
-.PHONY: all run clean help vectorization
+.PHONY: all run run-ciudad run-provincia run-comunidad clean help vectorization
 
 all: $(TARGET)
 
@@ -51,10 +51,20 @@ $(BUILD_DIR):
 $(BIN_DIR):
 	mkdir -p $(BIN_DIR)
 
-# Run the simulation with the specified parameters
+# Run the simulation with default parameters
 run: $(TARGET)
 	@echo "Running simulation with $(N_HAB) inhabitants for $(DAYS) days..."
 	@./$(TARGET) $(CONFIG_FILE) $(N_HAB) $(DAYS)
+
+# Dedicated scenarios by geographic scale
+run-ciudad: $(TARGET)
+	@./scripts/run_ciudad.sh
+
+run-provincia: $(TARGET)
+	@./scripts/run_provincia.sh
+
+run-comunidad: $(TARGET)
+	@./scripts/run_comunidad.sh
 
 # Rule to compile with vectorization flags
 # vectorization: clean
@@ -67,7 +77,10 @@ clean:
 
 help:
 	@echo "Available commands:"
-	@echo "  make              	- Compile the project with base options (-O0)"
-	@echo "  make run          	- Execute the simulation with the specified parameters"
-# 	@echo "  make vectorization	- Compile with -O3 -mavx2 and SIMD analyzer report"
-	@echo "  make clean       	- Remove build artifacts and binaries"
+	@echo "  make                 - Compile the project with base options (-O0)"
+	@echo "  make run             - Execute default simulation ($(N_HAB) hab, $(DAYS) days)"
+	@echo "  make run-ciudad      - Execute Alicante City scale (~350k hab)"
+	@echo "  make run-provincia   - Execute Alicante Province scale (~2.0M hab)"
+	@echo "  make run-comunidad   - Execute Comunitat Valenciana scale (~5.1M hab)"
+# 	@echo "  make vectorization   - Compile with -O3 -mavx2 and SIMD analyzer report"
+	@echo "  make clean           - Remove build artifacts and binaries"

@@ -54,6 +54,7 @@ int main(int argc, char *argv[]) {
     const char *conf_file = (argc > 1) ? argv[1] : "config/policies.conf";
     int n_hab = (argc > 2) ? atoi(argv[2]) : 100000;
     int days  = (argc > 3) ? atoi(argv[3]) : 150;
+    int initial_infected = (argc > 4) ? atoi(argv[4]) : 10;
 
     // Adaptation to 2D square grid dimensions
     int width = (int)sqrt(n_hab);
@@ -74,6 +75,7 @@ int main(int argc, char *argv[]) {
     printf("=================================================================\n");
     printf("Simulated population : %d inhabitants (%dx%d cells)\n", total_population, height, width);
     printf("Simulation days      : %d days\n", days);
+    printf("Initial infected     : %d cases\n", initial_infected);
     printf("Loaded scenarios     : %d policies\n", num_policies);
     printf("=================================================================\n\n");
 
@@ -91,7 +93,7 @@ int main(int argc, char *argv[]) {
 
         // Initialize grid
         Grid *grid = create_grid(height, width);
-        init_population(grid, 10); // Initialize with 10 infected individuals
+        init_population(grid, initial_infected); // Initialize with infected individuals
 
         for (int t = 0; t < days; t++) {
             // 1. Get current counts
