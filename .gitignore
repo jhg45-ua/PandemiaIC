@@ -1,0 +1,21 @@
+# Object files and build artifacts
+build/
+bin/
+*.o
+*.out
+*.exe
+sim
+
+# Profiling & assembly files
+*.s
+*.gmon
+gmon.out
+*.csv
+*.log
+
+# System & IDE/editor files
+.vscode/
+.idea/
+*.swp
+*~
+.DS_Store
