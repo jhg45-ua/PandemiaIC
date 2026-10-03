@@ -28,8 +28,8 @@ OBJS 		:= $(patsubst $(SRC_DIR)/%.c, $(BUILD_DIR)/%.o,$(SRCS))
 INCLUDES 	:= -I $(INC_DIR)
 
 # Sim parameters
-CONFIG_FILE := config/policy.conf
-N_HAB		:= 100000 # 100.000 Habitants
+CONFIG_FILE := config/policies.conf
+N_HAB		:= 100000 # 100,000 Inhabitants
 DAYS		:= 150 # 150 Days
 
 .PHONY: all run clean help vectorization
@@ -53,7 +53,7 @@ $(BIN_DIR):
 
 # Run the simulation with the specified parameters
 run: $(TARGET)
-	@echo "Running simulation with $(N_HAB) habitants for $(DAYS) days..."
+	@echo "Running simulation with $(N_HAB) inhabitants for $(DAYS) days..."
 	@./$(TARGET) $(CONFIG_FILE) $(N_HAB) $(DAYS)
 
 # Rule to compile with vectorization flags
@@ -66,7 +66,7 @@ clean:
 	rm -rf $(BUILD_DIR) $(BIN_DIR)
 
 help:
-	@echo "Avalible commands:"
+	@echo "Available commands:"
 	@echo "  make              	- Compile the project with base options (-O0)"
 	@echo "  make run          	- Execute the simulation with the specified parameters"
 # 	@echo "  make vectorization	- Compile with -O3 -mavx2 and SIMD analyzer report"
