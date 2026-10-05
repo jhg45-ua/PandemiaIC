@@ -19,7 +19,7 @@ static inline double get_time_sec(void) {
 #include "economy.h"
 #include "society.h"
 
-// Maximum number of policies to load from the configuration file, also the maximum number of scenarios to simulate
+// Maximum number of policies to load from the configuration file
 #define MAX_POLICIES 8
 
 // Load policy configurations from a file
@@ -55,6 +55,46 @@ int load_policy_config(const char *filename, PolicyConfig *policies, int max_pol
     return count;
 }
 
+void compute_policy_stats(const ReplicaMetrics *replicas, int n_sim, PolicyStats *stats) {
+    memset(stats, 0, sizeof(PolicyStats));
+    stats->min_deaths = 2e9;
+    stats->max_deaths = -1;
+
+    double sum_cost = 0.0, sum_deaths = 0.0, sum_icu = 0.0, sum_fatigue = 0.0;
+
+    for (int r = 0; r < n_sim; r++) {
+        sum_cost += replicas[r].total_economic_cost;
+        sum_deaths += replicas[r].total_deaths;
+        sum_icu += replicas[r].icu_overcrowding_days;
+        sum_fatigue += replicas[r].accumulated_social_fatigue;
+
+        if (replicas[r].total_deaths > stats->max_deaths) stats->max_deaths = replicas[r].total_deaths;
+        if (replicas[r].total_deaths < stats->min_deaths) stats->min_deaths = replicas[r].total_deaths;
+
+        stats->total_time_update_grid += replicas[r].time_update_grid;
+        stats->total_time_get_counts  += replicas[r].time_get_counts;
+        stats->total_time_analytics   += replicas[r].time_analytics;
+        stats->total_time             += replicas[r].time_total;
+    }
+
+    stats->mean_cost    = sum_cost / n_sim;
+    stats->mean_deaths  = sum_deaths / n_sim;
+    stats->mean_icu_days= sum_icu / n_sim;
+    stats->mean_fatigue = sum_fatigue / n_sim;
+
+    // Compute Standard Deviation (σ)
+    double var_cost = 0.0, var_deaths = 0.0, var_icu = 0.0;
+    for (int r = 0; r < n_sim; r++) {
+        var_cost   += pow(replicas[r].total_economic_cost - stats->mean_cost, 2);
+        var_deaths += pow(replicas[r].total_deaths - stats->mean_deaths, 2);
+        var_icu    += pow(replicas[r].icu_overcrowding_days - stats->mean_icu_days, 2);
+    }
+
+    stats->std_cost     = sqrt(var_cost / n_sim);
+    stats->std_deaths   = sqrt(var_deaths / n_sim);
+    stats->std_icu_days = sqrt(var_icu / n_sim);
+}
+
 int main(int argc, char *argv[]) {
     // CLI Parameters or defaults
     const char *conf_file = (argc > 1) ? argv[1] : "config/policies.conf";
@@ -62,6 +102,7 @@ int main(int argc, char *argv[]) {
     int days  = (argc > 3) ? atoi(argv[3]) : 150;
     int initial_infected = (argc > 4) ? atoi(argv[4]) : 10;
     int seed = (argc > 5) ? atoi(argv[5]) : 29; // Default seed for reproducibility
+    int n_sim = (argc > 6) ? atoi(argv[6]) : 20; // Number of Monte Carlo replicas
 
     // Adaptation to 2D square grid dimensions
     // Ensure the grid is square and the total population matches n_hab
@@ -78,148 +119,131 @@ int main(int argc, char *argv[]) {
     }
 
     printf("=================================================================\n");
-    printf("  EPIDEMIOLOGICAL SIMULATOR PANDEMICSIM \n");
+    printf("  EPIDEMIOLOGICAL SIMULATOR PANDEMICSIM - MONTE CARLO\n");
     printf("=================================================================\n");
     printf("Simulated population : %d inhabitants (%dx%d cells)\n", total_population, height, width);
     printf("Simulation days      : %d days\n", days);
     printf("Initial infected     : %d cases\n", initial_infected);
-    printf("Loaded scenarios     : %d policies\n", num_policies);
-    printf("Seed                 : %d\n", seed);
+    printf("Loaded policies      : %d policies\n", num_policies);
+    printf("Replicas per policy  : %d Monte Carlo runs\n", n_sim);
+    printf("Base seed            : %d\n", seed);
     printf("=================================================================\n\n");
 
-    srand(seed); // Fixed seed to ensure reproducible measurements
-
-    PolicyMetrics all_metrics[MAX_POLICIES];
+    PolicyStats all_stats[MAX_POLICIES];
     double total_sim_start = get_time_sec();
 
-    // Inter-scenario loop (Global Functional Parallelism)
+    // 1. Inter-policy loop
     for (int policy = 0; policy < num_policies; policy++) {
-        PolicyConfig cfg = policies[policy];
-        PolicyMetrics metrics = {0};
+        PolicyConfig cfg_base = policies[policy];
+        ReplicaMetrics *replicas = calloc(n_sim, sizeof(ReplicaMetrics));
 
-        double t_scenario_start = get_time_sec();
+        // 2. Monte Carlo Replicas loop
+        for (int r = 0; r < n_sim; r++) {
+            // Unique reproducible seed per replica
+            srand(seed + policy * 1000 + r);
 
-        // Initialize grid
-        Grid *grid = create_grid(height, width);
-        init_population(grid, initial_infected); // Initialize with infected individuals
+            PolicyConfig cfg = cfg_base;
+            ReplicaMetrics metrics = {0};
 
-        for (int t = 0; t < days; t++) {
-            // 1. Get current counts
-            double t0 = get_time_sec();
-            int num_S = 0, num_I = 0, num_R = 0, num_D = 0;
-            get_counts(grid, &num_S, &num_I, &num_R, &num_D);
-            double t1 = get_time_sec();
-            metrics.time_get_counts += (t1 - t0);
+            double t_replica_start = get_time_sec();
 
-            // Dynamic traffic light trigger rule
-            float current_beta = cfg.beta;
-            float base_restriction = cfg.trade_restriction;
+            Grid *grid = create_grid(height, width);
+            init_population(grid, initial_infected);
 
-            // If dynamic ICU threshold is set, adjust trade restrictions based on ICU occupancy
-            if (cfg.dynamic_ICU_threshold > 0.0f) {
-                float icu_occupancy = ((float)num_I * 0.05f) / ((float)total_population * 0.005f);
-                if (icu_occupancy >= cfg.dynamic_ICU_threshold) {
-                    current_beta = 0.08f;
-                    cfg.trade_restriction = 0.50f;
-                } else {
-                    cfg.trade_restriction = base_restriction;
+            for (int t = 0; t < days; t++) {
+                // 1. Get current counts
+                double t0 = get_time_sec();
+                int num_S = 0, num_I = 0, num_R = 0, num_D = 0;
+                get_counts(grid, &num_S, &num_I, &num_R, &num_D);
+                double t1 = get_time_sec();
+                metrics.time_get_counts += (t1 - t0);
+
+                // Dynamic traffic light trigger rule
+                float current_beta = cfg.beta;
+                float base_restriction = cfg.trade_restriction;
+
+                if (cfg.dynamic_ICU_threshold > 0.0f) {
+                    float icu_occupancy = ((float)num_I * 0.05f) / ((float)total_population * 0.005f);
+                    if (icu_occupancy >= cfg.dynamic_ICU_threshold) {
+                        current_beta = 0.08f;
+                        cfg.trade_restriction = 0.50f;
+                    } else {
+                        cfg.trade_restriction = base_restriction;
+                    }
                 }
+
+                // 2. Analytical modules
+                t0 = get_time_sec();
+
+                float excess_mortality_factor = evaluate_healthcare_impact(num_I, total_population, (ReplicaMetrics*)&metrics);
+                evaluate_economic_impact(num_I, total_population, &cfg, (ReplicaMetrics*)&metrics);
+                float compliance = evaluate_social_impact(&cfg, (ReplicaMetrics*)&metrics);
+
+                t1 = get_time_sec();
+                metrics.time_analytics += (t1 - t0);
+
+                float effective_beta = current_beta / compliance;
+
+                // 3. Cell updates
+                t0 = get_time_sec();
+
+                update_grid(grid, effective_beta, excess_mortality_factor);
+                swap_buffer(grid);
+
+                t1 = get_time_sec();
+                metrics.time_update_grid += (t1 - t0);
             }
 
-            // 2. Analytical modules (Functional Parallelism)
-            t0 = get_time_sec();
+            int final_S = 0, final_I = 0, final_R = 0, final_D = 0;
+            get_counts(grid, &final_S, &final_I, &final_R, &final_D);
 
-            float excess_mortality_factor = evaluate_healthcare_impact(num_I, total_population, &metrics);
-            evaluate_economic_impact(num_I, total_population, &cfg, &metrics);
-            float compliance = evaluate_social_impact(&cfg, &metrics);
+            metrics.total_deaths = final_D;
+            metrics.total_recoveries = final_R;
+            metrics.time_total = get_time_sec() - t_replica_start;
 
-            t1 = get_time_sec();
-            metrics.time_analytics += (t1 - t0);
-
-            // Adjust effective transmission by citizen compliance
-            float effective_beta = current_beta / compliance;
-
-            // 3. Cell updates (Data Parallelism)
-            t0 = get_time_sec();
-
-            update_grid(grid, effective_beta, excess_mortality_factor);
-            swap_buffer(grid);
-
-            t1 = get_time_sec();
-            metrics.time_update_grid += (t1 - t0);
+            replicas[r] = metrics;
+            destroy_grid(grid);
         }
 
-        // Record final balance
-        double t0 = get_time_sec();
+        // Aggregate statistics for policy
+        compute_policy_stats(replicas, n_sim, &all_stats[policy]);
 
-        int final_S = 0, final_I = 0, final_R = 0, final_D = 0;
-        get_counts(grid, &final_S, &final_I, &final_R, &final_D);
-        
-        double t1 = get_time_sec();
-        metrics.time_get_counts += (t1 - t0);
+        printf("=== Policy: %-16s ===\n", cfg_base.name);
+        printf("  Economic Cost (M€) : %.2f ± %.2f M€\n", all_stats[policy].mean_cost / 1e6, all_stats[policy].std_cost / 1e6);
+        printf("  Total Deaths       : %.1f ± %.1f people [Range: %d - %d]\n",
+               all_stats[policy].mean_deaths, all_stats[policy].std_deaths,
+               all_stats[policy].min_deaths, all_stats[policy].max_deaths);
+        printf("  ICU Collapse Days  : %.1f ± %.1f days\n", all_stats[policy].mean_icu_days, all_stats[policy].std_icu_days);
+        printf("  Mean Social Fatigue: %.2f\n", all_stats[policy].mean_fatigue);
+        printf("  Total Compute Time : %.4f s (%d runs)\n\n", all_stats[policy].total_time, n_sim);
 
-        metrics.total_deaths = final_D;
-        metrics.total_recoveries = final_R;
-
-        double t_scenario_end = get_time_sec();
-        metrics.time_total = t_scenario_end - t_scenario_start;
-        all_metrics[policy] = metrics;
-
-        printf("--- Scenario: %-16s ---\n", cfg.name);
-        printf("  Execution Time        : %.4f s\n", metrics.time_total);
-        printf("  Total Economic Cost   : %.2f M€\n", metrics.total_economic_cost / 1000000.0);
-        printf("  Total Deaths          : %d people\n", metrics.total_deaths);
-        printf("  Total Recoveries      : %d people\n", metrics.total_recoveries);
-        printf("  ICU Collapse Days     : %d days\n", metrics.icu_overcrowding_days);
-        printf("  Final Social Fatigue  : %.2f\n\n", metrics.accumulated_social_fatigue);
-
-        destroy_grid(grid);
+        free(replicas);
     }
 
     double total_sim_end = get_time_sec();
     double total_wall_time = total_sim_end - total_sim_start;
 
-    // Accumulated profiling across all scenarios
-    double sum_scenario_time = 0.0;
-    double sum_update_grid = 0.0;
-    double sum_get_counts = 0.0;
-    double sum_analytics = 0.0;
-
-    for (int policy = 0; policy < num_policies; policy++) {
-        sum_scenario_time += all_metrics[policy].time_total;
-        sum_update_grid   += all_metrics[policy].time_update_grid;
-        sum_get_counts    += all_metrics[policy].time_get_counts;
-        sum_analytics     += all_metrics[policy].time_analytics;
-    }
-
+    // Profiling Report
     printf("====================================================================================================\n");
     printf("                               PROFILING & EXECUTION TIME BREAKDOWN                                 \n");
     printf("====================================================================================================\n");
     printf("%-16s | %10s | %21s | %20s | %18s\n", 
-           "Scenario", "Total (s)", "Update Grid (s)", "Get Counts (s)", "Analytics (s)");
+           "Policy", "Total (s)", "Update Grid (s)", "Get Counts (s)", "Analytics (s)");
     printf("-----------------+------------+-----------------------+----------------------+---------------------\n");
+    
     for (int p = 0; p < num_policies; p++) {
-        double t_tot = all_metrics[p].time_total;
+        double t_tot = all_stats[p].total_time;
         printf("%-16s | %8.4f s | %8.4f s (%5.1f%%)   | %7.4f s (%5.1f%%)   | %7.4f s (%5.1f%%)\n",
                policies[p].name,
                t_tot,
-               all_metrics[p].time_update_grid,
-               t_tot > 0 ? (all_metrics[p].time_update_grid / t_tot) * 100.0 : 0.0,
-               all_metrics[p].time_get_counts,
-               t_tot > 0 ? (all_metrics[p].time_get_counts / t_tot) * 100.0 : 0.0,
-               all_metrics[p].time_analytics,
-               t_tot > 0 ? (all_metrics[p].time_analytics / t_tot) * 100.0 : 0.0);
+               all_stats[p].total_time_update_grid,
+               t_tot > 0 ? (all_stats[p].total_time_update_grid / t_tot) * 100.0 : 0.0,
+               all_stats[p].total_time_get_counts,
+               t_tot > 0 ? (all_stats[p].total_time_get_counts / t_tot) * 100.0 : 0.0,
+               all_stats[p].total_time_analytics,
+               t_tot > 0 ? (all_stats[p].total_time_analytics / t_tot) * 100.0 : 0.0);
     }
     printf("-----------------+------------+------------------------+----------------------+---------------------\n");
-    printf("%-16s | %8.4f s | %8.4f s (%5.1f%%)   | %7.4f s (%5.1f%%)   | %7.4f s (%5.1f%%)\n",
-           "SUM SCENARIOS",
-           sum_scenario_time,
-           sum_update_grid,
-           sum_scenario_time > 0 ? (sum_update_grid / sum_scenario_time) * 100.0 : 0.0,
-           sum_get_counts,
-           sum_scenario_time > 0 ? (sum_get_counts / sum_scenario_time) * 100.0 : 0.0,
-           sum_analytics,
-           sum_scenario_time > 0 ? (sum_analytics / sum_scenario_time) * 100.0 : 0.0);
     printf("Total Wall-Clock Time: %.4f s\n", total_wall_time);
     printf("====================================================================================================\n");
 

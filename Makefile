@@ -6,7 +6,7 @@
 CC			:= gcc
 CFLAGS		:= -Wall -Wextra -Werror -std=c11
 # Optimization flags, such as -OX or -march=native
-OPTFLAGS	:= -O3 -march=native -ffast-math
+OPTFLAGS	:= -O0
 
 # Flags for autovectorization, such as -ftree-vectorize or -fopt-info-vec
 VECFLAGS := -fopt-info-vec-all=build/vec_report.txt
@@ -32,6 +32,7 @@ INCLUDES	:= -I $(INC_DIR)
 CONFIG_FILE	:= config/policies.conf
 N_HAB		:= 100000 # 100,000 Inhabitants
 DAYS		:= 150    # 150 Days
+N_SIM		:= 20     # 20 Monte Carlo Replicas per policy
 
 .PHONY: all asm run run-ciudad run-provincia run-comunidad clean help vectorization
 

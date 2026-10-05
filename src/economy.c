@@ -1,6 +1,6 @@
 #include "economy.h"
 
-void evaluate_economic_impact(int num_I, int total_population, const PolicyConfig *policy, PolicyMetrics *metrics) {
+void evaluate_economic_impact(int num_I, int total_population, const PolicyConfig *policy, ReplicaMetrics *metrics) {
     // Productivity loss due to sick leave (120 €/day per active case)
     double sick_leave_cost = (double)num_I * 120.0;
 

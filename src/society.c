@@ -1,6 +1,6 @@
 #include "society.h"
 
-float evaluate_social_impact(const PolicyConfig *policy, PolicyMetrics *metrics) {
+float evaluate_social_impact(const PolicyConfig *policy, ReplicaMetrics *metrics) {
     // Social fatigue increases based on the degree of trade restriction
     metrics->accumulated_social_fatigue += (policy->trade_restriction * 0.01f);
 

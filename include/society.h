@@ -4,6 +4,6 @@
 #include "policy.h"
 
 // Updates accumulated social fatigue and returns the citizen compliance factor
-float evaluate_social_impact(const PolicyConfig *policy, PolicyMetrics *metrics);
+float evaluate_social_impact(const PolicyConfig *policy, ReplicaMetrics *metrics);
 
 #endif // SOCIETY_H

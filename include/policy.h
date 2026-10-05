@@ -33,6 +33,27 @@ typedef struct {
     double time_get_counts;
     double time_analytics;
     double time_total;
-} PolicyMetrics;
+} ReplicaMetrics;
+
+typedef struct {
+    double mean_cost;
+    double std_cost;
+
+    double mean_deaths;
+    double std_deaths;
+    int min_deaths;
+    int max_deaths;
+
+    double mean_icu_days;
+    double std_icu_days;
+
+    double mean_fatigue;
+
+    // Total profiling times accumulated across all replicas
+    double total_time_update_grid;
+    double total_time_get_counts;
+    double total_time_analytics;
+    double total_time;
+} PolicyStats;
 
 #endif // POLICY_H
