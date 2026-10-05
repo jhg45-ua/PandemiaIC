@@ -6,11 +6,15 @@
 // Reserve continuous memory blocks on Heap
 Grid* create_grid(int height, int width)
 {
+    // Allocate memory for the Grid structure
     Grid *grid = (Grid *)malloc(sizeof(Grid));
+    // Set the height and width of the grid
     grid->height = height;
     grid->width = width;
+    // Calculate the total number of cells in the grid (height * width)
     int total_cells = height * width;
 
+    // Allocate memory for the current grid, next grid, and days infected arrays
     grid->current_grid          = (int *)calloc(total_cells, sizeof(int));
     grid->next_grid             = (int *)calloc(total_cells, sizeof(int));
     grid->days_infected         = (int *)calloc(total_cells, sizeof(int));
@@ -55,8 +59,10 @@ void update_grid(Grid *grid, float effective_beta, float excess_mortality_factor
     __asm__ volatile("# BARRIER: rand() call and powf() prevent auto-vectorization at -O3");
     __asm__ volatile("# =====================================================================");
 
+    // Iterate over each cell in the grid, first by row (i) then by column (j)
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
+            // Linear index of the cell in the 1D array representation of the 2D grid and its current state
             int idx = i * width + j;
             int state = grid->current_grid[idx];
 
@@ -66,16 +72,21 @@ void update_grid(Grid *grid, float effective_beta, float excess_mortality_factor
 
                 // Count the number of infected residents in the Moore neighborhood (8 adjacent cells)
                 int infected_residents = 0;
+
+                // Scan the Moore neighborhood, d* = {-1, 0, 1} for both rows(i) and columns(j)
+                // Gets if any of the 8 neighbors are infected, and counts them
                 for (int di = -1; di <= 1; di++) {
                     for (int dj = -1; dj <= 1; dj++) {
                         if (di == 0 && dj == 0) continue; // Ignore central cell
 
+                        // Compute neighbor coordinates, the pos of the cell + the offset
                         int ni = i + di;
                         int nj = j + dj;
 
-                        // Check grid limits
+                        // Check grid limits, and if the neighbor is infected, increment the counter
+                        // ni * width + nj is the linear index of the neighbor
                         if (ni >= 0 && ni < height && nj >= 0 && nj < width)
-                            if (grid->current_grid[ni * width + nj] == INFECTED)
+                            if (grid->current_grid[ni * width + nj] == INFECTED) 
                                 infected_residents++;
                     }
                 }
@@ -88,6 +99,7 @@ void update_grid(Grid *grid, float effective_beta, float excess_mortality_factor
                     float p_contagion = 1.0f - powf(1.0f - effective_beta, (float)infected_residents);
                     float r = (float)rand() / (float)RAND_MAX;
 
+                    // If the random number is less than the contagion probability, the cell becomes infected
                     if (r < p_contagion) {
                         grid->next_grid[idx] = INFECTED;
                         grid->days_infected[idx]  = 1;
@@ -109,6 +121,7 @@ void update_grid(Grid *grid, float effective_beta, float excess_mortality_factor
                     float p_death = BASE_DEATH_RATE * excess_mortality_factor;
                     float r = (float)rand() / (float)RAND_MAX;
 
+                    // If the random number is less than the death probability, the cell dies; otherwise, it recovers
                     if (r < p_death) {
                         grid->next_grid[idx] = DEAD;
                     } else {
@@ -128,6 +141,10 @@ void update_grid(Grid *grid, float effective_beta, float excess_mortality_factor
     __asm__ volatile("# [update_grid] END ===================================================");
 }
 
+// Swap the current and next grid buffers for the next iteration
+// This is a simple pointer swap, no data is copied
+// This makes the next grid become the current grid for the next time step, and vice versa
+// The new current becomes a read-only buffer, and the new next becomes a write-only buffer and gets overwritten
 void swap_buffer(Grid *grid)
 {
     int *temp = grid->current_grid;
@@ -135,6 +152,7 @@ void swap_buffer(Grid *grid)
     grid->next_grid = temp;
 }
 
+// Count the number of cells in each state (S, I, R, D) in the current grid
 void get_counts(const Grid *grid, int *num_S, int *num_I, int *num_R, int *num_D)
 {
     *num_S = 0;
@@ -142,6 +160,7 @@ void get_counts(const Grid *grid, int *num_S, int *num_I, int *num_R, int *num_D
     *num_R = 0;
     *num_D = 0;
 
+    // Total number of cells in the grid is the same as the size of the current_grid array, which is height * width
     int total_cells = grid->height * grid->width;
 
     // [ASM_LABEL] get_counts: reduction loop over current_grid[]

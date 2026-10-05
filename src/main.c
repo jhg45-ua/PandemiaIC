@@ -19,6 +19,7 @@ static inline double get_time_sec(void) {
 #include "economy.h"
 #include "society.h"
 
+// Maximum number of policies to load from the configuration file, also the maximum number of scenarios to simulate
 #define MAX_POLICIES 8
 
 // Load policy configurations from a file
@@ -60,6 +61,7 @@ int main(int argc, char *argv[]) {
     int n_hab = (argc > 2) ? atoi(argv[2]) : 100000;
     int days  = (argc > 3) ? atoi(argv[3]) : 150;
     int initial_infected = (argc > 4) ? atoi(argv[4]) : 10;
+    int seed = (argc > 5) ? atoi(argv[5]) : 29; // Default seed for reproducibility
 
     // Adaptation to 2D square grid dimensions
     // Ensure the grid is square and the total population matches n_hab
@@ -82,9 +84,10 @@ int main(int argc, char *argv[]) {
     printf("Simulation days      : %d days\n", days);
     printf("Initial infected     : %d cases\n", initial_infected);
     printf("Loaded scenarios     : %d policies\n", num_policies);
+    printf("Seed                 : %d\n", seed);
     printf("=================================================================\n\n");
 
-    srand(42); // Fixed seed to ensure reproducible measurements
+    srand(seed); // Fixed seed to ensure reproducible measurements
 
     PolicyMetrics all_metrics[MAX_POLICIES];
     double total_sim_start = get_time_sec();
@@ -125,9 +128,11 @@ int main(int argc, char *argv[]) {
 
             // 2. Analytical modules (Functional Parallelism)
             t0 = get_time_sec();
+
             float excess_mortality_factor = evaluate_healthcare_impact(num_I, total_population, &metrics);
             evaluate_economic_impact(num_I, total_population, &cfg, &metrics);
             float compliance = evaluate_social_impact(&cfg, &metrics);
+
             t1 = get_time_sec();
             metrics.time_analytics += (t1 - t0);
 
@@ -136,16 +141,20 @@ int main(int argc, char *argv[]) {
 
             // 3. Cell updates (Data Parallelism)
             t0 = get_time_sec();
+
             update_grid(grid, effective_beta, excess_mortality_factor);
             swap_buffer(grid);
+
             t1 = get_time_sec();
             metrics.time_update_grid += (t1 - t0);
         }
 
         // Record final balance
         double t0 = get_time_sec();
+
         int final_S = 0, final_I = 0, final_R = 0, final_D = 0;
         get_counts(grid, &final_S, &final_I, &final_R, &final_D);
+        
         double t1 = get_time_sec();
         metrics.time_get_counts += (t1 - t0);
 
