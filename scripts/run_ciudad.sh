@@ -25,7 +25,6 @@ echo "Configuración     : $CONFIG_FILE"
 echo "Población         : $N_HAB habitantes (~350k)"
 echo "Días de simulación: $DAYS días"
 echo "Focos iniciales   : $INITIAL_INFECTED infectados"
-echo "Tiempo secuencial : ~3.5 segundos"
 echo "================================================================="
 echo ""
 

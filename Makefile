@@ -9,7 +9,7 @@ CFLAGS		:= -Wall -Wextra -Werror -std=c11
 OPTFLAGS	:= -O0
 
 # Flags for autovectorization, such as -ftree-vectorize or -fopt-info-vec
-# VECFLAGS := -fopt-info-vec-optimized -fopt-info-vec-missed -fopt-info-vec-all
+VECFLAGS := -fopt-info-vec-optimized -fopt-info-vec-missed -fopt-info-vec-all=build/vec_report.txt
 
 # Project dirs
 SRC_DIR		:= src

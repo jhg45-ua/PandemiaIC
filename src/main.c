@@ -1,10 +1,10 @@
+#define _POSIX_C_SOURCE 200809L
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
 #include <time.h>
-
-#define _POSIX_C_SOURCE 200809L
 
 // High-resolution monotonic timer returning seconds
 static inline double get_time_sec(void) {
@@ -195,9 +195,9 @@ int main(int argc, char *argv[]) {
     printf("====================================================================================================\n");
     printf("                               PROFILING & EXECUTION TIME BREAKDOWN                                 \n");
     printf("====================================================================================================\n");
-    printf("%-16s | %10s | %22s | %20s | %18s\n", 
+    printf("%-16s | %10s | %21s | %20s | %18s\n", 
            "Scenario", "Total (s)", "Update Grid (s)", "Get Counts (s)", "Analytics (s)");
-    printf("-----------------+------------+------------------------+----------------------+---------------------\n");
+    printf("-----------------+------------+-----------------------+----------------------+---------------------\n");
     for (int p = 0; p < num_policies; p++) {
         double t_tot = all_metrics[p].time_total;
         printf("%-16s | %8.4f s | %8.4f s (%5.1f%%)   | %7.4f s (%5.1f%%)   | %7.4f s (%5.1f%%)\n",
