@@ -1,3 +1,5 @@
+flags = -O3 -march=native -ffast-math + VECFLAGS
+
 =================================================================
   LANZANDO SIMULACIÓN: COMUNITAT VALENCIANA
 =================================================================
