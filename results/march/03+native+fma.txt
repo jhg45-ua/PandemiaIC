@@ -1,0 +1,66 @@
+flags = -O3 -march=native -mfma
+
+=================================================================
+  LANZANDO SIMULACIÓN: COMUNITAT VALENCIANA
+=================================================================
+Configuración     : config/policies_comunidad.conf
+Población         : 5100000 habitantes (~5.1M)
+Días de simulación: 200 días
+Focos iniciales   : 350 infectados
+=================================================================
+
+=================================================================
+  EPIDEMIOLOGICAL SIMULATOR PANDEMICSIM 
+=================================================================
+Simulated population : 5098564 inhabitants (2258x2258 cells)
+Simulation days      : 200 days
+Initial infected     : 350 cases
+Loaded scenarios     : 4 policies
+Seed                 : 29
+=================================================================
+
+--- Scenario: LaissezFaire     ---
+  Execution Time        : 2.6795 s
+  Total Economic Cost   : 10955.13 M€
+  Total Deaths          : 105030 people
+  Total Recoveries      : 4964437 people
+  ICU Collapse Days     : 35 days
+  Final Social Fatigue  : 0.00
+
+--- Scenario: Lockdown         ---
+  Execution Time        : 3.7860 s
+  Total Economic Cost   : 79630.15 M€
+  Total Deaths          : 76292 people
+  Total Recoveries      : 3748892 people
+  ICU Collapse Days     : 0 days
+  Final Social Fatigue  : 1.20
+
+--- Scenario: RemoteWork       ---
+  Execution Time        : 3.2580 s
+  Total Economic Cost   : 27969.95 M€
+  Total Deaths          : 100417 people
+  Total Recoveries      : 4921772 people
+  ICU Collapse Days     : 0 days
+  Final Social Fatigue  : 0.30
+
+--- Scenario: DynamicSignals   ---
+  Execution Time        : 2.7657 s
+  Total Economic Cost   : 67968.90 M€
+  Total Deaths          : 101508 people
+  Total Recoveries      : 4979888 people
+  ICU Collapse Days     : 0 days
+  Final Social Fatigue  : 1.00
+
+====================================================================================================
+                               PROFILING & EXECUTION TIME BREAKDOWN                                 
+====================================================================================================
+Scenario         |  Total (s) |       Update Grid (s) |       Get Counts (s) |      Analytics (s)
+-----------------+------------+-----------------------+----------------------+---------------------
+LaissezFaire     |   2.6795 s |   1.7315 s ( 64.6%)   |  0.9453 s ( 35.3%)   |  0.0000 s (  0.0%)
+Lockdown         |   3.7860 s |   2.9164 s ( 77.0%)   |  0.8687 s ( 22.9%)   |  0.0000 s (  0.0%)
+RemoteWork       |   3.2580 s |   2.2728 s ( 69.8%)   |  0.9844 s ( 30.2%)   |  0.0000 s (  0.0%)
+DynamicSignals   |   2.7657 s |   1.8764 s ( 67.8%)   |  0.8885 s ( 32.1%)   |  0.0000 s (  0.0%)
+-----------------+------------+------------------------+----------------------+---------------------
+SUM SCENARIOS    |  12.4892 s |   8.7971 s ( 70.4%)   |  3.6870 s ( 29.5%)   |  0.0000 s (  0.0%)
+Total Wall-Clock Time: 12.4979 s
+====================================================================================================

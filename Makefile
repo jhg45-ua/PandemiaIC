@@ -6,10 +6,10 @@
 CC			:= gcc
 CFLAGS		:= -Wall -Wextra -Werror -std=c11
 # Optimization flags, such as -OX or -march=native
-OPTFLAGS	:= -O0
+OPTFLAGS	:= -O3 -march=native -ffast-math
 
 # Flags for autovectorization, such as -ftree-vectorize or -fopt-info-vec
-VECFLAGS := -fopt-info-vec-optimized -fopt-info-vec-missed -fopt-info-vec-all=build/vec_report.txt
+VECFLAGS := -fopt-info-vec-all=build/vec_report.txt
 
 # Project dirs
 SRC_DIR		:= src
@@ -88,8 +88,8 @@ asm: | $(ASM_DIR)
 	@ls -lh $(ASM_DIR)/
 
 # Rule to compile with vectorization flags
-# vectorization: clean
-# 	$(MAKE) CFLAGS="$(CFLAGS) $(VECFLAGS)" OPTFLAGS="$(OPTFLAGS)" all
+vectorization: clean
+	$(MAKE) CFLAGS="$(CFLAGS) $(VECFLAGS)" OPTFLAGS="$(OPTFLAGS)" all
 
 # Rule to clean up build artifacts
 clean:
