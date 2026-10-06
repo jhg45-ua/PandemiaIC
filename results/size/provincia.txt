@@ -1,0 +1,69 @@
+=================================================================
+  LANZANDO SIMULACIÓN: PROVINCIA DE ALICANTE
+=================================================================
+Configuración        : config/policies_provincia.conf
+Población            : 2000000 habitantes (~2.0M)
+Días de simulación.  : 200 días
+Focos iniciales      : 150 infectados
+Réplicas Monte Carlo : 80 por política
+=================================================================
+
+=================================================================
+  EPIDEMIOLOGICAL SIMULATOR PANDEMICSIM - MONTE CARLO
+=================================================================
+Simulated population : 1999396 inhabitants (1414x1414 cells)
+Simulation days      : 200 days
+Initial infected     : 150 cases
+Loaded policies      : 4 policies
+Replicas per policy  : 80 Monte Carlo runs
+Base seed            : 29
+=================================================================
+
+=== Policy: LaissezFaire     ===
+  Economic Cost (M€) : 4313.76 ± 9.28 M€
+  Total Deaths       : 41869.6 ± 686.9 people [Range: 40384 - 43790]
+  ICU Collapse Days  : 35.2 ± 3.7 days
+  Mean Social Fatigue: 0.00
+  Total Compute Time : 80.7556 s (80 runs)
+
+=== Policy: Lockdown         ===
+  Economic Cost (M€) : 31466.46 ± 85.05 M€
+  Total Deaths       : 31546.6 ± 817.7 people [Range: 29553 - 34064]
+  ICU Collapse Days  : 0.0 ± 0.0 days
+  Mean Social Fatigue: 1.20
+  Total Compute Time : 119.4471 s (80 runs)
+
+=== Policy: RemoteWork       ===
+  Economic Cost (M€) : 10931.93 ± 39.29 M€
+  Total Deaths       : 39081.4 ± 465.2 people [Range: 37964 - 40145]
+  ICU Collapse Days  : 0.0 ± 0.0 days
+  Mean Social Fatigue: 0.30
+  Total Compute Time : 102.0214 s (80 runs)
+
+=== Policy: DynamicSignals   ===
+  Economic Cost (M€) : 26702.82 ± 17.16 M€
+  Total Deaths       : 39887.1 ± 270.5 people [Range: 38807 - 40370]
+  ICU Collapse Days  : 0.0 ± 0.0 days
+  Mean Social Fatigue: 1.00
+  Total Compute Time : 87.0737 s (80 runs)
+
+====================================================================================================
+                               PROFILING & EXECUTION TIME BREAKDOWN                                 
+====================================================================================================
+Policy           |  Total (s) |       Update Grid (s) |       Get Counts (s) |      Analytics (s)
+-----------------+------------+-----------------------+----------------------+---------------------
+LaissezFaire     |  80.7556 s |  50.1775 s (62.135%)   | 30.4320 s (37.684%) |  0.0008 s (0.001%)
+Lockdown         | 119.4471 s |  90.7024 s (75.935%)   | 28.5126 s (23.870%) |  0.0009 s (0.001%)
+RemoteWork       | 102.0214 s |  69.4120 s (68.037%)   | 32.3996 s (31.758%) |  0.0009 s (0.001%)
+DynamicSignals   |  87.0737 s |  56.6302 s (65.037%)   | 30.2860 s (34.782%) |  0.0007 s (0.001%)
+-----------------+------------+------------------------+----------------------+---------------------
+TOTAL PHASES     | 388.5556 s | 266.9221 s (68.696%)   | 121.6302 s (31.303%)  |  0.0033 s (0.001%)
+Total Wall-Clock Time: 389.5850 s
+====================================================================================================
+                               SYSTEM THROUGHPUT & PERFORMANCE METRICS                              
+====================================================================================================
+Total Replicas Executed  : 320 simulations (4 policies x 80 runs)
+Total Cell Updates       : 127961344000 cell-day transitions
+Macro Throughput         : 0.82 simulations / sec
+Kernel Throughput (MCUPS): 479.40 Million Cell Updates / sec (MCUPS)
+====================================================================================================

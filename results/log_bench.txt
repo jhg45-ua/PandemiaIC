@@ -1,0 +1,1324 @@
+=================================================================
+[13:11:09] INICIANDO BATERÍA COMPLETA DE EXPERIMENTOS DE COMPILACIÓN
+[13:11:09] Modo VERBOSE activado.
+=================================================================
+[13:11:09] ==> [1/10] Niveles generales de optimización (flags)...
+[13:11:09]   -> [COMPILANDO] Flags: "-O0"...
+mkdir -p build
+mkdir -p build/asm
+gcc -Wall -Wextra -Werror -std=c11 -O0 -I include -c src/economy.c -o build/economy.o
+gcc -Wall -Wextra -Werror -std=c11 -O0 -I include -S -fverbose-asm src/economy.c -o build/asm/economy.s
+gcc -Wall -Wextra -Werror -std=c11 -O0 -I include -c src/healthcare.c -o build/healthcare.o
+gcc -Wall -Wextra -Werror -std=c11 -O0 -I include -S -fverbose-asm src/healthcare.c -o build/asm/healthcare.s
+gcc -Wall -Wextra -Werror -std=c11 -O0 -I include -c src/main.c -o build/main.o
+gcc -Wall -Wextra -Werror -std=c11 -O0 -I include -S -fverbose-asm src/main.c -o build/asm/main.s
+gcc -Wall -Wextra -Werror -std=c11 -O0 -I include -c src/simulator.c -o build/simulator.o
+gcc -Wall -Wextra -Werror -std=c11 -O0 -I include -S -fverbose-asm src/simulator.c -o build/asm/simulator.s
+gcc -Wall -Wextra -Werror -std=c11 -O0 -I include -c src/society.c -o build/society.o
+gcc -Wall -Wextra -Werror -std=c11 -O0 -I include -S -fverbose-asm src/society.c -o build/asm/society.s
+mkdir -p bin
+gcc -Wall -Wextra -Werror -std=c11 -O0  build/economy.o  build/healthcare.o  build/main.o  build/simulator.o  build/society.o -o bin/sim -lm
+Build complete: bin/sim
+[13:11:10]   -> [EJECUTANDO] ./scripts/run_ciudad.sh (Guardando en results/flags/base.txt)...
+=================================================================
+  LANZANDO SIMULACIÓN: ALICANTE CAPITAL
+=================================================================
+Configuración        : config/policies_ciudad.conf
+Población            : 350000 habitantes (~350k)
+Días de simulación.  : 200 días
+Focos iniciales      : 35 infectados
+Réplicas Monte Carlo : 80 por política
+=================================================================
+
+=================================================================
+  EPIDEMIOLOGICAL SIMULATOR PANDEMICSIM - MONTE CARLO
+=================================================================
+Simulated population : 349281 inhabitants (591x591 cells)
+Simulation days      : 200 days
+Initial infected     : 35 cases
+Loaded policies      : 4 policies
+Replicas per policy  : 80 Monte Carlo runs
+Base seed            : 29
+=================================================================
+
+=== Policy: LaissezFaire     ===
+  Economic Cost (M€) : 754.13 ± 1.71 M€
+  Total Deaths       : 7753.5 ± 337.0 people [Range: 6979 - 8506]
+  ICU Collapse Days  : 40.2 ± 4.4 days
+  Mean Social Fatigue: 0.00
+  Total Compute Time : 45.6663 s (80 runs)
+
+=== Policy: Lockdown         ===
+  Economic Cost (M€) : 5552.41 ± 26.62 M€
+  Total Deaths       : 6030.4 ± 267.9 people [Range: 5275 - 6601]
+  ICU Collapse Days  : 0.0 ± 0.0 days
+  Mean Social Fatigue: 1.20
+  Total Compute Time : 88.3782 s (80 runs)
+
+=== Policy: RemoteWork       ===
+  Economic Cost (M€) : 1915.37 ± 9.23 M€
+  Total Deaths       : 6904.6 ± 127.4 people [Range: 6428 - 7245]
+  ICU Collapse Days  : 1.0 ± 3.5 days
+  Mean Social Fatigue: 0.30
+  Total Compute Time : 63.6775 s (80 runs)
+
+=== Policy: DynamicSignals   ===
+  Economic Cost (M€) : 4646.81 ± 1.85 M€
+  Total Deaths       : 6978.2 ± 76.0 people [Range: 6777 - 7163]
+  ICU Collapse Days  : 0.0 ± 0.0 days
+  Mean Social Fatigue: 1.00
+  Total Compute Time : 55.7449 s (80 runs)
+
+====================================================================================================
+                               PROFILING & EXECUTION TIME BREAKDOWN                                 
+====================================================================================================
+Policy           |  Total (s) |       Update Grid (s) |       Get Counts (s) |      Analytics (s)
+-----------------+------------+-----------------------+----------------------+---------------------
+LaissezFaire     |  45.6663 s |  38.5692 s (84.459%)   |  7.0545 s (15.448%) |  0.0008 s (0.002%)
+Lockdown         |  88.3782 s |  80.7881 s (91.412%)   |  7.5422 s (8.534%) |  0.0008 s (0.001%)
+RemoteWork       |  63.6775 s |  56.0393 s (88.005%)   |  7.5941 s (11.926%) |  0.0008 s (0.001%)
+DynamicSignals   |  55.7449 s |  48.2692 s (86.589%)   |  7.4322 s (13.333%) |  0.0008 s (0.001%)
+-----------------+------------+------------------------+----------------------+---------------------
+TOTAL PHASES     | 253.2919 s | 223.6658 s (88.304%)   | 29.6230 s (11.695%)  |  0.0031 s (0.001%)
+Total Wall-Clock Time: 253.4969 s
+====================================================================================================
+                               SYSTEM THROUGHPUT & PERFORMANCE METRICS                              
+====================================================================================================
+Total Replicas Executed  : 320 simulations (4 policies x 80 runs)
+Total Cell Updates       : 22353984000 cell-day transitions
+Macro Throughput         : 1.26 simulations / sec
+Kernel Throughput (MCUPS): 99.94 Million Cell Updates / sec (MCUPS)
+====================================================================================================
+[13:15:23]   -> [OK] Finalizado. Reposando CPU (5s)...
+[13:15:28]   -> [COMPILANDO] Flags: "-O1"...
+mkdir -p build
+mkdir -p build/asm
+gcc -Wall -Wextra -Werror -std=c11 -O1 -I include -c src/economy.c -o build/economy.o
+gcc -Wall -Wextra -Werror -std=c11 -O1 -I include -S -fverbose-asm src/economy.c -o build/asm/economy.s
+gcc -Wall -Wextra -Werror -std=c11 -O1 -I include -c src/healthcare.c -o build/healthcare.o
+gcc -Wall -Wextra -Werror -std=c11 -O1 -I include -S -fverbose-asm src/healthcare.c -o build/asm/healthcare.s
+gcc -Wall -Wextra -Werror -std=c11 -O1 -I include -c src/main.c -o build/main.o
+gcc -Wall -Wextra -Werror -std=c11 -O1 -I include -S -fverbose-asm src/main.c -o build/asm/main.s
+gcc -Wall -Wextra -Werror -std=c11 -O1 -I include -c src/simulator.c -o build/simulator.o
+gcc -Wall -Wextra -Werror -std=c11 -O1 -I include -S -fverbose-asm src/simulator.c -o build/asm/simulator.s
+gcc -Wall -Wextra -Werror -std=c11 -O1 -I include -c src/society.c -o build/society.o
+gcc -Wall -Wextra -Werror -std=c11 -O1 -I include -S -fverbose-asm src/society.c -o build/asm/society.s
+mkdir -p bin
+gcc -Wall -Wextra -Werror -std=c11 -O1  build/economy.o  build/healthcare.o  build/main.o  build/simulator.o  build/society.o -o bin/sim -lm
+Build complete: bin/sim
+[13:15:28]   -> [EJECUTANDO] ./scripts/run_ciudad.sh (Guardando en results/flags/01.txt)...
+=================================================================
+  LANZANDO SIMULACIÓN: ALICANTE CAPITAL
+=================================================================
+Configuración        : config/policies_ciudad.conf
+Población            : 350000 habitantes (~350k)
+Días de simulación.  : 200 días
+Focos iniciales      : 35 infectados
+Réplicas Monte Carlo : 80 por política
+=================================================================
+
+=================================================================
+  EPIDEMIOLOGICAL SIMULATOR PANDEMICSIM - MONTE CARLO
+=================================================================
+Simulated population : 349281 inhabitants (591x591 cells)
+Simulation days      : 200 days
+Initial infected     : 35 cases
+Loaded policies      : 4 policies
+Replicas per policy  : 80 Monte Carlo runs
+Base seed            : 29
+=================================================================
+
+=== Policy: LaissezFaire     ===
+  Economic Cost (M€) : 754.13 ± 1.71 M€
+  Total Deaths       : 7753.5 ± 337.0 people [Range: 6979 - 8506]
+  ICU Collapse Days  : 40.2 ± 4.4 days
+  Mean Social Fatigue: 0.00
+  Total Compute Time : 21.1550 s (80 runs)
+
+=== Policy: Lockdown         ===
+  Economic Cost (M€) : 5552.41 ± 26.62 M€
+  Total Deaths       : 6030.4 ± 267.9 people [Range: 5275 - 6601]
+  ICU Collapse Days  : 0.0 ± 0.0 days
+  Mean Social Fatigue: 1.20
+  Total Compute Time : 42.2363 s (80 runs)
+
+=== Policy: RemoteWork       ===
+  Economic Cost (M€) : 1915.37 ± 9.23 M€
+  Total Deaths       : 6904.6 ± 127.4 people [Range: 6428 - 7245]
+  ICU Collapse Days  : 1.0 ± 3.5 days
+  Mean Social Fatigue: 0.30
+  Total Compute Time : 29.9678 s (80 runs)
+
+=== Policy: DynamicSignals   ===
+  Economic Cost (M€) : 4646.81 ± 1.85 M€
+  Total Deaths       : 6978.2 ± 76.0 people [Range: 6777 - 7163]
+  ICU Collapse Days  : 0.0 ± 0.0 days
+  Mean Social Fatigue: 1.00
+  Total Compute Time : 25.5317 s (80 runs)
+
+====================================================================================================
+                               PROFILING & EXECUTION TIME BREAKDOWN                                 
+====================================================================================================
+Policy           |  Total (s) |       Update Grid (s) |       Get Counts (s) |      Analytics (s)
+-----------------+------------+-----------------------+----------------------+---------------------
+LaissezFaire     |  21.1550 s |  17.0928 s (80.798%)   |  4.0347 s (19.072%) |  0.0005 s (0.002%)
+Lockdown         |  42.2363 s |  37.5557 s (88.918%)   |  4.6483 s (11.005%) |  0.0005 s (0.001%)
+RemoteWork       |  29.9678 s |  25.4991 s (85.088%)   |  4.4405 s (14.818%) |  0.0005 s (0.002%)
+DynamicSignals   |  25.5317 s |  21.2788 s (83.343%)   |  4.2255 s (16.550%) |  0.0004 s (0.002%)
+-----------------+------------+------------------------+----------------------+---------------------
+TOTAL PHASES     | 118.7772 s | 101.4263 s (85.392%)   | 17.3489 s (14.606%)  |  0.0020 s (0.002%)
+Total Wall-Clock Time: 118.9203 s
+====================================================================================================
+                               SYSTEM THROUGHPUT & PERFORMANCE METRICS                              
+====================================================================================================
+Total Replicas Executed  : 320 simulations (4 policies x 80 runs)
+Total Cell Updates       : 22353984000 cell-day transitions
+Macro Throughput         : 2.69 simulations / sec
+Kernel Throughput (MCUPS): 220.40 Million Cell Updates / sec (MCUPS)
+====================================================================================================
+[13:17:27]   -> [OK] Finalizado. Reposando CPU (5s)...
+[13:17:32]   -> [COMPILANDO] Flags: "-O2"...
+mkdir -p build
+mkdir -p build/asm
+gcc -Wall -Wextra -Werror -std=c11 -O2 -I include -c src/economy.c -o build/economy.o
+gcc -Wall -Wextra -Werror -std=c11 -O2 -I include -S -fverbose-asm src/economy.c -o build/asm/economy.s
+gcc -Wall -Wextra -Werror -std=c11 -O2 -I include -c src/healthcare.c -o build/healthcare.o
+gcc -Wall -Wextra -Werror -std=c11 -O2 -I include -S -fverbose-asm src/healthcare.c -o build/asm/healthcare.s
+gcc -Wall -Wextra -Werror -std=c11 -O2 -I include -c src/main.c -o build/main.o
+gcc -Wall -Wextra -Werror -std=c11 -O2 -I include -S -fverbose-asm src/main.c -o build/asm/main.s
+gcc -Wall -Wextra -Werror -std=c11 -O2 -I include -c src/simulator.c -o build/simulator.o
+gcc -Wall -Wextra -Werror -std=c11 -O2 -I include -S -fverbose-asm src/simulator.c -o build/asm/simulator.s
+gcc -Wall -Wextra -Werror -std=c11 -O2 -I include -c src/society.c -o build/society.o
+gcc -Wall -Wextra -Werror -std=c11 -O2 -I include -S -fverbose-asm src/society.c -o build/asm/society.s
+mkdir -p bin
+gcc -Wall -Wextra -Werror -std=c11 -O2  build/economy.o  build/healthcare.o  build/main.o  build/simulator.o  build/society.o -o bin/sim -lm
+Build complete: bin/sim
+[13:17:33]   -> [EJECUTANDO] ./scripts/run_ciudad.sh (Guardando en results/flags/02.txt)...
+=================================================================
+  LANZANDO SIMULACIÓN: ALICANTE CAPITAL
+=================================================================
+Configuración        : config/policies_ciudad.conf
+Población            : 350000 habitantes (~350k)
+Días de simulación.  : 200 días
+Focos iniciales      : 35 infectados
+Réplicas Monte Carlo : 80 por política
+=================================================================
+
+=================================================================
+  EPIDEMIOLOGICAL SIMULATOR PANDEMICSIM - MONTE CARLO
+=================================================================
+Simulated population : 349281 inhabitants (591x591 cells)
+Simulation days      : 200 days
+Initial infected     : 35 cases
+Loaded policies      : 4 policies
+Replicas per policy  : 80 Monte Carlo runs
+Base seed            : 29
+=================================================================
+
+=== Policy: LaissezFaire     ===
+  Economic Cost (M€) : 754.13 ± 1.71 M€
+  Total Deaths       : 7753.5 ± 337.0 people [Range: 6979 - 8506]
+  ICU Collapse Days  : 40.2 ± 4.4 days
+  Mean Social Fatigue: 0.00
+  Total Compute Time : 20.2198 s (80 runs)
+
+=== Policy: Lockdown         ===
+  Economic Cost (M€) : 5552.41 ± 26.62 M€
+  Total Deaths       : 6030.4 ± 267.9 people [Range: 5275 - 6601]
+  ICU Collapse Days  : 0.0 ± 0.0 days
+  Mean Social Fatigue: 1.20
+  Total Compute Time : 40.0936 s (80 runs)
+
+=== Policy: RemoteWork       ===
+  Economic Cost (M€) : 1915.37 ± 9.23 M€
+  Total Deaths       : 6904.6 ± 127.4 people [Range: 6428 - 7245]
+  ICU Collapse Days  : 1.0 ± 3.5 days
+  Mean Social Fatigue: 0.30
+  Total Compute Time : 28.5165 s (80 runs)
+
+=== Policy: DynamicSignals   ===
+  Economic Cost (M€) : 4646.81 ± 1.85 M€
+  Total Deaths       : 6978.2 ± 76.0 people [Range: 6777 - 7163]
+  ICU Collapse Days  : 0.0 ± 0.0 days
+  Mean Social Fatigue: 1.00
+  Total Compute Time : 24.5418 s (80 runs)
+
+====================================================================================================
+                               PROFILING & EXECUTION TIME BREAKDOWN                                 
+====================================================================================================
+Policy           |  Total (s) |       Update Grid (s) |       Get Counts (s) |      Analytics (s)
+-----------------+------------+-----------------------+----------------------+---------------------
+LaissezFaire     |  20.2198 s |  16.3533 s (80.878%)   |  3.8396 s (18.989%) |  0.0005 s (0.002%)
+Lockdown         |  40.0936 s |  35.8325 s (89.372%)   |  4.2302 s (10.551%) |  0.0005 s (0.001%)
+RemoteWork       |  28.5165 s |  24.3479 s (85.382%)   |  4.1413 s (14.523%) |  0.0005 s (0.002%)
+DynamicSignals   |  24.5418 s |  20.4855 s (83.472%)   |  4.0289 s (16.416%) |  0.0004 s (0.002%)
+-----------------+------------+------------------------+----------------------+---------------------
+TOTAL PHASES     | 113.2613 s |  97.0192 s (85.660%)   | 16.2401 s (14.339%)  |  0.0019 s (0.002%)
+Total Wall-Clock Time: 113.4020 s
+====================================================================================================
+                               SYSTEM THROUGHPUT & PERFORMANCE METRICS                              
+====================================================================================================
+Total Replicas Executed  : 320 simulations (4 policies x 80 runs)
+Total Cell Updates       : 22353984000 cell-day transitions
+Macro Throughput         : 2.82 simulations / sec
+Kernel Throughput (MCUPS): 230.41 Million Cell Updates / sec (MCUPS)
+====================================================================================================
+[13:19:26]   -> [OK] Finalizado. Reposando CPU (5s)...
+[13:19:31]   -> [COMPILANDO] Flags: "-O3"...
+mkdir -p build
+mkdir -p build/asm
+gcc -Wall -Wextra -Werror -std=c11 -O3 -I include -c src/economy.c -o build/economy.o
+gcc -Wall -Wextra -Werror -std=c11 -O3 -I include -S -fverbose-asm src/economy.c -o build/asm/economy.s
+gcc -Wall -Wextra -Werror -std=c11 -O3 -I include -c src/healthcare.c -o build/healthcare.o
+gcc -Wall -Wextra -Werror -std=c11 -O3 -I include -S -fverbose-asm src/healthcare.c -o build/asm/healthcare.s
+gcc -Wall -Wextra -Werror -std=c11 -O3 -I include -c src/main.c -o build/main.o
+gcc -Wall -Wextra -Werror -std=c11 -O3 -I include -S -fverbose-asm src/main.c -o build/asm/main.s
+gcc -Wall -Wextra -Werror -std=c11 -O3 -I include -c src/simulator.c -o build/simulator.o
+gcc -Wall -Wextra -Werror -std=c11 -O3 -I include -S -fverbose-asm src/simulator.c -o build/asm/simulator.s
+gcc -Wall -Wextra -Werror -std=c11 -O3 -I include -c src/society.c -o build/society.o
+gcc -Wall -Wextra -Werror -std=c11 -O3 -I include -S -fverbose-asm src/society.c -o build/asm/society.s
+mkdir -p bin
+gcc -Wall -Wextra -Werror -std=c11 -O3  build/economy.o  build/healthcare.o  build/main.o  build/simulator.o  build/society.o -o bin/sim -lm
+Build complete: bin/sim
+[13:19:32]   -> [EJECUTANDO] ./scripts/run_ciudad.sh (Guardando en results/flags/03.txt)...
+=================================================================
+  LANZANDO SIMULACIÓN: ALICANTE CAPITAL
+=================================================================
+Configuración        : config/policies_ciudad.conf
+Población            : 350000 habitantes (~350k)
+Días de simulación.  : 200 días
+Focos iniciales      : 35 infectados
+Réplicas Monte Carlo : 80 por política
+=================================================================
+
+=================================================================
+  EPIDEMIOLOGICAL SIMULATOR PANDEMICSIM - MONTE CARLO
+=================================================================
+Simulated population : 349281 inhabitants (591x591 cells)
+Simulation days      : 200 days
+Initial infected     : 35 cases
+Loaded policies      : 4 policies
+Replicas per policy  : 80 Monte Carlo runs
+Base seed            : 29
+=================================================================
+
+=== Policy: LaissezFaire     ===
+  Economic Cost (M€) : 754.13 ± 1.71 M€
+  Total Deaths       : 7753.5 ± 337.0 people [Range: 6979 - 8506]
+  ICU Collapse Days  : 40.2 ± 4.4 days
+  Mean Social Fatigue: 0.00
+  Total Compute Time : 11.9142 s (80 runs)
+
+=== Policy: Lockdown         ===
+  Economic Cost (M€) : 5552.41 ± 26.62 M€
+  Total Deaths       : 6030.4 ± 267.9 people [Range: 5275 - 6601]
+  ICU Collapse Days  : 0.0 ± 0.0 days
+  Mean Social Fatigue: 1.20
+  Total Compute Time : 18.8933 s (80 runs)
+
+=== Policy: RemoteWork       ===
+  Economic Cost (M€) : 1915.37 ± 9.23 M€
+  Total Deaths       : 6904.6 ± 127.4 people [Range: 6428 - 7245]
+  ICU Collapse Days  : 1.0 ± 3.5 days
+  Mean Social Fatigue: 0.30
+  Total Compute Time : 15.0498 s (80 runs)
+
+=== Policy: DynamicSignals   ===
+  Economic Cost (M€) : 4646.81 ± 1.85 M€
+  Total Deaths       : 6978.2 ± 76.0 people [Range: 6777 - 7163]
+  ICU Collapse Days  : 0.0 ± 0.0 days
+  Mean Social Fatigue: 1.00
+  Total Compute Time : 13.2842 s (80 runs)
+
+====================================================================================================
+                               PROFILING & EXECUTION TIME BREAKDOWN                                 
+====================================================================================================
+Policy           |  Total (s) |       Update Grid (s) |       Get Counts (s) |      Analytics (s)
+-----------------+------------+-----------------------+----------------------+---------------------
+LaissezFaire     |  11.9142 s |   8.0703 s (67.737%)   |  3.8169 s (32.036%) |  0.0005 s (0.004%)
+Lockdown         |  18.8933 s |  14.7290 s (77.959%)   |  4.1341 s (21.881%) |  0.0005 s (0.003%)
+RemoteWork       |  15.0498 s |  11.0134 s (73.180%)   |  4.0095 s (26.642%) |  0.0005 s (0.003%)
+DynamicSignals   |  13.2842 s |   9.3967 s (70.736%)   |  3.8617 s (29.070%) |  0.0004 s (0.003%)
+-----------------+------------+------------------------+----------------------+---------------------
+TOTAL PHASES     |  59.0335 s |  43.2093 s (73.195%)   | 15.8222 s (26.802%)  |  0.0019 s (0.003%)
+Total Wall-Clock Time: 59.1697 s
+====================================================================================================
+                               SYSTEM THROUGHPUT & PERFORMANCE METRICS                              
+====================================================================================================
+Total Replicas Executed  : 320 simulations (4 policies x 80 runs)
+Total Cell Updates       : 22353984000 cell-day transitions
+Macro Throughput         : 5.41 simulations / sec
+Kernel Throughput (MCUPS): 517.34 Million Cell Updates / sec (MCUPS)
+====================================================================================================
+[13:20:31]   -> [OK] Finalizado. Reposando CPU (5s)...
+[13:20:36]   -> [COMPILANDO] Flags: "-Os"...
+mkdir -p build
+mkdir -p build/asm
+gcc -Wall -Wextra -Werror -std=c11 -Os -I include -c src/economy.c -o build/economy.o
+gcc -Wall -Wextra -Werror -std=c11 -Os -I include -S -fverbose-asm src/economy.c -o build/asm/economy.s
+gcc -Wall -Wextra -Werror -std=c11 -Os -I include -c src/healthcare.c -o build/healthcare.o
+gcc -Wall -Wextra -Werror -std=c11 -Os -I include -S -fverbose-asm src/healthcare.c -o build/asm/healthcare.s
+gcc -Wall -Wextra -Werror -std=c11 -Os -I include -c src/main.c -o build/main.o
+gcc -Wall -Wextra -Werror -std=c11 -Os -I include -S -fverbose-asm src/main.c -o build/asm/main.s
+gcc -Wall -Wextra -Werror -std=c11 -Os -I include -c src/simulator.c -o build/simulator.o
+gcc -Wall -Wextra -Werror -std=c11 -Os -I include -S -fverbose-asm src/simulator.c -o build/asm/simulator.s
+gcc -Wall -Wextra -Werror -std=c11 -Os -I include -c src/society.c -o build/society.o
+gcc -Wall -Wextra -Werror -std=c11 -Os -I include -S -fverbose-asm src/society.c -o build/asm/society.s
+mkdir -p bin
+gcc -Wall -Wextra -Werror -std=c11 -Os  build/economy.o  build/healthcare.o  build/main.o  build/simulator.o  build/society.o -o bin/sim -lm
+Build complete: bin/sim
+[13:20:36]   -> [EJECUTANDO] ./scripts/run_ciudad.sh (Guardando en results/flags/Os.txt)...
+=================================================================
+  LANZANDO SIMULACIÓN: ALICANTE CAPITAL
+=================================================================
+Configuración        : config/policies_ciudad.conf
+Población            : 350000 habitantes (~350k)
+Días de simulación.  : 200 días
+Focos iniciales      : 35 infectados
+Réplicas Monte Carlo : 80 por política
+=================================================================
+
+=================================================================
+  EPIDEMIOLOGICAL SIMULATOR PANDEMICSIM - MONTE CARLO
+=================================================================
+Simulated population : 349281 inhabitants (591x591 cells)
+Simulation days      : 200 days
+Initial infected     : 35 cases
+Loaded policies      : 4 policies
+Replicas per policy  : 80 Monte Carlo runs
+Base seed            : 29
+=================================================================
+
+=== Policy: LaissezFaire     ===
+  Economic Cost (M€) : 754.13 ± 1.71 M€
+  Total Deaths       : 7753.5 ± 337.0 people [Range: 6979 - 8506]
+  ICU Collapse Days  : 40.2 ± 4.4 days
+  Mean Social Fatigue: 0.00
+  Total Compute Time : 23.0389 s (80 runs)
+
+=== Policy: Lockdown         ===
+  Economic Cost (M€) : 5552.41 ± 26.62 M€
+  Total Deaths       : 6030.4 ± 267.9 people [Range: 5275 - 6601]
+  ICU Collapse Days  : 0.0 ± 0.0 days
+  Mean Social Fatigue: 1.20
+  Total Compute Time : 45.0609 s (80 runs)
+
+=== Policy: RemoteWork       ===
+  Economic Cost (M€) : 1915.37 ± 9.23 M€
+  Total Deaths       : 6904.6 ± 127.4 people [Range: 6428 - 7245]
+  ICU Collapse Days  : 1.0 ± 3.5 days
+  Mean Social Fatigue: 0.30
+  Total Compute Time : 31.8486 s (80 runs)
+
+=== Policy: DynamicSignals   ===
+  Economic Cost (M€) : 4646.81 ± 1.85 M€
+  Total Deaths       : 6978.2 ± 76.0 people [Range: 6777 - 7163]
+  ICU Collapse Days  : 0.0 ± 0.0 days
+  Mean Social Fatigue: 1.00
+  Total Compute Time : 27.1625 s (80 runs)
+
+====================================================================================================
+                               PROFILING & EXECUTION TIME BREAKDOWN                                 
+====================================================================================================
+Policy           |  Total (s) |       Update Grid (s) |       Get Counts (s) |      Analytics (s)
+-----------------+------------+-----------------------+----------------------+---------------------
+LaissezFaire     |  23.0389 s |  17.8590 s (77.517%)   |  5.1512 s (22.359%) |  0.0006 s (0.003%)
+Lockdown         |  45.0609 s |  39.4522 s (87.553%)   |  5.5702 s (12.361%) |  0.0006 s (0.001%)
+RemoteWork       |  31.8486 s |  26.2854 s (82.533%)   |  5.5335 s (17.374%) |  0.0006 s (0.002%)
+DynamicSignals   |  27.1625 s |  21.8231 s (80.343%)   |  5.3109 s (19.552%) |  0.0005 s (0.002%)
+-----------------+------------+------------------------+----------------------+---------------------
+TOTAL PHASES     | 126.9878 s | 105.4197 s (83.016%)   | 21.5657 s (16.983%)  |  0.0023 s (0.002%)
+Total Wall-Clock Time: 127.1391 s
+====================================================================================================
+                               SYSTEM THROUGHPUT & PERFORMANCE METRICS                              
+====================================================================================================
+Total Replicas Executed  : 320 simulations (4 policies x 80 runs)
+Total Cell Updates       : 22353984000 cell-day transitions
+Macro Throughput         : 2.52 simulations / sec
+Kernel Throughput (MCUPS): 212.05 Million Cell Updates / sec (MCUPS)
+====================================================================================================
+[13:22:43]   -> [OK] Finalizado. Reposando CPU (5s)...
+[13:22:48]   -> [COMPILANDO] Flags: "-Ofast"...
+mkdir -p build
+mkdir -p build/asm
+gcc -Wall -Wextra -Werror -std=c11 -Ofast -I include -c src/economy.c -o build/economy.o
+gcc -Wall -Wextra -Werror -std=c11 -Ofast -I include -S -fverbose-asm src/economy.c -o build/asm/economy.s
+gcc -Wall -Wextra -Werror -std=c11 -Ofast -I include -c src/healthcare.c -o build/healthcare.o
+gcc -Wall -Wextra -Werror -std=c11 -Ofast -I include -S -fverbose-asm src/healthcare.c -o build/asm/healthcare.s
+gcc -Wall -Wextra -Werror -std=c11 -Ofast -I include -c src/main.c -o build/main.o
+gcc -Wall -Wextra -Werror -std=c11 -Ofast -I include -S -fverbose-asm src/main.c -o build/asm/main.s
+gcc -Wall -Wextra -Werror -std=c11 -Ofast -I include -c src/simulator.c -o build/simulator.o
+gcc -Wall -Wextra -Werror -std=c11 -Ofast -I include -S -fverbose-asm src/simulator.c -o build/asm/simulator.s
+gcc -Wall -Wextra -Werror -std=c11 -Ofast -I include -c src/society.c -o build/society.o
+gcc -Wall -Wextra -Werror -std=c11 -Ofast -I include -S -fverbose-asm src/society.c -o build/asm/society.s
+mkdir -p bin
+gcc -Wall -Wextra -Werror -std=c11 -Ofast  build/economy.o  build/healthcare.o  build/main.o  build/simulator.o  build/society.o -o bin/sim -lm
+Build complete: bin/sim
+[13:22:49]   -> [EJECUTANDO] ./scripts/run_ciudad.sh (Guardando en results/flags/0fast.txt)...
+=================================================================
+  LANZANDO SIMULACIÓN: ALICANTE CAPITAL
+=================================================================
+Configuración        : config/policies_ciudad.conf
+Población            : 350000 habitantes (~350k)
+Días de simulación.  : 200 días
+Focos iniciales      : 35 infectados
+Réplicas Monte Carlo : 80 por política
+=================================================================
+
+=================================================================
+  EPIDEMIOLOGICAL SIMULATOR PANDEMICSIM - MONTE CARLO
+=================================================================
+Simulated population : 349281 inhabitants (591x591 cells)
+Simulation days      : 200 days
+Initial infected     : 35 cases
+Loaded policies      : 4 policies
+Replicas per policy  : 80 Monte Carlo runs
+Base seed            : 29
+=================================================================
+
+=== Policy: LaissezFaire     ===
+  Economic Cost (M€) : 754.13 ± 1.71 M€
+  Total Deaths       : 7753.5 ± 337.0 people [Range: 6979 - 8506]
+  ICU Collapse Days  : 40.2 ± 4.4 days
+  Mean Social Fatigue: 0.00
+  Total Compute Time : 13.3315 s (80 runs)
+
+=== Policy: Lockdown         ===
+  Economic Cost (M€) : 5552.41 ± 26.62 M€
+  Total Deaths       : 6030.4 ± 267.9 people [Range: 5275 - 6601]
+  ICU Collapse Days  : 0.0 ± 0.0 days
+  Mean Social Fatigue: 1.20
+  Total Compute Time : 19.4441 s (80 runs)
+
+=== Policy: RemoteWork       ===
+  Economic Cost (M€) : 1915.37 ± 9.23 M€
+  Total Deaths       : 6904.7 ± 127.4 people [Range: 6428 - 7245]
+  ICU Collapse Days  : 1.0 ± 3.5 days
+  Mean Social Fatigue: 0.30
+  Total Compute Time : 16.2575 s (80 runs)
+
+=== Policy: DynamicSignals   ===
+  Economic Cost (M€) : 4646.81 ± 1.85 M€
+  Total Deaths       : 6978.2 ± 76.0 people [Range: 6777 - 7163]
+  ICU Collapse Days  : 0.0 ± 0.0 days
+  Mean Social Fatigue: 1.00
+  Total Compute Time : 14.4841 s (80 runs)
+
+====================================================================================================
+                               PROFILING & EXECUTION TIME BREAKDOWN                                 
+====================================================================================================
+Policy           |  Total (s) |       Update Grid (s) |       Get Counts (s) |      Analytics (s)
+-----------------+------------+-----------------------+----------------------+---------------------
+LaissezFaire     |  13.3315 s |   8.0162 s (60.130%)   |  5.2786 s (39.595%) |  0.0005 s (0.004%)
+Lockdown         |  19.4441 s |  14.7360 s (75.786%)   |  4.6676 s (24.005%) |  0.0005 s (0.003%)
+RemoteWork       |  16.2575 s |  10.9238 s (67.192%)   |  5.2945 s (32.566%) |  0.0005 s (0.003%)
+DynamicSignals   |  14.4841 s |   9.3879 s (64.815%)   |  5.0619 s (34.948%) |  0.0004 s (0.003%)
+-----------------+------------+------------------------+----------------------+---------------------
+TOTAL PHASES     |  63.3683 s |  43.0638 s (67.958%)   | 20.3025 s (32.039%)  |  0.0019 s (0.003%)
+Total Wall-Clock Time: 63.5449 s
+====================================================================================================
+                               SYSTEM THROUGHPUT & PERFORMANCE METRICS                              
+====================================================================================================
+Total Replicas Executed  : 320 simulations (4 policies x 80 runs)
+Total Cell Updates       : 22353984000 cell-day transitions
+Macro Throughput         : 5.04 simulations / sec
+Kernel Throughput (MCUPS): 519.09 Million Cell Updates / sec (MCUPS)
+====================================================================================================
+[13:23:52]   -> [OK] Finalizado. Reposando CPU (5s)...
+[13:23:57] ==> [2/10] Microarquitectura e instrucciones nativas (-march)...
+[13:23:57]   -> [COMPILANDO] Flags: "-O3"...
+mkdir -p build
+mkdir -p build/asm
+gcc -Wall -Wextra -Werror -std=c11 -O3 -I include -c src/economy.c -o build/economy.o
+gcc -Wall -Wextra -Werror -std=c11 -O3 -I include -S -fverbose-asm src/economy.c -o build/asm/economy.s
+gcc -Wall -Wextra -Werror -std=c11 -O3 -I include -c src/healthcare.c -o build/healthcare.o
+gcc -Wall -Wextra -Werror -std=c11 -O3 -I include -S -fverbose-asm src/healthcare.c -o build/asm/healthcare.s
+gcc -Wall -Wextra -Werror -std=c11 -O3 -I include -c src/main.c -o build/main.o
+gcc -Wall -Wextra -Werror -std=c11 -O3 -I include -S -fverbose-asm src/main.c -o build/asm/main.s
+gcc -Wall -Wextra -Werror -std=c11 -O3 -I include -c src/simulator.c -o build/simulator.o
+gcc -Wall -Wextra -Werror -std=c11 -O3 -I include -S -fverbose-asm src/simulator.c -o build/asm/simulator.s
+gcc -Wall -Wextra -Werror -std=c11 -O3 -I include -c src/society.c -o build/society.o
+gcc -Wall -Wextra -Werror -std=c11 -O3 -I include -S -fverbose-asm src/society.c -o build/asm/society.s
+mkdir -p bin
+gcc -Wall -Wextra -Werror -std=c11 -O3  build/economy.o  build/healthcare.o  build/main.o  build/simulator.o  build/society.o -o bin/sim -lm
+Build complete: bin/sim
+[13:23:58]   -> [EJECUTANDO] ./scripts/run_ciudad.sh (Guardando en results/march/03.txt)...
+=================================================================
+  LANZANDO SIMULACIÓN: ALICANTE CAPITAL
+=================================================================
+Configuración        : config/policies_ciudad.conf
+Población            : 350000 habitantes (~350k)
+Días de simulación.  : 200 días
+Focos iniciales      : 35 infectados
+Réplicas Monte Carlo : 80 por política
+=================================================================
+
+=================================================================
+  EPIDEMIOLOGICAL SIMULATOR PANDEMICSIM - MONTE CARLO
+=================================================================
+Simulated population : 349281 inhabitants (591x591 cells)
+Simulation days      : 200 days
+Initial infected     : 35 cases
+Loaded policies      : 4 policies
+Replicas per policy  : 80 Monte Carlo runs
+Base seed            : 29
+=================================================================
+
+=== Policy: LaissezFaire     ===
+  Economic Cost (M€) : 754.13 ± 1.71 M€
+  Total Deaths       : 7753.5 ± 337.0 people [Range: 6979 - 8506]
+  ICU Collapse Days  : 40.2 ± 4.4 days
+  Mean Social Fatigue: 0.00
+  Total Compute Time : 11.8474 s (80 runs)
+
+=== Policy: Lockdown         ===
+  Economic Cost (M€) : 5552.41 ± 26.62 M€
+  Total Deaths       : 6030.4 ± 267.9 people [Range: 5275 - 6601]
+  ICU Collapse Days  : 0.0 ± 0.0 days
+  Mean Social Fatigue: 1.20
+  Total Compute Time : 18.9098 s (80 runs)
+
+=== Policy: RemoteWork       ===
+  Economic Cost (M€) : 1915.37 ± 9.23 M€
+  Total Deaths       : 6904.6 ± 127.4 people [Range: 6428 - 7245]
+  ICU Collapse Days  : 1.0 ± 3.5 days
+  Mean Social Fatigue: 0.30
+  Total Compute Time : 14.9767 s (80 runs)
+
+=== Policy: DynamicSignals   ===
+  Economic Cost (M€) : 4646.81 ± 1.85 M€
+  Total Deaths       : 6978.2 ± 76.0 people [Range: 6777 - 7163]
+  ICU Collapse Days  : 0.0 ± 0.0 days
+  Mean Social Fatigue: 1.00
+  Total Compute Time : 13.5555 s (80 runs)
+
+====================================================================================================
+                               PROFILING & EXECUTION TIME BREAKDOWN                                 
+====================================================================================================
+Policy           |  Total (s) |       Update Grid (s) |       Get Counts (s) |      Analytics (s)
+-----------------+------------+-----------------------+----------------------+---------------------
+LaissezFaire     |  11.8474 s |   8.0230 s (67.719%)   |  3.7975 s (32.053%) |  0.0005 s (0.005%)
+Lockdown         |  18.9098 s |  14.7477 s (77.990%)   |  4.1317 s (21.849%) |  0.0006 s (0.003%)
+RemoteWork       |  14.9767 s |  10.9579 s (73.166%)   |  3.9920 s (26.655%) |  0.0006 s (0.004%)
+DynamicSignals   |  13.5555 s |   9.5970 s (70.797%)   |  3.9320 s (29.007%) |  0.0004 s (0.003%)
+-----------------+------------+------------------------+----------------------+---------------------
+TOTAL PHASES     |  59.1808 s |  43.3255 s (73.209%)   | 15.8532 s (26.788%)  |  0.0021 s (0.004%)
+Total Wall-Clock Time: 59.3180 s
+====================================================================================================
+                               SYSTEM THROUGHPUT & PERFORMANCE METRICS                              
+====================================================================================================
+Total Replicas Executed  : 320 simulations (4 policies x 80 runs)
+Total Cell Updates       : 22353984000 cell-day transitions
+Macro Throughput         : 5.39 simulations / sec
+Kernel Throughput (MCUPS): 515.95 Million Cell Updates / sec (MCUPS)
+====================================================================================================
+[13:24:57]   -> [OK] Finalizado. Reposando CPU (5s)...
+[13:25:02]   -> [COMPILANDO] Flags: "-O3 -march=native"...
+mkdir -p build
+mkdir -p build/asm
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -I include -c src/economy.c -o build/economy.o
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -I include -S -fverbose-asm src/economy.c -o build/asm/economy.s
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -I include -c src/healthcare.c -o build/healthcare.o
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -I include -S -fverbose-asm src/healthcare.c -o build/asm/healthcare.s
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -I include -c src/main.c -o build/main.o
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -I include -S -fverbose-asm src/main.c -o build/asm/main.s
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -I include -c src/simulator.c -o build/simulator.o
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -I include -S -fverbose-asm src/simulator.c -o build/asm/simulator.s
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -I include -c src/society.c -o build/society.o
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -I include -S -fverbose-asm src/society.c -o build/asm/society.s
+mkdir -p bin
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native  build/economy.o  build/healthcare.o  build/main.o  build/simulator.o  build/society.o -o bin/sim -lm
+Build complete: bin/sim
+[13:25:02]   -> [EJECUTANDO] ./scripts/run_ciudad.sh (Guardando en results/march/03+native.txt)...
+=================================================================
+  LANZANDO SIMULACIÓN: ALICANTE CAPITAL
+=================================================================
+Configuración        : config/policies_ciudad.conf
+Población            : 350000 habitantes (~350k)
+Días de simulación.  : 200 días
+Focos iniciales      : 35 infectados
+Réplicas Monte Carlo : 80 por política
+=================================================================
+
+=================================================================
+  EPIDEMIOLOGICAL SIMULATOR PANDEMICSIM - MONTE CARLO
+=================================================================
+Simulated population : 349281 inhabitants (591x591 cells)
+Simulation days      : 200 days
+Initial infected     : 35 cases
+Loaded policies      : 4 policies
+Replicas per policy  : 80 Monte Carlo runs
+Base seed            : 29
+=================================================================
+
+=== Policy: LaissezFaire     ===
+  Economic Cost (M€) : 754.13 ± 1.71 M€
+  Total Deaths       : 7753.5 ± 337.0 people [Range: 6979 - 8506]
+  ICU Collapse Days  : 40.2 ± 4.4 days
+  Mean Social Fatigue: 0.00
+  Total Compute Time : 13.0378 s (80 runs)
+
+=== Policy: Lockdown         ===
+  Economic Cost (M€) : 5552.41 ± 26.62 M€
+  Total Deaths       : 6030.4 ± 267.9 people [Range: 5275 - 6601]
+  ICU Collapse Days  : 0.0 ± 0.0 days
+  Mean Social Fatigue: 1.20
+  Total Compute Time : 20.1046 s (80 runs)
+
+=== Policy: RemoteWork       ===
+  Economic Cost (M€) : 1915.37 ± 9.23 M€
+  Total Deaths       : 6904.6 ± 127.4 people [Range: 6428 - 7245]
+  ICU Collapse Days  : 1.0 ± 3.5 days
+  Mean Social Fatigue: 0.30
+  Total Compute Time : 16.5019 s (80 runs)
+
+=== Policy: DynamicSignals   ===
+  Economic Cost (M€) : 4646.81 ± 1.85 M€
+  Total Deaths       : 6978.2 ± 76.0 people [Range: 6777 - 7163]
+  ICU Collapse Days  : 0.0 ± 0.0 days
+  Mean Social Fatigue: 1.00
+  Total Compute Time : 14.4890 s (80 runs)
+
+====================================================================================================
+                               PROFILING & EXECUTION TIME BREAKDOWN                                 
+====================================================================================================
+Policy           |  Total (s) |       Update Grid (s) |       Get Counts (s) |      Analytics (s)
+-----------------+------------+-----------------------+----------------------+---------------------
+LaissezFaire     |  13.0378 s |   8.1384 s (62.421%)   |  4.8723 s (37.370%) |  0.0005 s (0.004%)
+Lockdown         |  20.1046 s |  14.9562 s (74.392%)   |  5.1034 s (25.384%) |  0.0005 s (0.002%)
+RemoteWork       |  16.5019 s |  11.0664 s (67.061%)   |  5.4019 s (32.735%) |  0.0005 s (0.003%)
+DynamicSignals   |  14.4890 s |   9.6868 s (66.856%)   |  4.7719 s (32.934%) |  0.0004 s (0.003%)
+-----------------+------------+------------------------+----------------------+---------------------
+TOTAL PHASES     |  63.9989 s |  43.8477 s (68.513%)   | 20.1494 s (31.484%)  |  0.0018 s (0.003%)
+Total Wall-Clock Time: 64.1608 s
+====================================================================================================
+                               SYSTEM THROUGHPUT & PERFORMANCE METRICS                              
+====================================================================================================
+Total Replicas Executed  : 320 simulations (4 policies x 80 runs)
+Total Cell Updates       : 22353984000 cell-day transitions
+Macro Throughput         : 4.99 simulations / sec
+Kernel Throughput (MCUPS): 509.81 Million Cell Updates / sec (MCUPS)
+====================================================================================================
+[13:26:07]   -> [OK] Finalizado. Reposando CPU (5s)...
+[13:26:12]   -> [COMPILANDO] Flags: "-O3 -march=native -mfma"...
+mkdir -p build
+mkdir -p build/asm
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -mfma -I include -c src/economy.c -o build/economy.o
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -mfma -I include -S -fverbose-asm src/economy.c -o build/asm/economy.s
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -mfma -I include -c src/healthcare.c -o build/healthcare.o
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -mfma -I include -S -fverbose-asm src/healthcare.c -o build/asm/healthcare.s
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -mfma -I include -c src/main.c -o build/main.o
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -mfma -I include -S -fverbose-asm src/main.c -o build/asm/main.s
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -mfma -I include -c src/simulator.c -o build/simulator.o
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -mfma -I include -S -fverbose-asm src/simulator.c -o build/asm/simulator.s
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -mfma -I include -c src/society.c -o build/society.o
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -mfma -I include -S -fverbose-asm src/society.c -o build/asm/society.s
+mkdir -p bin
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -mfma  build/economy.o  build/healthcare.o  build/main.o  build/simulator.o  build/society.o -o bin/sim -lm
+Build complete: bin/sim
+[13:26:12]   -> [EJECUTANDO] ./scripts/run_ciudad.sh (Guardando en results/march/03+native+fma.txt)...
+=================================================================
+  LANZANDO SIMULACIÓN: ALICANTE CAPITAL
+=================================================================
+Configuración        : config/policies_ciudad.conf
+Población            : 350000 habitantes (~350k)
+Días de simulación.  : 200 días
+Focos iniciales      : 35 infectados
+Réplicas Monte Carlo : 80 por política
+=================================================================
+
+=================================================================
+  EPIDEMIOLOGICAL SIMULATOR PANDEMICSIM - MONTE CARLO
+=================================================================
+Simulated population : 349281 inhabitants (591x591 cells)
+Simulation days      : 200 days
+Initial infected     : 35 cases
+Loaded policies      : 4 policies
+Replicas per policy  : 80 Monte Carlo runs
+Base seed            : 29
+=================================================================
+
+=== Policy: LaissezFaire     ===
+  Economic Cost (M€) : 754.13 ± 1.71 M€
+  Total Deaths       : 7753.5 ± 337.0 people [Range: 6979 - 8506]
+  ICU Collapse Days  : 40.2 ± 4.4 days
+  Mean Social Fatigue: 0.00
+  Total Compute Time : 12.9938 s (80 runs)
+
+=== Policy: Lockdown         ===
+  Economic Cost (M€) : 5552.41 ± 26.62 M€
+  Total Deaths       : 6030.4 ± 267.9 people [Range: 5275 - 6601]
+  ICU Collapse Days  : 0.0 ± 0.0 days
+  Mean Social Fatigue: 1.20
+  Total Compute Time : 20.1185 s (80 runs)
+
+=== Policy: RemoteWork       ===
+  Economic Cost (M€) : 1915.37 ± 9.23 M€
+  Total Deaths       : 6904.6 ± 127.4 people [Range: 6428 - 7245]
+  ICU Collapse Days  : 1.0 ± 3.5 days
+  Mean Social Fatigue: 0.30
+  Total Compute Time : 16.5560 s (80 runs)
+
+=== Policy: DynamicSignals   ===
+  Economic Cost (M€) : 4646.81 ± 1.85 M€
+  Total Deaths       : 6978.2 ± 76.0 people [Range: 6777 - 7163]
+  ICU Collapse Days  : 0.0 ± 0.0 days
+  Mean Social Fatigue: 1.00
+  Total Compute Time : 14.4294 s (80 runs)
+
+====================================================================================================
+                               PROFILING & EXECUTION TIME BREAKDOWN                                 
+====================================================================================================
+Policy           |  Total (s) |       Update Grid (s) |       Get Counts (s) |      Analytics (s)
+-----------------+------------+-----------------------+----------------------+---------------------
+LaissezFaire     |  12.9938 s |   8.0922 s (62.277%)   |  4.8710 s (37.487%) |  0.0005 s (0.004%)
+Lockdown         |  20.1185 s |  14.9666 s (74.392%)   |  5.1066 s (25.382%) |  0.0005 s (0.002%)
+RemoteWork       |  16.5560 s |  11.0891 s (66.979%)   |  5.4335 s (32.819%) |  0.0005 s (0.003%)
+DynamicSignals   |  14.4294 s |   9.6562 s (66.920%)   |  4.7435 s (32.874%) |  0.0004 s (0.002%)
+-----------------+------------+------------------------+----------------------+---------------------
+TOTAL PHASES     |  63.9604 s |  43.8040 s (68.486%)   | 20.1546 s (31.511%)  |  0.0018 s (0.003%)
+Total Wall-Clock Time: 64.1260 s
+====================================================================================================
+                               SYSTEM THROUGHPUT & PERFORMANCE METRICS                              
+====================================================================================================
+Total Replicas Executed  : 320 simulations (4 policies x 80 runs)
+Total Cell Updates       : 22353984000 cell-day transitions
+Macro Throughput         : 4.99 simulations / sec
+Kernel Throughput (MCUPS): 510.32 Million Cell Updates / sec (MCUPS)
+====================================================================================================
+[13:27:16]   -> [OK] Finalizado. Reposando CPU (5s)...
+[13:27:21] ==> [3/10] Informes y diagnósticos de autovectorización SIMD...
+[13:27:22]   -> [EJECUTANDO] ./scripts/run_ciudad.sh...
+[13:28:25]   -> [GENERANDO] Fichero de ensamblador anotado (.s)...
+[13:28:30] ==> [4/10] Optimización en Tiempo de Enlace (-flto)...
+[13:28:30]   -> [COMPILANDO] Flags: "-O3 -march=native -flto"...
+mkdir -p build
+mkdir -p build/asm
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -flto -I include -c src/economy.c -o build/economy.o
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -flto -I include -S -fverbose-asm src/economy.c -o build/asm/economy.s
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -flto -I include -c src/healthcare.c -o build/healthcare.o
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -flto -I include -S -fverbose-asm src/healthcare.c -o build/asm/healthcare.s
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -flto -I include -c src/main.c -o build/main.o
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -flto -I include -S -fverbose-asm src/main.c -o build/asm/main.s
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -flto -I include -c src/simulator.c -o build/simulator.o
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -flto -I include -S -fverbose-asm src/simulator.c -o build/asm/simulator.s
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -flto -I include -c src/society.c -o build/society.o
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -flto -I include -S -fverbose-asm src/society.c -o build/asm/society.s
+mkdir -p bin
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -flto  build/economy.o  build/healthcare.o  build/main.o  build/simulator.o  build/society.o -o bin/sim -lm
+Build complete: bin/sim
+[13:28:31]   -> [EJECUTANDO] ./scripts/run_ciudad.sh (Guardando en results/lto/lto.txt)...
+=================================================================
+  LANZANDO SIMULACIÓN: ALICANTE CAPITAL
+=================================================================
+Configuración        : config/policies_ciudad.conf
+Población            : 350000 habitantes (~350k)
+Días de simulación.  : 200 días
+Focos iniciales      : 35 infectados
+Réplicas Monte Carlo : 80 por política
+=================================================================
+
+=================================================================
+  EPIDEMIOLOGICAL SIMULATOR PANDEMICSIM - MONTE CARLO
+=================================================================
+Simulated population : 349281 inhabitants (591x591 cells)
+Simulation days      : 200 days
+Initial infected     : 35 cases
+Loaded policies      : 4 policies
+Replicas per policy  : 80 Monte Carlo runs
+Base seed            : 29
+=================================================================
+
+=== Policy: LaissezFaire     ===
+  Economic Cost (M€) : 754.13 ± 1.71 M€
+  Total Deaths       : 7753.5 ± 337.0 people [Range: 6979 - 8506]
+  ICU Collapse Days  : 40.2 ± 4.4 days
+  Mean Social Fatigue: 0.00
+  Total Compute Time : 8.1195 s (80 runs)
+
+=== Policy: Lockdown         ===
+  Economic Cost (M€) : 5552.41 ± 26.62 M€
+  Total Deaths       : 6030.4 ± 267.9 people [Range: 5275 - 6601]
+  ICU Collapse Days  : 0.0 ± 0.0 days
+  Mean Social Fatigue: 1.20
+  Total Compute Time : 14.5996 s (80 runs)
+
+=== Policy: RemoteWork       ===
+  Economic Cost (M€) : 1915.37 ± 9.23 M€
+  Total Deaths       : 6904.6 ± 127.4 people [Range: 6428 - 7245]
+  ICU Collapse Days  : 1.0 ± 3.5 days
+  Mean Social Fatigue: 0.30
+  Total Compute Time : 11.3073 s (80 runs)
+
+=== Policy: DynamicSignals   ===
+  Economic Cost (M€) : 4646.81 ± 1.85 M€
+  Total Deaths       : 6978.2 ± 76.0 people [Range: 6777 - 7163]
+  ICU Collapse Days  : 0.0 ± 0.0 days
+  Mean Social Fatigue: 1.00
+  Total Compute Time : 9.8021 s (80 runs)
+
+====================================================================================================
+                               PROFILING & EXECUTION TIME BREAKDOWN                                 
+====================================================================================================
+Policy           |  Total (s) |       Update Grid (s) |       Get Counts (s) |      Analytics (s)
+-----------------+------------+-----------------------+----------------------+---------------------
+LaissezFaire     |   8.1195 s |   7.7377 s (95.298%)   |  0.3599 s (4.432%) |  0.0004 s (0.005%)
+Lockdown         |  14.5996 s |  14.2060 s (97.304%)   |  0.3697 s (2.532%) |  0.0004 s (0.003%)
+RemoteWork       |  11.3073 s |  10.9084 s (96.473%)   |  0.3765 s (3.330%) |  0.0004 s (0.004%)
+DynamicSignals   |   9.8021 s |   9.4053 s (95.952%)   |  0.3747 s (3.822%) |  0.0003 s (0.003%)
+-----------------+------------+------------------------+----------------------+---------------------
+TOTAL PHASES     |  43.7399 s |  42.2575 s (96.611%)   |  1.4807 s (3.385%)  |  0.0016 s (0.004%)
+Total Wall-Clock Time: 43.8567 s
+====================================================================================================
+                               SYSTEM THROUGHPUT & PERFORMANCE METRICS                              
+====================================================================================================
+Total Replicas Executed  : 320 simulations (4 policies x 80 runs)
+Total Cell Updates       : 22353984000 cell-day transitions
+Macro Throughput         : 7.30 simulations / sec
+Kernel Throughput (MCUPS): 528.99 Million Cell Updates / sec (MCUPS)
+====================================================================================================
+[13:29:15]   -> [OK] Finalizado. Reposando CPU (5s)...
+[13:29:20] ==> [5/10] Desenrollado de bucles (-funroll-loops)...
+[13:29:20]   -> [COMPILANDO] Flags: "-O3 -march=native -funroll-loops"...
+mkdir -p build
+mkdir -p build/asm
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -funroll-loops -I include -c src/economy.c -o build/economy.o
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -funroll-loops -I include -S -fverbose-asm src/economy.c -o build/asm/economy.s
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -funroll-loops -I include -c src/healthcare.c -o build/healthcare.o
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -funroll-loops -I include -S -fverbose-asm src/healthcare.c -o build/asm/healthcare.s
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -funroll-loops -I include -c src/main.c -o build/main.o
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -funroll-loops -I include -S -fverbose-asm src/main.c -o build/asm/main.s
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -funroll-loops -I include -c src/simulator.c -o build/simulator.o
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -funroll-loops -I include -S -fverbose-asm src/simulator.c -o build/asm/simulator.s
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -funroll-loops -I include -c src/society.c -o build/society.o
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -funroll-loops -I include -S -fverbose-asm src/society.c -o build/asm/society.s
+mkdir -p bin
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -funroll-loops  build/economy.o  build/healthcare.o  build/main.o  build/simulator.o  build/society.o -o bin/sim -lm
+Build complete: bin/sim
+[13:29:20]   -> [EJECUTANDO] ./scripts/run_ciudad.sh (Guardando en results/unroll/unroll.txt)...
+=================================================================
+  LANZANDO SIMULACIÓN: ALICANTE CAPITAL
+=================================================================
+Configuración        : config/policies_ciudad.conf
+Población            : 350000 habitantes (~350k)
+Días de simulación.  : 200 días
+Focos iniciales      : 35 infectados
+Réplicas Monte Carlo : 80 por política
+=================================================================
+
+=================================================================
+  EPIDEMIOLOGICAL SIMULATOR PANDEMICSIM - MONTE CARLO
+=================================================================
+Simulated population : 349281 inhabitants (591x591 cells)
+Simulation days      : 200 days
+Initial infected     : 35 cases
+Loaded policies      : 4 policies
+Replicas per policy  : 80 Monte Carlo runs
+Base seed            : 29
+=================================================================
+
+=== Policy: LaissezFaire     ===
+  Economic Cost (M€) : 754.13 ± 1.71 M€
+  Total Deaths       : 7753.5 ± 337.0 people [Range: 6979 - 8506]
+  ICU Collapse Days  : 40.2 ± 4.4 days
+  Mean Social Fatigue: 0.00
+  Total Compute Time : 13.5370 s (80 runs)
+
+=== Policy: Lockdown         ===
+  Economic Cost (M€) : 5552.41 ± 26.62 M€
+  Total Deaths       : 6030.4 ± 267.9 people [Range: 5275 - 6601]
+  ICU Collapse Days  : 0.0 ± 0.0 days
+  Mean Social Fatigue: 1.20
+  Total Compute Time : 19.0029 s (80 runs)
+
+=== Policy: RemoteWork       ===
+  Economic Cost (M€) : 1915.37 ± 9.23 M€
+  Total Deaths       : 6904.6 ± 127.4 people [Range: 6428 - 7245]
+  ICU Collapse Days  : 1.0 ± 3.5 days
+  Mean Social Fatigue: 0.30
+  Total Compute Time : 15.9602 s (80 runs)
+
+=== Policy: DynamicSignals   ===
+  Economic Cost (M€) : 4646.81 ± 1.85 M€
+  Total Deaths       : 6978.2 ± 76.0 people [Range: 6777 - 7163]
+  ICU Collapse Days  : 0.0 ± 0.0 days
+  Mean Social Fatigue: 1.00
+  Total Compute Time : 14.7182 s (80 runs)
+
+====================================================================================================
+                               PROFILING & EXECUTION TIME BREAKDOWN                                 
+====================================================================================================
+Policy           |  Total (s) |       Update Grid (s) |       Get Counts (s) |      Analytics (s)
+-----------------+------------+-----------------------+----------------------+---------------------
+LaissezFaire     |  13.5370 s |   8.0965 s (59.810%)   |  5.3947 s (39.851%) |  0.0005 s (0.004%)
+Lockdown         |  19.0029 s |  14.9555 s (78.701%)   |  4.0121 s (21.113%) |  0.0005 s (0.003%)
+RemoteWork       |  15.9602 s |  11.1998 s (70.174%)   |  4.7176 s (29.559%) |  0.0005 s (0.003%)
+DynamicSignals   |  14.7182 s |   9.6327 s (65.447%)   |  5.0405 s (34.247%) |  0.0004 s (0.003%)
+-----------------+------------+------------------------+----------------------+---------------------
+TOTAL PHASES     |  63.0512 s |  43.8845 s (69.601%)   | 19.1648 s (30.396%)  |  0.0019 s (0.003%)
+Total Wall-Clock Time: 63.2457 s
+====================================================================================================
+                               SYSTEM THROUGHPUT & PERFORMANCE METRICS                              
+====================================================================================================
+Total Replicas Executed  : 320 simulations (4 policies x 80 runs)
+Total Cell Updates       : 22353984000 cell-day transitions
+Macro Throughput         : 5.06 simulations / sec
+Kernel Throughput (MCUPS): 509.38 Million Cell Updates / sec (MCUPS)
+====================================================================================================
+[13:30:23]   -> [OK] Finalizado. Reposando CPU (5s)...
+[13:30:28] ==> [6/10] Control de ancho de vector SIMD...
+[13:30:28]   -> [COMPILANDO] Flags: "-O3 -march=native -mprefer-vector-width=256"...
+mkdir -p build
+mkdir -p build/asm
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -mprefer-vector-width=256 -I include -c src/economy.c -o build/economy.o
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -mprefer-vector-width=256 -I include -S -fverbose-asm src/economy.c -o build/asm/economy.s
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -mprefer-vector-width=256 -I include -c src/healthcare.c -o build/healthcare.o
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -mprefer-vector-width=256 -I include -S -fverbose-asm src/healthcare.c -o build/asm/healthcare.s
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -mprefer-vector-width=256 -I include -c src/main.c -o build/main.o
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -mprefer-vector-width=256 -I include -S -fverbose-asm src/main.c -o build/asm/main.s
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -mprefer-vector-width=256 -I include -c src/simulator.c -o build/simulator.o
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -mprefer-vector-width=256 -I include -S -fverbose-asm src/simulator.c -o build/asm/simulator.s
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -mprefer-vector-width=256 -I include -c src/society.c -o build/society.o
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -mprefer-vector-width=256 -I include -S -fverbose-asm src/society.c -o build/asm/society.s
+mkdir -p bin
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -mprefer-vector-width=256  build/economy.o  build/healthcare.o  build/main.o  build/simulator.o  build/society.o -o bin/sim -lm
+Build complete: bin/sim
+[13:30:29]   -> [EJECUTANDO] ./scripts/run_ciudad.sh (Guardando en results/vector_width/w256.txt)...
+=================================================================
+  LANZANDO SIMULACIÓN: ALICANTE CAPITAL
+=================================================================
+Configuración        : config/policies_ciudad.conf
+Población            : 350000 habitantes (~350k)
+Días de simulación.  : 200 días
+Focos iniciales      : 35 infectados
+Réplicas Monte Carlo : 80 por política
+=================================================================
+
+=================================================================
+  EPIDEMIOLOGICAL SIMULATOR PANDEMICSIM - MONTE CARLO
+=================================================================
+Simulated population : 349281 inhabitants (591x591 cells)
+Simulation days      : 200 days
+Initial infected     : 35 cases
+Loaded policies      : 4 policies
+Replicas per policy  : 80 Monte Carlo runs
+Base seed            : 29
+=================================================================
+
+=== Policy: LaissezFaire     ===
+  Economic Cost (M€) : 754.13 ± 1.71 M€
+  Total Deaths       : 7753.5 ± 337.0 people [Range: 6979 - 8506]
+  ICU Collapse Days  : 40.2 ± 4.4 days
+  Mean Social Fatigue: 0.00
+  Total Compute Time : 12.9300 s (80 runs)
+
+=== Policy: Lockdown         ===
+  Economic Cost (M€) : 5552.41 ± 26.62 M€
+  Total Deaths       : 6030.4 ± 267.9 people [Range: 5275 - 6601]
+  ICU Collapse Days  : 0.0 ± 0.0 days
+  Mean Social Fatigue: 1.20
+  Total Compute Time : 20.1203 s (80 runs)
+
+=== Policy: RemoteWork       ===
+  Economic Cost (M€) : 1915.37 ± 9.23 M€
+  Total Deaths       : 6904.6 ± 127.4 people [Range: 6428 - 7245]
+  ICU Collapse Days  : 1.0 ± 3.5 days
+  Mean Social Fatigue: 0.30
+  Total Compute Time : 16.4787 s (80 runs)
+
+=== Policy: DynamicSignals   ===
+  Economic Cost (M€) : 4646.81 ± 1.85 M€
+  Total Deaths       : 6978.2 ± 76.0 people [Range: 6777 - 7163]
+  ICU Collapse Days  : 0.0 ± 0.0 days
+  Mean Social Fatigue: 1.00
+  Total Compute Time : 14.2072 s (80 runs)
+
+====================================================================================================
+                               PROFILING & EXECUTION TIME BREAKDOWN                                 
+====================================================================================================
+Policy           |  Total (s) |       Update Grid (s) |       Get Counts (s) |      Analytics (s)
+-----------------+------------+-----------------------+----------------------+---------------------
+LaissezFaire     |  12.9300 s |   8.0955 s (62.610%)   |  4.8058 s (37.168%) |  0.0005 s (0.004%)
+Lockdown         |  20.1203 s |  14.9615 s (74.360%)   |  5.1126 s (25.410%) |  0.0005 s (0.002%)
+RemoteWork       |  16.4787 s |  11.0676 s (67.163%)   |  5.3756 s (32.622%) |  0.0005 s (0.003%)
+DynamicSignals   |  14.2072 s |   9.5129 s (66.958%)   |  4.6668 s (32.848%) |  0.0004 s (0.003%)
+-----------------+------------+------------------------+----------------------+---------------------
+TOTAL PHASES     |  63.6002 s |  43.6375 s (68.612%)   | 19.9608 s (31.385%)  |  0.0018 s (0.003%)
+Total Wall-Clock Time: 63.7644 s
+====================================================================================================
+                               SYSTEM THROUGHPUT & PERFORMANCE METRICS                              
+====================================================================================================
+Total Replicas Executed  : 320 simulations (4 policies x 80 runs)
+Total Cell Updates       : 22353984000 cell-day transitions
+Macro Throughput         : 5.02 simulations / sec
+Kernel Throughput (MCUPS): 512.26 Million Cell Updates / sec (MCUPS)
+====================================================================================================
+[13:31:33]   -> [OK] Finalizado. Reposando CPU (5s)...
+[13:31:38]   -> [COMPILANDO] Flags: "-O3 -march=native -mprefer-vector-width=512"...
+mkdir -p build
+mkdir -p build/asm
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -mprefer-vector-width=512 -I include -c src/economy.c -o build/economy.o
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -mprefer-vector-width=512 -I include -S -fverbose-asm src/economy.c -o build/asm/economy.s
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -mprefer-vector-width=512 -I include -c src/healthcare.c -o build/healthcare.o
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -mprefer-vector-width=512 -I include -S -fverbose-asm src/healthcare.c -o build/asm/healthcare.s
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -mprefer-vector-width=512 -I include -c src/main.c -o build/main.o
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -mprefer-vector-width=512 -I include -S -fverbose-asm src/main.c -o build/asm/main.s
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -mprefer-vector-width=512 -I include -c src/simulator.c -o build/simulator.o
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -mprefer-vector-width=512 -I include -S -fverbose-asm src/simulator.c -o build/asm/simulator.s
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -mprefer-vector-width=512 -I include -c src/society.c -o build/society.o
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -mprefer-vector-width=512 -I include -S -fverbose-asm src/society.c -o build/asm/society.s
+mkdir -p bin
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -mprefer-vector-width=512  build/economy.o  build/healthcare.o  build/main.o  build/simulator.o  build/society.o -o bin/sim -lm
+Build complete: bin/sim
+[13:31:38]   -> [EJECUTANDO] ./scripts/run_ciudad.sh (Guardando en results/vector_width/w512.txt)...
+=================================================================
+  LANZANDO SIMULACIÓN: ALICANTE CAPITAL
+=================================================================
+Configuración        : config/policies_ciudad.conf
+Población            : 350000 habitantes (~350k)
+Días de simulación.  : 200 días
+Focos iniciales      : 35 infectados
+Réplicas Monte Carlo : 80 por política
+=================================================================
+
+=================================================================
+  EPIDEMIOLOGICAL SIMULATOR PANDEMICSIM - MONTE CARLO
+=================================================================
+Simulated population : 349281 inhabitants (591x591 cells)
+Simulation days      : 200 days
+Initial infected     : 35 cases
+Loaded policies      : 4 policies
+Replicas per policy  : 80 Monte Carlo runs
+Base seed            : 29
+=================================================================
+
+=== Policy: LaissezFaire     ===
+  Economic Cost (M€) : 754.13 ± 1.71 M€
+  Total Deaths       : 7753.5 ± 337.0 people [Range: 6979 - 8506]
+  ICU Collapse Days  : 40.2 ± 4.4 days
+  Mean Social Fatigue: 0.00
+  Total Compute Time : 12.9488 s (80 runs)
+
+=== Policy: Lockdown         ===
+  Economic Cost (M€) : 5552.41 ± 26.62 M€
+  Total Deaths       : 6030.4 ± 267.9 people [Range: 5275 - 6601]
+  ICU Collapse Days  : 0.0 ± 0.0 days
+  Mean Social Fatigue: 1.20
+  Total Compute Time : 20.1042 s (80 runs)
+
+=== Policy: RemoteWork       ===
+  Economic Cost (M€) : 1915.37 ± 9.23 M€
+  Total Deaths       : 6904.6 ± 127.4 people [Range: 6428 - 7245]
+  ICU Collapse Days  : 1.0 ± 3.5 days
+  Mean Social Fatigue: 0.30
+  Total Compute Time : 16.7022 s (80 runs)
+
+=== Policy: DynamicSignals   ===
+  Economic Cost (M€) : 4646.81 ± 1.85 M€
+  Total Deaths       : 6978.2 ± 76.0 people [Range: 6777 - 7163]
+  ICU Collapse Days  : 0.0 ± 0.0 days
+  Mean Social Fatigue: 1.00
+  Total Compute Time : 14.3991 s (80 runs)
+
+====================================================================================================
+                               PROFILING & EXECUTION TIME BREAKDOWN                                 
+====================================================================================================
+Policy           |  Total (s) |       Update Grid (s) |       Get Counts (s) |      Analytics (s)
+-----------------+------------+-----------------------+----------------------+---------------------
+LaissezFaire     |  12.9488 s |   8.0846 s (62.435%)   |  4.8327 s (37.322%) |  0.0005 s (0.004%)
+Lockdown         |  20.1042 s |  14.9542 s (74.384%)   |  5.1043 s (25.389%) |  0.0005 s (0.002%)
+RemoteWork       |  16.7022 s |  11.1870 s (66.980%)   |  5.4750 s (32.780%) |  0.0005 s (0.003%)
+DynamicSignals   |  14.3991 s |   9.6366 s (66.925%)   |  4.7290 s (32.842%) |  0.0004 s (0.002%)
+-----------------+------------+------------------------+----------------------+---------------------
+TOTAL PHASES     |  64.0052 s |  43.8625 s (68.530%)   | 20.1410 s (31.468%)  |  0.0017 s (0.003%)
+Total Wall-Clock Time: 64.1823 s
+====================================================================================================
+                               SYSTEM THROUGHPUT & PERFORMANCE METRICS                              
+====================================================================================================
+Total Replicas Executed  : 320 simulations (4 policies x 80 runs)
+Total Cell Updates       : 22353984000 cell-day transitions
+Macro Throughput         : 4.99 simulations / sec
+Kernel Throughput (MCUPS): 509.64 Million Cell Updates / sec (MCUPS)
+====================================================================================================
+[13:32:42]   -> [OK] Finalizado. Reposando CPU (5s)...
+[13:32:47] ==> [7/10] Modelo de coste vectorial sin restricciones...
+[13:32:47]   -> [COMPILANDO] Flags: "-O3 -march=native -fsimd-cost-model=unlimited -falign-loops=32"...
+mkdir -p build
+mkdir -p build/asm
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -fsimd-cost-model=unlimited -falign-loops=32 -I include -c src/economy.c -o build/economy.o
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -fsimd-cost-model=unlimited -falign-loops=32 -I include -S -fverbose-asm src/economy.c -o build/asm/economy.s
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -fsimd-cost-model=unlimited -falign-loops=32 -I include -c src/healthcare.c -o build/healthcare.o
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -fsimd-cost-model=unlimited -falign-loops=32 -I include -S -fverbose-asm src/healthcare.c -o build/asm/healthcare.s
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -fsimd-cost-model=unlimited -falign-loops=32 -I include -c src/main.c -o build/main.o
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -fsimd-cost-model=unlimited -falign-loops=32 -I include -S -fverbose-asm src/main.c -o build/asm/main.s
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -fsimd-cost-model=unlimited -falign-loops=32 -I include -c src/simulator.c -o build/simulator.o
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -fsimd-cost-model=unlimited -falign-loops=32 -I include -S -fverbose-asm src/simulator.c -o build/asm/simulator.s
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -fsimd-cost-model=unlimited -falign-loops=32 -I include -c src/society.c -o build/society.o
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -fsimd-cost-model=unlimited -falign-loops=32 -I include -S -fverbose-asm src/society.c -o build/asm/society.s
+mkdir -p bin
+gcc -Wall -Wextra -Werror -std=c11 -O3 -march=native -fsimd-cost-model=unlimited -falign-loops=32  build/economy.o  build/healthcare.o  build/main.o  build/simulator.o  build/society.o -o bin/sim -lm
+Build complete: bin/sim
+[13:32:48]   -> [EJECUTANDO] ./scripts/run_ciudad.sh (Guardando en results/cost_model/cost_unlimited.txt)...
+=================================================================
+  LANZANDO SIMULACIÓN: ALICANTE CAPITAL
+=================================================================
+Configuración        : config/policies_ciudad.conf
+Población            : 350000 habitantes (~350k)
+Días de simulación.  : 200 días
+Focos iniciales      : 35 infectados
+Réplicas Monte Carlo : 80 por política
+=================================================================
+
+=================================================================
+  EPIDEMIOLOGICAL SIMULATOR PANDEMICSIM - MONTE CARLO
+=================================================================
+Simulated population : 349281 inhabitants (591x591 cells)
+Simulation days      : 200 days
+Initial infected     : 35 cases
+Loaded policies      : 4 policies
+Replicas per policy  : 80 Monte Carlo runs
+Base seed            : 29
+=================================================================
+
+=== Policy: LaissezFaire     ===
+  Economic Cost (M€) : 754.13 ± 1.71 M€
+  Total Deaths       : 7753.5 ± 337.0 people [Range: 6979 - 8506]
+  ICU Collapse Days  : 40.2 ± 4.4 days
+  Mean Social Fatigue: 0.00
+  Total Compute Time : 13.7544 s (80 runs)
+
+=== Policy: Lockdown         ===
+  Economic Cost (M€) : 5552.41 ± 26.62 M€
+  Total Deaths       : 6030.4 ± 267.9 people [Range: 5275 - 6601]
+  ICU Collapse Days  : 0.0 ± 0.0 days
+  Mean Social Fatigue: 1.20
+  Total Compute Time : 20.4449 s (80 runs)
+
+=== Policy: RemoteWork       ===
+  Economic Cost (M€) : 1915.37 ± 9.23 M€
+  Total Deaths       : 6904.6 ± 127.4 people [Range: 6428 - 7245]
+  ICU Collapse Days  : 1.0 ± 3.5 days
+  Mean Social Fatigue: 0.30
+  Total Compute Time : 16.8980 s (80 runs)
+
+=== Policy: DynamicSignals   ===
+  Economic Cost (M€) : 4646.81 ± 1.85 M€
+  Total Deaths       : 6978.2 ± 76.0 people [Range: 6777 - 7163]
+  ICU Collapse Days  : 0.0 ± 0.0 days
+  Mean Social Fatigue: 1.00
+  Total Compute Time : 15.1025 s (80 runs)
+
+====================================================================================================
+                               PROFILING & EXECUTION TIME BREAKDOWN                                 
+====================================================================================================
+Policy           |  Total (s) |       Update Grid (s) |       Get Counts (s) |      Analytics (s)
+-----------------+------------+-----------------------+----------------------+---------------------
+LaissezFaire     |  13.7544 s |   8.3535 s (60.733%)   |  5.3638 s (38.997%) |  0.0005 s (0.003%)
+Lockdown         |  20.4449 s |  15.4018 s (75.333%)   |  4.9994 s (24.453%) |  0.0005 s (0.002%)
+RemoteWork       |  16.8980 s |  11.3566 s (67.206%)   |  5.5016 s (32.558%) |  0.0005 s (0.003%)
+DynamicSignals   |  15.1025 s |   9.8819 s (65.432%)   |  5.1865 s (34.342%) |  0.0004 s (0.002%)
+-----------------+------------+------------------------+----------------------+---------------------
+TOTAL PHASES     |  66.0468 s |  44.9938 s (68.124%)   | 21.0513 s (31.873%)  |  0.0018 s (0.003%)
+Total Wall-Clock Time: 66.2274 s
+====================================================================================================
+                               SYSTEM THROUGHPUT & PERFORMANCE METRICS                              
+====================================================================================================
+Total Replicas Executed  : 320 simulations (4 policies x 80 runs)
+Total Cell Updates       : 22353984000 cell-day transitions
+Macro Throughput         : 4.83 simulations / sec
+Kernel Throughput (MCUPS): 496.82 Million Cell Updates / sec (MCUPS)
+====================================================================================================
+[13:33:54]   -> [OK] Finalizado. Reposando CPU (5s)...
+[13:33:59] ==> [8/10] Combinación máxima de optimización...
+[13:33:59]   -> [COMPILANDO] Flags: "-Ofast -march=native -flto -funroll-loops"...
+mkdir -p build
+mkdir -p build/asm
+gcc -Wall -Wextra -Werror -std=c11 -Ofast -march=native -flto -funroll-loops -I include -c src/economy.c -o build/economy.o
+gcc -Wall -Wextra -Werror -std=c11 -Ofast -march=native -flto -funroll-loops -I include -S -fverbose-asm src/economy.c -o build/asm/economy.s
+gcc -Wall -Wextra -Werror -std=c11 -Ofast -march=native -flto -funroll-loops -I include -c src/healthcare.c -o build/healthcare.o
+gcc -Wall -Wextra -Werror -std=c11 -Ofast -march=native -flto -funroll-loops -I include -S -fverbose-asm src/healthcare.c -o build/asm/healthcare.s
+gcc -Wall -Wextra -Werror -std=c11 -Ofast -march=native -flto -funroll-loops -I include -c src/main.c -o build/main.o
+gcc -Wall -Wextra -Werror -std=c11 -Ofast -march=native -flto -funroll-loops -I include -S -fverbose-asm src/main.c -o build/asm/main.s
+gcc -Wall -Wextra -Werror -std=c11 -Ofast -march=native -flto -funroll-loops -I include -c src/simulator.c -o build/simulator.o
+gcc -Wall -Wextra -Werror -std=c11 -Ofast -march=native -flto -funroll-loops -I include -S -fverbose-asm src/simulator.c -o build/asm/simulator.s
+gcc -Wall -Wextra -Werror -std=c11 -Ofast -march=native -flto -funroll-loops -I include -c src/society.c -o build/society.o
+gcc -Wall -Wextra -Werror -std=c11 -Ofast -march=native -flto -funroll-loops -I include -S -fverbose-asm src/society.c -o build/asm/society.s
+mkdir -p bin
+gcc -Wall -Wextra -Werror -std=c11 -Ofast -march=native -flto -funroll-loops  build/economy.o  build/healthcare.o  build/main.o  build/simulator.o  build/society.o -o bin/sim -lm
+Build complete: bin/sim
+[13:33:59]   -> [EJECUTANDO] ./scripts/run_ciudad.sh (Guardando en results/max_opt/max_opt.txt)...
+=================================================================
+  LANZANDO SIMULACIÓN: ALICANTE CAPITAL
+=================================================================
+Configuración        : config/policies_ciudad.conf
+Población            : 350000 habitantes (~350k)
+Días de simulación.  : 200 días
+Focos iniciales      : 35 infectados
+Réplicas Monte Carlo : 80 por política
+=================================================================
+
+=================================================================
+  EPIDEMIOLOGICAL SIMULATOR PANDEMICSIM - MONTE CARLO
+=================================================================
+Simulated population : 349281 inhabitants (591x591 cells)
+Simulation days      : 200 days
+Initial infected     : 35 cases
+Loaded policies      : 4 policies
+Replicas per policy  : 80 Monte Carlo runs
+Base seed            : 29
+=================================================================
+
+=== Policy: LaissezFaire     ===
+  Economic Cost (M€) : 754.13 ± 1.71 M€
+  Total Deaths       : 7753.5 ± 337.0 people [Range: 6979 - 8506]
+  ICU Collapse Days  : 40.2 ± 4.4 days
+  Mean Social Fatigue: 0.00
+  Total Compute Time : 8.0819 s (80 runs)
+
+=== Policy: Lockdown         ===
+  Economic Cost (M€) : 5552.41 ± 26.62 M€
+  Total Deaths       : 6030.4 ± 267.9 people [Range: 5275 - 6601]
+  ICU Collapse Days  : 0.0 ± 0.0 days
+  Mean Social Fatigue: 1.20
+  Total Compute Time : 14.4573 s (80 runs)
+
+=== Policy: RemoteWork       ===
+  Economic Cost (M€) : 1915.37 ± 9.23 M€
+  Total Deaths       : 6904.7 ± 127.4 people [Range: 6428 - 7245]
+  ICU Collapse Days  : 1.0 ± 3.5 days
+  Mean Social Fatigue: 0.30
+  Total Compute Time : 11.0908 s (80 runs)
+
+=== Policy: DynamicSignals   ===
+  Economic Cost (M€) : 4646.81 ± 1.85 M€
+  Total Deaths       : 6978.2 ± 76.0 people [Range: 6777 - 7163]
+  ICU Collapse Days  : 0.0 ± 0.0 days
+  Mean Social Fatigue: 1.00
+  Total Compute Time : 9.5670 s (80 runs)
+
+====================================================================================================
+                               PROFILING & EXECUTION TIME BREAKDOWN                                 
+====================================================================================================
+Policy           |  Total (s) |       Update Grid (s) |       Get Counts (s) |      Analytics (s)
+-----------------+------------+-----------------------+----------------------+---------------------
+LaissezFaire     |   8.0819 s |   7.7179 s (95.497%)   |  0.3453 s (4.273%) |  0.0003 s (0.004%)
+Lockdown         |  14.4573 s |  14.0838 s (97.416%)   |  0.3531 s (2.442%) |  0.0003 s (0.002%)
+RemoteWork       |  11.0908 s |  10.7154 s (96.616%)   |  0.3564 s (3.213%) |  0.0003 s (0.003%)
+DynamicSignals   |   9.5670 s |   9.1957 s (96.119%)   |  0.3528 s (3.688%) |  0.0003 s (0.003%)
+-----------------+------------+------------------------+----------------------+---------------------
+TOTAL PHASES     |  43.1216 s |  41.7129 s (96.733%)   |  1.4076 s (3.264%)  |  0.0012 s (0.003%)
+Total Wall-Clock Time: 43.2250 s
+====================================================================================================
+                               SYSTEM THROUGHPUT & PERFORMANCE METRICS                              
+====================================================================================================
+Total Replicas Executed  : 320 simulations (4 policies x 80 runs)
+Total Cell Updates       : 22353984000 cell-day transitions
+Macro Throughput         : 7.40 simulations / sec
+Kernel Throughput (MCUPS): 535.90 Million Cell Updates / sec (MCUPS)
+====================================================================================================
+[13:34:43]   -> [OK] Finalizado. Reposando CPU (5s)...
+[13:34:48] ==> [9/10] Escalado de censo (Ciudad, Provincia, Comunidad, País)...
+[13:34:48]   -> Ejecutando Escala Ciudad...
+[13:35:57]   -> Ejecutando Escala Provincia...
+[13:42:32]   -> Ejecutando Escala Comunidad...
+[13:59:47]   -> Ejecutando Escala País...
