@@ -17,15 +17,17 @@ CONFIG_FILE="config/policies_ciudad.conf"
 N_HAB=350000        # ~350.000 hab -> Malla de 591x591 (349.281 celdas)
 DAYS=${1:-200}      # 200 días por defecto (o argumento $1)
 INITIAL_INFECTED=35 # 35 focos iniciales distribuidos por barrios
+N_SIM=80            # 80 réplicas Monte Carlo por política
 
 echo "================================================================="
 echo "  LANZANDO SIMULACIÓN: ALICANTE CAPITAL"
 echo "================================================================="
-echo "Configuración     : $CONFIG_FILE"
-echo "Población         : $N_HAB habitantes (~350k)"
-echo "Días de simulación: $DAYS días"
-echo "Focos iniciales   : $INITIAL_INFECTED infectados"
+echo "Configuración        : $CONFIG_FILE"
+echo "Población            : $N_HAB habitantes (~350k)"
+echo "Días de simulación.  : $DAYS días"
+echo "Focos iniciales      : $INITIAL_INFECTED infectados"
+echo "Réplicas Monte Carlo : $N_SIM por política"
 echo "================================================================="
 echo ""
 
-./bin/sim "$CONFIG_FILE" "$N_HAB" "$DAYS" "$INITIAL_INFECTED"
+./bin/sim "$CONFIG_FILE" "$N_HAB" "$DAYS" "$INITIAL_INFECTED" "$N_SIM"

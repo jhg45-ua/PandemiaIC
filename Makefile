@@ -32,7 +32,7 @@ INCLUDES	:= -I $(INC_DIR)
 CONFIG_FILE	:= config/policies.conf
 N_HAB		:= 100000 # 100,000 Inhabitants
 DAYS		:= 150    # 150 Days
-N_SIM		:= 20     # 20 Monte Carlo Replicas per policy
+N_SIM		:= 320     # 80 Monte Carlo Replicas per policy
 
 .PHONY: all asm run run-ciudad run-provincia run-comunidad clean help vectorization
 
@@ -61,8 +61,8 @@ $(BIN_DIR):
 
 # Run the simulation with default parameters
 run: $(TARGET)
-	@echo "Running simulation with $(N_HAB) inhabitants for $(DAYS) days..."
-	@./$(TARGET) $(CONFIG_FILE) $(N_HAB) $(DAYS)
+	@echo "Running simulation with $(N_HAB) inhabitants for $(DAYS) days, $(N_SIM) replicas per policy..."
+	@./$(TARGET) $(CONFIG_FILE) $(N_HAB) $(DAYS) 10 29 $(N_SIM)
 
 # Dedicated scenarios by geographic scale
 run-ciudad: $(TARGET)

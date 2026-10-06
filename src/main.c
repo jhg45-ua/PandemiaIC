@@ -101,8 +101,8 @@ int main(int argc, char *argv[]) {
     int n_hab = (argc > 2) ? atoi(argv[2]) : 100000;
     int days  = (argc > 3) ? atoi(argv[3]) : 150;
     int initial_infected = (argc > 4) ? atoi(argv[4]) : 10;
-    int seed = (argc > 5) ? atoi(argv[5]) : 29; // Default seed for reproducibility
-    int n_sim = (argc > 6) ? atoi(argv[6]) : 20; // Number of Monte Carlo replicas
+    int n_sim = (argc > 5) ? atoi(argv[5]) : 20; // Number of Monte Carlo replicas
+    int seed = (argc > 6) ? atoi(argv[6]) : 29; // Default seed for reproducibility
 
     // Adaptation to 2D square grid dimensions
     // Ensure the grid is square and the total population matches n_hab
@@ -223,7 +223,28 @@ int main(int argc, char *argv[]) {
     double total_sim_end = get_time_sec();
     double total_wall_time = total_sim_end - total_sim_start;
 
-    // Profiling Report
+    // Aggregate total times across all policies for profiling and performance metrics
+    double sum_update_grid = 0.0;
+    double sum_get_counts  = 0.0;
+    double sum_analytics   = 0.0;
+
+    for (int p = 0; p < num_policies; p++) {
+        sum_update_grid += all_stats[p].total_time_update_grid;
+        sum_get_counts  += all_stats[p].total_time_get_counts;
+        sum_analytics   += all_stats[p].total_time_analytics;
+    }
+
+    double sum_total_phases = sum_update_grid + sum_get_counts + sum_analytics;
+
+    // Throughput Calculations (Macro and Micro/MCUPS)
+    int total_simulations = num_policies * n_sim;
+    unsigned long long total_cell_updates = (unsigned long long)total_simulations * days * total_population;
+
+    double throughput_sims_per_sec = (double)total_simulations / total_wall_time;
+    double mcups = (sum_update_grid > 0.0) ? 
+                   ((double)total_cell_updates / (sum_update_grid * 1e6)) : 0.0;
+
+    // Profiling Report Breakdown
     printf("====================================================================================================\n");
     printf("                               PROFILING & EXECUTION TIME BREAKDOWN                                 \n");
     printf("====================================================================================================\n");
@@ -233,7 +254,7 @@ int main(int argc, char *argv[]) {
     
     for (int p = 0; p < num_policies; p++) {
         double t_tot = all_stats[p].total_time;
-        printf("%-16s | %8.4f s | %8.4f s (%5.1f%%)   | %7.4f s (%5.1f%%)   | %7.4f s (%5.1f%%)\n",
+        printf("%-16s | %8.4f s | %8.4f s (%5.3f%%)   | %7.4f s (%5.3f%%) | %7.4f s (%5.3f%%)\n",
                policies[p].name,
                t_tot,
                all_stats[p].total_time_update_grid,
@@ -244,7 +265,23 @@ int main(int argc, char *argv[]) {
                t_tot > 0 ? (all_stats[p].total_time_analytics / t_tot) * 100.0 : 0.0);
     }
     printf("-----------------+------------+------------------------+----------------------+---------------------\n");
+    printf("%-16s | %8.4f s | %8.4f s (%5.3f%%)   | %7.4f s (%5.3f%%)  | %7.4f s (%5.3f%%)\n",
+           "TOTAL PHASES",
+           sum_total_phases,
+           sum_update_grid,
+           sum_total_phases > 0 ? (sum_update_grid / sum_total_phases) * 100.0 : 0.0,
+           sum_get_counts,
+           sum_total_phases > 0 ? (sum_get_counts / sum_total_phases) * 100.0 : 0.0,
+           sum_analytics,
+           sum_total_phases > 0 ? (sum_analytics / sum_total_phases) * 100.0 : 0.0);
     printf("Total Wall-Clock Time: %.4f s\n", total_wall_time);
+    printf("====================================================================================================\n");
+    printf("                               SYSTEM THROUGHPUT & PERFORMANCE METRICS                              \n");
+    printf("====================================================================================================\n");
+    printf("Total Replicas Executed  : %d simulations (%d policies x %d runs)\n", total_simulations, num_policies, n_sim);
+    printf("Total Cell Updates       : %llu cell-day transitions\n", total_cell_updates);
+    printf("Macro Throughput         : %.2f simulations / sec\n", throughput_sims_per_sec);
+    printf("Kernel Throughput (MCUPS): %.2f Million Cell Updates / sec (MCUPS)\n", mcups);
     printf("====================================================================================================\n");
 
     return EXIT_SUCCESS;
