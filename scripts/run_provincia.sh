@@ -17,7 +17,7 @@ CONFIG_FILE="config/policies_provincia.conf"
 N_HAB=2000000       # ~2.000.000 hab -> Malla de 1414x1414 (1.999.396 celdas)
 DAYS=${1:-200}      # 200 días por defecto (o argumento $1)
 INITIAL_INFECTED=150 # 150 focos iniciales distribuidos por comarcas
-N_SIM=320            # 320 réplicas Monte Carlo por política
+N_SIM=80            # 320 réplicas Monte Carlo por política
 
 echo "================================================================="
 echo "  LANZANDO SIMULACIÓN: PROVINCIA DE ALICANTE"

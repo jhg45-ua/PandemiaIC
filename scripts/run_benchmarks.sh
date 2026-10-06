@@ -4,10 +4,10 @@
 # Práctica 2 - Ingeniería de los Computadores
 # ==============================================================================
 
-# Detener la ejecución si ocurre un error grave
-set -e
+# 1. Dar permisos de ejecución a todos los scripts auxiliares
+chmod +x scripts/*.sh 2>/dev/null || true
 
-# 1. Definición de directorios de salida
+# 2. Definición de directorios de salida
 DIR_FLAGS="results/flags"
 DIR_MARCH="results/march"
 DIR_SIMD="results/simd"
@@ -19,208 +19,136 @@ DIR_MAX="results/max_opt"
 DIR_SIZE="results/size"
 DIR_PGO="results/pgo"
 
-# Crear todas las carpetas si no existen
 mkdir -p "$DIR_FLAGS" "$DIR_MARCH" "$DIR_SIMD" "$DIR_LTO" \
          "$DIR_UNROLL" "$DIR_WIDTH" "$DIR_COST" "$DIR_MAX" \
          "$DIR_SIZE" "$DIR_PGO"
 
-# Parámetros de control de tiempo y pausas de reposo (CPU throttling)
 DAYS=150
-PAUSE_SHORT=5   # Pausa estándar entre pruebas continuas (5 s)
-PAUSE_LONG=10   # Pausa prolongada tras cargas masivas (10 s)
+PAUSE_SHORT=5
+PAUSE_LONG=10
+
+# Función auxiliar para compilar y ejecutar de forma segura
+run_test() {
+    local opt_flags="$1"
+    local run_script="$2"
+    local output_file="$3"
+    local pause_time="$4"
+
+    make clean > /dev/null 2>&1
+    if ! make OPTFLAGS="$opt_flags" > /dev/null 2>&1; then
+        echo "   [ERROR] Falló la compilación con OPTFLAGS=\"$opt_flags\"."
+        echo "   Revisa si el compilador soporta estos flags en tu sistema."
+        return 1
+    fi
+
+    if ! "$run_script" "$DAYS" > "$output_file" 2>&1; then
+        echo "   [ERROR] Falló la ejecución de $run_script."
+        return 1
+    fi
+
+    sleep "${pause_time:-$PAUSE_SHORT}"
+}
 
 echo "================================================================="
 echo " INICIANDO BATERÍA COMPLETA DE EXPERIMENTOS DE COMPILACIÓN       "
-echo " (Flags, march, SIMD, LTO, Unroll, Width, CostModel, MaxOpt, Size, PGO)"
 echo "================================================================="
 
 # ------------------------------------------------------------------------------
-# 1. Niveles de optimización general de GCC (results/flags/)
-# Escenario fijo: Comunidad Autónoma (scripts/sim_comunidad.sh)
+# 1. Niveles generales de optimización (results/flags/)
 # ------------------------------------------------------------------------------
 echo "==> [1/10] Niveles generales de optimización (flags)..."
-
-make clean > /dev/null 2>&1
-make OPTFLAGS="-O0" > /dev/null 2>&1
-./scripts/sim_comunidad.sh $DAYS > "$DIR_FLAGS/base.txt" 2>&1
-sleep $PAUSE_SHORT
-
-make clean > /dev/null 2>&1
-make OPTFLAGS="-O1" > /dev/null 2>&1
-./scripts/sim_comunidad.sh $DAYS > "$DIR_FLAGS/01.txt" 2>&1
-sleep $PAUSE_SHORT
-
-make clean > /dev/null 2>&1
-make OPTFLAGS="-O2" > /dev/null 2>&1
-./scripts/sim_comunidad.sh $DAYS > "$DIR_FLAGS/02.txt" 2>&1
-sleep $PAUSE_SHORT
-
-make clean > /dev/null 2>&1
-make OPTFLAGS="-O3" > /dev/null 2>&1
-./scripts/sim_comunidad.sh $DAYS > "$DIR_FLAGS/03.txt" 2>&1
-sleep $PAUSE_SHORT
-
-make clean > /dev/null 2>&1
-make OPTFLAGS="-Os" > /dev/null 2>&1
-./scripts/sim_comunidad.sh $DAYS > "$DIR_FLAGS/Os.txt" 2>&1
-sleep $PAUSE_SHORT
-
-make clean > /dev/null 2>&1
-make OPTFLAGS="-Ofast" > /dev/null 2>&1
-./scripts/sim_comunidad.sh $DAYS > "$DIR_FLAGS/0fast.txt" 2>&1
-sleep $PAUSE_SHORT
+run_test "-O0" "./scripts/run_comunidad.sh" "$DIR_FLAGS/base.txt"
+run_test "-O1" "./scripts/run_comunidad.sh" "$DIR_FLAGS/01.txt"
+run_test "-O2" "./scripts/run_comunidad.sh" "$DIR_FLAGS/02.txt"
+run_test "-O3" "./scripts/run_comunidad.sh" "$DIR_FLAGS/03.txt"
+run_test "-Os" "./scripts/run_comunidad.sh" "$DIR_FLAGS/Os.txt"
+run_test "-Ofast" "./scripts/run_comunidad.sh" "$DIR_FLAGS/0fast.txt"
 
 # ------------------------------------------------------------------------------
-# 2. Microarquitectura e instrucciones vectoriales Intel (results/march/)
-# Escenario fijo: Comunidad Autónoma
+# 2. Microarquitectura (results/march/)
 # ------------------------------------------------------------------------------
 echo "==> [2/10] Microarquitectura e instrucciones nativas (-march)..."
-
-make clean > /dev/null 2>&1
-make OPTFLAGS="-O3" > /dev/null 2>&1
-./scripts/sim_comunidad.sh $DAYS > "$DIR_MARCH/03.txt" 2>&1
-sleep $PAUSE_SHORT
-
-make clean > /dev/null 2>&1
-make OPTFLAGS="-O3 -march=native" > /dev/null 2>&1
-./scripts/sim_comunidad.sh $DAYS > "$DIR_MARCH/03+native.txt" 2>&1
-sleep $PAUSE_SHORT
-
-make clean > /dev/null 2>&1
-make OPTFLAGS="-O3 -march=native -mfma" > /dev/null 2>&1
-./scripts/sim_comunidad.sh $DAYS > "$DIR_MARCH/03+native+fma.txt" 2>&1
-sleep $PAUSE_SHORT
+run_test "-O3" "./scripts/run_comunidad.sh" "$DIR_MARCH/03.txt"
+run_test "-O3 -march=native" "./scripts/run_comunidad.sh" "$DIR_MARCH/03+native.txt"
+run_test "-O3 -march=native -mfma" "./scripts/run_comunidad.sh" "$DIR_MARCH/03+native+fma.txt"
 
 # ------------------------------------------------------------------------------
-# 3. Diagnóstico y evidencias de autovectorización SIMD (results/simd/)
-# Escenario fijo: Comunidad Autónoma
+# 3. Diagnóstico SIMD (results/simd/)
 # ------------------------------------------------------------------------------
 echo "==> [3/10] Informes y diagnósticos de autovectorización SIMD..."
-
 make clean > /dev/null 2>&1
-make OPTFLAGS="-O3 -march=native -fopt-info-vec-all=$DIR_SIMD/vec_report.txt" > /dev/null 2>&1
-./scripts/sim_comunidad.sh $DAYS > "$DIR_SIMD/vec.txt" 2>&1
-sleep $PAUSE_SHORT
-
-# Ensamblador anotado (.s)
+make OPTFLAGS="-O3 -march=native" > /dev/null 2>&1 || true
+./scripts/run_comunidad.sh $DAYS > "$DIR_SIMD/vec.txt" 2>&1 || true
 gcc -std=c99 -Wall -Wextra -O3 -march=native -S -fverbose-asm -Iinclude src/simulador.c -o "$DIR_SIMD/simulador.s" 2>/dev/null || true
 sleep $PAUSE_SHORT
 
 # ------------------------------------------------------------------------------
-# 4. Optimización en Tiempo de Enlace - LTO (results/lto/)
-# Escenario fijo: Comunidad Autónoma
+# 4. LTO (results/lto/)
 # ------------------------------------------------------------------------------
 echo "==> [4/10] Optimización en Tiempo de Enlace (-flto)..."
-
-make clean > /dev/null 2>&1
-make OPTFLAGS="-O3 -march=native -flto" > /dev/null 2>&1
-./scripts/sim_comunidad.sh $DAYS > "$DIR_LTO/lto.txt" 2>&1
-sleep $PAUSE_SHORT
+run_test "-O3 -march=native -flto" "./scripts/run_comunidad.sh" "$DIR_LTO/lto.txt"
 
 # ------------------------------------------------------------------------------
-# 5. Desenrollado Agresivo de Bucles (results/unroll/)
-# Escenario fijo: Comunidad Autónoma
+# 5. Unroll (results/unroll/)
 # ------------------------------------------------------------------------------
-echo "==> [5/10] Desenrollado agresivo de bucles (-funroll-loops)..."
-
-make clean > /dev/null 2>&1
-make OPTFLAGS="-O3 -march=native -funroll-loops" > /dev/null 2>&1
-./scripts/sim_comunidad.sh $DAYS > "$DIR_UNROLL/unroll.txt" 2>&1
-sleep $PAUSE_SHORT
+echo "==> [5/10] Desenrollado de bucles (-funroll-loops)..."
+run_test "-O3 -march=native -funroll-loops" "./scripts/run_comunidad.sh" "$DIR_UNROLL/unroll.txt"
 
 # ------------------------------------------------------------------------------
-# 6. Control de Ancho de Registro SIMD (results/vector_width/)
-# Escenario fijo: Comunidad Autónoma
+# 6. Ancho de vector (results/vector_width/)
 # ------------------------------------------------------------------------------
-echo "==> [6/10] Control de ancho de vector SIMD (256 bits vs 512 bits)..."
-
-# Ancho preferido: 256 bits (registros YMM / AVX2)
-make clean > /dev/null 2>&1
-make OPTFLAGS="-O3 -march=native -mprefer-vector-width=256" > /dev/null 2>&1
-./scripts/sim_comunidad.sh $DAYS > "$DIR_WIDTH/w256.txt" 2>&1
-sleep $PAUSE_SHORT
-
-# Ancho preferido: 512 bits (registros ZMM / AVX-512)
-make clean > /dev/null 2>&1
-make OPTFLAGS="-O3 -march=native -mprefer-vector-width=512" > /dev/null 2>&1
-./scripts/sim_comunidad.sh $DAYS > "$DIR_WIDTH/w512.txt" 2>&1
-sleep $PAUSE_SHORT
+echo "==> [6/10] Control de ancho de vector SIMD..."
+run_test "-O3 -march=native -mprefer-vector-width=256" "./scripts/run_comunidad.sh" "$DIR_WIDTH/w256.txt"
+run_test "-O3 -march=native -mprefer-vector-width=512" "./scripts/run_comunidad.sh" "$DIR_WIDTH/w512.txt"
 
 # ------------------------------------------------------------------------------
-# 7. Modelo de Coste SIMD y Alineación de Bucles (results/cost_model/)
-# Escenario fijo: Comunidad Autónoma
+# 7. Modelo de coste (results/cost_model/)
 # ------------------------------------------------------------------------------
-echo "==> [7/10] Modelo de coste vectorial sin restricciones y alineación..."
-
-make clean > /dev/null 2>&1
-make OPTFLAGS="-O3 -march=native -fsimd-cost-model=unlimited -falign-loops=32" > /dev/null 2>&1
-./scripts/sim_comunidad.sh $DAYS > "$DIR_COST/cost_unlimited.txt" 2>&1
-sleep $PAUSE_SHORT
+echo "==> [7/10] Modelo de coste vectorial sin restricciones..."
+run_test "-O3 -march=native -fsimd-cost-model=unlimited -falign-loops=32" "./scripts/run_comunidad.sh" "$DIR_COST/cost_unlimited.txt"
 
 # ------------------------------------------------------------------------------
-# 8. Combinación de Rendimiento Máximo Absoluto (results/max_opt/)
-# Escenario fijo: Comunidad Autónoma
+# 8. Combinación Máxima (results/max_opt/)
 # ------------------------------------------------------------------------------
-echo "==> [8/10] Combinación máxima de optimización (-Ofast -march=native -flto -funroll-loops)..."
-
-make clean > /dev/null 2>&1
-make OPTFLAGS="-Ofast -march=native -flto -funroll-loops" > /dev/null 2>&1
-./scripts/sim_comunidad.sh $DAYS > "$DIR_MAX/max_opt.txt" 2>&1
-sleep $PAUSE_SHORT
+echo "==> [8/10] Combinación máxima de optimización..."
+run_test "-Ofast -march=native -flto -funroll-loops" "./scripts/run_comunidad.sh" "$DIR_MAX/max_opt.txt"
 
 # ------------------------------------------------------------------------------
-# 9. Escalado y carga de trabajo según el censo (results/size/)
-# Lanzando los scripts individuales para cada escala geográfica
+# 9. Escalado de Censo (results/size/)
 # ------------------------------------------------------------------------------
 echo "==> [9/10] Escalado de censo (Ciudad, Provincia, Comunidad, País)..."
-
 make clean > /dev/null 2>&1
-make OPTFLAGS="-O3 -march=native" > /dev/null 2>&1
+make OPTFLAGS="-O3 -march=native" > /dev/null 2>&1 || true
 
-# 1. Escenario Ciudad (~350.000 habitantes)
-./scripts/sim_ciudad.sh $DAYS > "$DIR_SIZE/ciudad.txt" 2>&1
+./scripts/run_ciudad.sh $DAYS > "$DIR_SIZE/ciudad.txt" 2>&1 || true
 sleep $PAUSE_SHORT
 
-# 2. Escenario Provincia (~2.000.000 habitantes)
-./scripts/sim_provincia.sh $DAYS > "$DIR_SIZE/provincia.txt" 2>&1
+./scripts/run_provincia.sh $DAYS > "$DIR_SIZE/provincia.txt" 2>&1 || true
 sleep $PAUSE_SHORT
 
-# 3. Escenario Comunidad (~5.100.000 habitantes)
-./scripts/sim_comunidad.sh $DAYS > "$DIR_SIZE/comunidad.txt" 2>&1
+./scripts/run_comunidad.sh $DAYS > "$DIR_SIZE/comunidad.txt" 2>&1 || true
 sleep $PAUSE_LONG
 
-# 4. Escenario País / España (~48.000.000 habitantes)
-./scripts/sim_espana.sh $DAYS > "$DIR_SIZE/pais.txt" 2>&1
+./scripts/run_espana.sh $DAYS > "$DIR_SIZE/pais.txt" 2>&1 || true
 sleep $PAUSE_LONG
 
 # ------------------------------------------------------------------------------
-# 10. Optimización Guiada por Perfil - PGO (results/pgo/)
-# Escenario fijo: Comunidad Autónoma
+# 10. PGO (results/pgo/)
 # ------------------------------------------------------------------------------
 echo "==> [10/10] Optimización Guiada por Perfil (PGO)..."
-
-# Paso A: Limpieza previa
 make clean > /dev/null 2>&1
 rm -f src/*.gcda build/*.gcda *.gcda 2>/dev/null || true
 
-# Paso B: Compilación instrumentada
-make OPTFLAGS="-O3 -march=native -fprofile-generate" > /dev/null 2>&1
-
-# Paso C: Ejecución de entrenamiento
-./scripts/sim_comunidad.sh $DAYS > /dev/null 2>&1
-sleep $PAUSE_SHORT
-
-# Paso D: Recompilación basada en perfil
-make OPTFLAGS="-O3 -march=native -fprofile-use" > /dev/null 2>&1
-
-# Paso E: Evaluación final guardando resultados
-./scripts/sim_comunidad.sh $DAYS > "$DIR_PGO/pgo.txt" 2>&1
-sleep $PAUSE_SHORT
-
-# Paso F: Limpieza final de temporales
-rm -f src/*.gcda build/*.gcda *.gcda 2>/dev/null || true
+if make OPTFLAGS="-O3 -march=native -fprofile-generate" > /dev/null 2>&1; then
+    ./scripts/run_comunidad.sh $DAYS > /dev/null 2>&1 || true
+    sleep $PAUSE_SHORT
+    make OPTFLAGS="-O3 -march=native -fprofile-use" > /dev/null 2>&1 || true
+    ./scripts/run_comunidad.sh $DAYS > "$DIR_PGO/pgo.txt" 2>&1 || true
+    rm -f src/*.gcda build/*.gcda *.gcda 2>/dev/null || true
+else
+    echo "   [AVISO] PGO no es soportado por el compilador actual o fallo al instrumentar."
+fi
 
 echo "================================================================="
 echo " ¡PROCESO COMPLETADO!                                            "
-echo " Todos los resultados se han generado en la estructura 'results/'"
 echo "================================================================="

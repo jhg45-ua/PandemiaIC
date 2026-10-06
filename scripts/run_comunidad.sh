@@ -17,7 +17,7 @@ CONFIG_FILE="config/policies_comunidad.conf"
 N_HAB=5100000        # ~5.100.000 hab -> Malla de 2258x2258 (5.098.564 celdas)
 DAYS=${1:-200}       # 200 días por defecto (o argumento $1)
 INITIAL_INFECTED=350 # 350 focos iniciales distribuidos por las tres provincias
-N_SIM=320            # 320 réplicas Monte Carlo por política
+N_SIM=80            # 80 réplicas Monte Carlo por política
 
 echo "================================================================="
 echo "  LANZANDO SIMULACIÓN: COMUNITAT VALENCIANA"

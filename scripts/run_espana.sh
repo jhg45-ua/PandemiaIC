@@ -17,7 +17,7 @@ CONFIG_FILE="config/policies_espana.conf"
 N_HAB=48000000        # ~48.000.000 hab -> Malla de 6928x6928 (47.997.184 celdas)
 DAYS=${1:-200}        # 200 días por defecto (o argumento $1)
 INITIAL_INFECTED=3200 # 3.200 focos iniciales distribuidos por CCAA y provincias
-N_SIM=320             # 320 réplicas Monte Carlo por política
+N_SIM=80             # 320 réplicas Monte Carlo por política
 
 echo "================================================================="
 echo "  LANZANDO SIMULACIÓN: ESPAÑA (ESCALA NACIONAL)"

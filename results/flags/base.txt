@@ -1,0 +1,10 @@
+=================================================================
+  LANZANDO SIMULACIÓN: COMUNITAT VALENCIANA
+=================================================================
+Configuración        : config/policies_comunidad.conf
+Población            : 5100000 habitantes (~5.1M)
+Días de simulación   : 150 días
+Focos iniciales      : 350 infectados
+Réplicas Monte Carlo : 80 por política
+=================================================================
+
