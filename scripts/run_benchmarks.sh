@@ -151,7 +151,7 @@ run_test "-Ofast -march=native -flto -funroll-loops" "./scripts/run_ciudad.sh" "
 # ------------------------------------------------------------------------------
 # 9. Escalado de Censo (results/size/)
 # ------------------------------------------------------------------------------
-log_msg "==> [9/10] Escalado de censo (Ciudad, Provincia, Comunidad, País)..."
+log_msg "==> [9/10] Escalado de censo (Ciudad, Provincia, Comunidad)..."
 make clean > /dev/null 2>&1
 make OPTFLAGS="-O3 -march=native" > /dev/null 2>&1 || true
 
@@ -167,9 +167,9 @@ log_msg "  -> Ejecutando Escala Comunidad..."
 ./scripts/run_comunidad.sh $DAYS > "$DIR_SIZE/comunidad.txt" 2>&1 || true
 sleep $PAUSE_LONG
 
-log_msg "  -> Ejecutando Escala País..."
-./scripts/run_espana.sh $DAYS > "$DIR_SIZE/pais.txt" 2>&1 || true
-sleep $PAUSE_LONG
+# log_msg "  -> Ejecutando Escala País..."
+# ./scripts/run_espana.sh $DAYS > "$DIR_SIZE/pais.txt" 2>&1 || true
+# sleep $PAUSE_LONG
 
 # ------------------------------------------------------------------------------
 # 10. PGO (results/pgo/)

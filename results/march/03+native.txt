@@ -24,46 +24,46 @@ Base seed            : 29
   Total Deaths       : 7753.5 ± 337.0 people [Range: 6979 - 8506]
   ICU Collapse Days  : 40.2 ± 4.4 days
   Mean Social Fatigue: 0.00
-  Total Compute Time : 13.0378 s (80 runs)
+  Total Compute Time : 12.9398 s (80 runs)
 
 === Policy: Lockdown         ===
   Economic Cost (M€) : 5552.41 ± 26.62 M€
   Total Deaths       : 6030.4 ± 267.9 people [Range: 5275 - 6601]
   ICU Collapse Days  : 0.0 ± 0.0 days
   Mean Social Fatigue: 1.20
-  Total Compute Time : 20.1046 s (80 runs)
+  Total Compute Time : 20.1380 s (80 runs)
 
 === Policy: RemoteWork       ===
   Economic Cost (M€) : 1915.37 ± 9.23 M€
   Total Deaths       : 6904.6 ± 127.4 people [Range: 6428 - 7245]
   ICU Collapse Days  : 1.0 ± 3.5 days
   Mean Social Fatigue: 0.30
-  Total Compute Time : 16.5019 s (80 runs)
+  Total Compute Time : 16.5735 s (80 runs)
 
 === Policy: DynamicSignals   ===
   Economic Cost (M€) : 4646.81 ± 1.85 M€
   Total Deaths       : 6978.2 ± 76.0 people [Range: 6777 - 7163]
   ICU Collapse Days  : 0.0 ± 0.0 days
   Mean Social Fatigue: 1.00
-  Total Compute Time : 14.4890 s (80 runs)
+  Total Compute Time : 14.1589 s (80 runs)
 
 ====================================================================================================
                                PROFILING & EXECUTION TIME BREAKDOWN                                 
 ====================================================================================================
 Policy           |  Total (s) |       Update Grid (s) |       Get Counts (s) |      Analytics (s)
 -----------------+------------+-----------------------+----------------------+---------------------
-LaissezFaire     |  13.0378 s |   8.1384 s (62.421%)   |  4.8723 s (37.370%) |  0.0005 s (0.004%)
-Lockdown         |  20.1046 s |  14.9562 s (74.392%)   |  5.1034 s (25.384%) |  0.0005 s (0.002%)
-RemoteWork       |  16.5019 s |  11.0664 s (67.061%)   |  5.4019 s (32.735%) |  0.0005 s (0.003%)
-DynamicSignals   |  14.4890 s |   9.6868 s (66.856%)   |  4.7719 s (32.934%) |  0.0004 s (0.003%)
+LaissezFaire     |  12.9398 s |   8.1034 s (62.624%)   |  4.8058 s (37.140%) |  0.0005 s (0.004%)
+Lockdown         |  20.1380 s |  14.9785 s (74.379%)   |  5.1146 s (25.398%) |  0.0004 s (0.002%)
+RemoteWork       |  16.5735 s |  11.1060 s (67.011%)   |  5.4317 s (32.774%) |  0.0004 s (0.003%)
+DynamicSignals   |  14.1589 s |   9.5100 s (67.166%)   |  4.6228 s (32.649%) |  0.0004 s (0.003%)
 -----------------+------------+------------------------+----------------------+---------------------
-TOTAL PHASES     |  63.9989 s |  43.8477 s (68.513%)   | 20.1494 s (31.484%)  |  0.0018 s (0.003%)
-Total Wall-Clock Time: 64.1608 s
+TOTAL PHASES     |  63.6746 s |  43.6979 s (68.627%)   | 19.9750 s (31.370%)  |  0.0017 s (0.003%)
+Total Wall-Clock Time: 63.8385 s
 ====================================================================================================
                                SYSTEM THROUGHPUT & PERFORMANCE METRICS                              
 ====================================================================================================
 Total Replicas Executed  : 320 simulations (4 policies x 80 runs)
 Total Cell Updates       : 22353984000 cell-day transitions
-Macro Throughput         : 4.99 simulations / sec
-Kernel Throughput (MCUPS): 509.81 Million Cell Updates / sec (MCUPS)
+Macro Throughput         : 5.01 simulations / sec
+Kernel Throughput (MCUPS): 511.56 Million Cell Updates / sec (MCUPS)
 ====================================================================================================
