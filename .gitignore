@@ -1,5 +1,4 @@
 # Object files and build artifacts
-build/
 bin/
 *.o
 *.out

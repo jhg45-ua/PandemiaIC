@@ -1,0 +1,694 @@
+src/economy.c:16:1: note: ***** Analysis failed with vector mode V8SF
+src/economy.c:16:1: note: ***** Skipping vector mode V32QI, which would repeat the analysis for V8SF
+src/economy.c:16:1: note: ***** Analysis failed with vector mode V8SF
+src/economy.c:16:1: note: ***** Skipping vector mode V32QI, which would repeat the analysis for V8SF
+src/healthcare.c:27:12: note: ***** Analysis failed with vector mode V8SI
+src/healthcare.c:27:12: note: ***** Skipping vector mode V32QI, which would repeat the analysis for V8SI
+src/healthcare.c:27:12: note: ***** Analysis failed with vector mode V8SI
+src/healthcare.c:27:12: note: ***** Skipping vector mode V32QI, which would repeat the analysis for V8SI
+src/main.c:38:44: missed: couldn't vectorize loop
+src/main.c:38:44: missed: not vectorized: control flow in loop.
+src/main.c:26:5: note: vectorized 0 loops in function.
+src/main.c:28:18: missed: statement clobbers memory: file_21 = fopen (filename_19(D), "r");
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:200:12: missed: statement clobbers memory: _29 = __fgets_alias (&line, 256, file_21);
+src/main.c:54:5: missed: statement clobbers memory: fclose (file_21);
+src/main.c:39:31: missed: statement clobbers memory: _2 = strlen (&line);
+src/main.c:45:9: missed: statement clobbers memory: sscanf (&line, "%31s %f %f %lf %f", _13, _12, _11, _10, _6);
+src/main.c:30:9: missed: statement clobbers memory: perror ("Error opening policy configuration file");
+src/main.c:38:44: note: ***** Analysis failed with vector mode V32QI
+src/main.c:38:44: note: ***** The result for vector mode V32QI would be the same
+src/main.c:38:44: note: ***** Re-trying analysis with vector mode V16QI
+src/main.c:38:44: note: ***** Analysis failed with vector mode V16QI
+src/main.c:38:44: note: ***** Re-trying analysis with vector mode V8QI
+src/main.c:38:44: note: ***** Analysis failed with vector mode V8QI
+src/main.c:38:44: note: ***** Re-trying analysis with vector mode V4QI
+src/main.c:38:44: note: ***** Analysis failed with vector mode V4QI
+src/main.c:87:23: missed: couldn't vectorize loop
+src/main.c:88:38: missed: not vectorized: no vectype for stmt: _36 = _35->total_economic_cost;
+ scalar_type: const double
+src/main.c:65:23: missed: couldn't vectorize loop
+src/main.c:65:23: missed: not vectorized: control flow in loop.
+src/main.c:58:6: note: vectorized 0 loops in function.
+/usr/include/x86_64-linux-gnu/bits/string_fortified.h:59:10: missed: statement clobbers memory: __builtin_memset (stats_68(D), 0, 96);
+src/main.c:93:27: missed: statement clobbers memory: _104 = sqrt (_47);
+src/main.c:94:27: missed: statement clobbers memory: _111 = sqrt (prephitmp_256);
+src/main.c:95:27: missed: statement clobbers memory: _115 = sqrt (_52);
+src/main.c:83:25: note: ***** Analysis succeeded with vector mode V8SI
+src/main.c:83:25: note: SLPing BB part
+src/main.c:60:23: note: Costing subgraph: 
+src/main.c:60:23: note: node 0x2b827a8 (max_nunits=2, refcnt=1) vector(2) int
+src/main.c:60:23: note: op template: stats_68(D)->min_deaths = 2000000000;
+src/main.c:60:23: note: 	stmt 0 stats_68(D)->min_deaths = 2000000000;
+src/main.c:60:23: note: 	stmt 1 stats_68(D)->max_deaths = -1;
+src/main.c:60:23: note: 	children 0x2b82828
+src/main.c:60:23: note: node (constant) 0x2b82828 (max_nunits=1, refcnt=1) vector(2) int
+src/main.c:60:23: note: 	{ 2000000000, -1 }
+src/main.c:60:23: note: Cost model analysis: 
+src/main.c:60:23: note: Cost model analysis for part in loop 0:
+  Vector cost: 32
+  Scalar cost: 32
+src/main.c:83:25: note: Costing subgraph: 
+src/main.c:83:25: note: node 0x2b82928 (max_nunits=4, refcnt=1) vector(4) double
+src/main.c:83:25: note: op template: stats_68(D)->mean_fatigue = _32;
+src/main.c:83:25: note: 	stmt 0 stats_68(D)->mean_fatigue = _32;
+src/main.c:83:25: note: 	stmt 1 stats_68(D)->total_time_update_grid = _61;
+src/main.c:83:25: note: 	stmt 2 stats_68(D)->total_time_get_counts = _158;
+src/main.c:83:25: note: 	stmt 3 stats_68(D)->total_time_analytics = _58;
+src/main.c:83:25: note: 	children 0x2b82a28
+src/main.c:83:25: note: node (external) 0x2b82a28 (max_nunits=1, refcnt=1) vector(4) double
+src/main.c:83:25: note: 	{ _32, _61, _158, _58 }
+src/main.c:83:25: note: Cost model analysis: 
+src/main.c:83:25: note: Cost model analysis for part in loop 0:
+  Vector cost: 40
+  Scalar cost: 64
+src/main.c:83:25: note: Basic block will be vectorized using SLP
+src/main.c:83:25: note: Vectorizing SLP tree:
+src/main.c:83:25: note: node 0x2b827a8 (max_nunits=2, refcnt=1) vector(2) int
+src/main.c:83:25: note: op template: stats_68(D)->min_deaths = 2000000000;
+src/main.c:83:25: note: 	stmt 0 stats_68(D)->min_deaths = 2000000000;
+src/main.c:83:25: note: 	stmt 1 stats_68(D)->max_deaths = -1;
+src/main.c:83:25: note: 	children 0x2b82828
+src/main.c:83:25: note: node (constant) 0x2b82828 (max_nunits=1, refcnt=1) vector(2) int
+src/main.c:83:25: note: 	{ 2000000000, -1 }
+src/main.c:83:25: note: ------>vectorizing SLP node starting from: stats_68(D)->min_deaths = 2000000000;
+src/main.c:83:25: note: vect_is_simple_use: operand -1, type of def: constant
+src/main.c:83:25: note: transform store. ncopies = 1
+src/main.c:83:25: note: create vector_type-pointer variable to type: vector(2) int  vectorizing a pointer ref: stats_68(D)->min_deaths
+src/main.c:83:25: note: created vectp.46_243
+src/main.c:83:25: note: add new stmt: MEM <vector(2) int> [(int *)vectp.46_243] = { 2000000000, -1 };
+src/main.c:83:25: note: vectorizing stmts using SLP.
+src/main.c:83:25: optimized: basic block part vectorized using 32 byte vectors
+src/main.c:83:25: note: Vectorizing SLP tree:
+src/main.c:83:25: note: node 0x2b82928 (max_nunits=4, refcnt=1) vector(4) double
+src/main.c:83:25: note: op template: stats_68(D)->mean_fatigue = _32;
+src/main.c:83:25: note: 	stmt 0 stats_68(D)->mean_fatigue = _32;
+src/main.c:83:25: note: 	stmt 1 stats_68(D)->total_time_update_grid = _61;
+src/main.c:83:25: note: 	stmt 2 stats_68(D)->total_time_get_counts = _158;
+src/main.c:83:25: note: 	stmt 3 stats_68(D)->total_time_analytics = _58;
+src/main.c:83:25: note: 	children 0x2b82a28
+src/main.c:83:25: note: node (external) 0x2b82a28 (max_nunits=1, refcnt=1) vector(4) double
+src/main.c:83:25: note: 	{ _32, _61, _158, _58 }
+src/main.c:83:25: note: ------>vectorizing SLP node starting from: stats_68(D)->mean_fatigue = _32;
+src/main.c:83:25: note: vect_is_simple_use: operand _61 = PHI <_15(7)>, type of def: internal
+src/main.c:83:25: note: vect_is_simple_use: operand _158 = PHI <_18(7)>, type of def: internal
+src/main.c:83:25: note: vect_is_simple_use: operand _58 = PHI <_21(7)>, type of def: internal
+src/main.c:83:25: note: transform store. ncopies = 1
+src/main.c:83:25: note: create vector_type-pointer variable to type: vector(4) double  vectorizing a pointer ref: stats_68(D)->mean_fatigue
+src/main.c:83:25: note: created vectp.48_240
+src/main.c:83:25: note: add new stmt: MEM <vector(4) double> [(double *)vectp.48_240] = _241;
+src/main.c:83:25: note: vectorizing stmts using SLP.
+src/main.c:83:25: optimized: basic block part vectorized using 32 byte vectors
+src/main.c:83:25: note: ***** The result for vector mode V32QI would be the same
+src/main.c:255:23: missed: couldn't vectorize loop
+src/main.c:255:23: missed: not vectorized: control flow in loop.
+src/main.c:231:23: missed: couldn't vectorize loop
+src/main.c:232:40: missed: not vectorized: no vectype for stmt: _50 = all_stats[p_345].total_time_update_grid;
+ scalar_type: double
+src/main.c:136:33: missed: couldn't vectorize loop
+src/main.c:136:33: missed: not vectorized: multiple nested loops.
+src/main.c:141:27: missed: couldn't vectorize loop
+src/main.c:141:27: missed: not vectorized: control flow in loop.
+src/main.c:153:31: missed: couldn't vectorize loop
+src/main.c:153:31: missed: not vectorized: control flow in loop.
+src/main.c:98:5: note: vectorized 0 loops in function.
+/usr/include/stdlib.h:483:16: missed: statement clobbers memory: _187 = strtol (_1, 0B, 10);
+/usr/include/stdlib.h:483:16: missed: statement clobbers memory: _189 = strtol (_2, 0B, 10);
+/usr/include/stdlib.h:483:16: missed: statement clobbers memory: _191 = strtol (_3, 0B, 10);
+/usr/include/stdlib.h:483:16: missed: statement clobbers memory: _193 = strtol (_4, 0B, 10);
+/usr/include/stdlib.h:483:16: missed: statement clobbers memory: _195 = strtol (_5, 0B, 10);
+src/main.c:109:22: missed: statement clobbers memory: _83 = sqrt (_6);
+src/main.c:115:24: missed: statement clobbers memory: num_policies_112 = load_policy_config (iftmp.0_326, &policies, 8);
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "=================================================================\n");
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "  EPIDEMIOLOGICAL SIMULATOR PANDEMICSIM - MONTE CARLO\n");
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "=================================================================\n");
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "Simulated population : %d inhabitants (%dx%d cells)\n", prephitmp_373, prephitmp_371, prephitmp_371);
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "Simulation days      : %d days\n", iftmp.2_104);
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "Initial infected     : %d cases\n", iftmp.3_335);
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "Loaded policies      : %d policies\n", num_policies_112);
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "Replicas per policy  : %d Monte Carlo runs\n", iftmp.4_87);
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "Base seed            : %d\n", iftmp.5_92);
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "=================================================================\n\n");
+src/main.c:12:5: missed: statement clobbers memory: clock_gettime (1, &ts);
+src/main.c:137:22: missed: not vectorized: more than one data ref in stmt: cfg_base = policies[policy_336];
+src/main.c:138:36: missed: statement clobbers memory: replicas_133 = calloc (_374, 56);
+src/main.c:143:13: missed: statement clobbers memory: srand (_13);
+src/main.c:145:26: missed: not vectorized: more than one data ref in stmt: cfg = cfg_base;
+src/main.c:12:5: missed: statement clobbers memory: clock_gettime (1, &ts);
+src/main.c:150:26: missed: statement clobbers memory: grid_142 = create_grid (prephitmp_371, prephitmp_371);
+src/main.c:151:13: missed: statement clobbers memory: init_population (grid_142, iftmp.3_335);
+src/main.c:12:5: missed: statement clobbers memory: clock_gettime (1, &ts);
+src/main.c:157:17: missed: statement clobbers memory: get_counts (grid_142, &num_S, &num_I, &num_R, &num_D);
+src/main.c:12:5: missed: statement clobbers memory: clock_gettime (1, &ts);
+src/main.c:12:5: missed: statement clobbers memory: clock_gettime (1, &ts);
+src/main.c:178:49: missed: statement clobbers memory: excess_mortality_factor_171 = evaluate_healthcare_impact (num_I.8_23, prephitmp_373, &metrics);
+src/main.c:179:17: missed: statement clobbers memory: evaluate_economic_impact (num_I.9_24, prephitmp_373, &cfg, &metrics);
+src/main.c:180:36: missed: statement clobbers memory: compliance_174 = evaluate_social_impact (&cfg, &metrics);
+src/main.c:12:5: missed: statement clobbers memory: clock_gettime (1, &ts);
+src/main.c:12:5: missed: statement clobbers memory: clock_gettime (1, &ts);
+src/main.c:190:17: missed: statement clobbers memory: update_grid (grid_142, effective_beta_176, excess_mortality_factor_171);
+src/main.c:191:17: missed: statement clobbers memory: swap_buffer (grid_142);
+src/main.c:12:5: missed: statement clobbers memory: clock_gettime (1, &ts);
+src/main.c:198:13: missed: statement clobbers memory: get_counts (grid_142, &final_S, &final_I, &final_R, &final_D);
+src/main.c:12:5: missed: statement clobbers memory: clock_gettime (1, &ts);
+src/main.c:204:25: missed: not vectorized: more than one data ref in stmt: *_36 = metrics;
+src/main.c:205:13: missed: statement clobbers memory: destroy_grid (grid_142);
+src/main.c:209:9: missed: statement clobbers memory: compute_policy_stats (replicas_133, iftmp.4_87, _37);
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "=== Policy: %-16s ===\n", &cfg_base.name);
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "  Economic Cost (M\xe2\x82\xac) : %.2f \xc2\xb1 %.2f M\xe2\x82\xac\n", _41, _39);
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "  Total Deaths       : %.1f \xc2\xb1 %.1f people [Range: %d - %d]\n", _45, _44, _43, _42);
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "  ICU Collapse Days  : %.1f \xc2\xb1 %.1f days\n", _47, _46);
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "  Mean Social Fatigue: %.2f\n", _48);
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "  Total Compute Time : %.4f s (%d runs)\n\n", _49, iftmp.4_87);
+src/main.c:220:9: missed: statement clobbers memory: free (replicas_133);
+src/main.c:12:5: missed: statement clobbers memory: clock_gettime (1, &ts);
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "====================================================================================================\n");
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "                               PROFILING & EXECUTION TIME BREAKDOWN                                 \n");
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "====================================================================================================\n");
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "%-16s | %10s | %21s | %20s | %18s\n", "Policy", "Total (s)", "Update Grid (s)", "Get Counts (s)", "Analytics (s)");
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "-----------------+------------+-----------------------+----------------------+---------------------\n");
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "%-16s | %8.4f s | %8.4f s (%5.3f%%)   | %7.4f s (%5.3f%%) | %7.4f s (%5.3f%%)\n", _70, t_tot_122, pretmp_391, iftmp.15_89, pretmp_392, iftmp.14_333, pretmp_393, iftmp.13_332);
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "-----------------+------------+------------------------+----------------------+---------------------\n");
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "%-16s | %8.4f s | %8.4f s (%5.3f%%)   | %7.4f s (%5.3f%%)  | %7.4f s (%5.3f%%)\n", "TOTAL PHASES", sum_total_phases_114, sum_update_grid_93, iftmp.18_90, sum_get_counts_88, iftmp.17_280, sum_analytics_324, iftmp.16_107);
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "Total Wall-Clock Time: %.4f s\n", total_wall_time_113);
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "====================================================================================================\n");
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "                               SYSTEM THROUGHPUT & PERFORMANCE METRICS                              \n");
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "====================================================================================================\n");
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "Total Replicas Executed  : %d simulations (%d policies x %d runs)\n", total_simulations_115, num_policies_112, iftmp.4_87);
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "Total Cell Updates       : %llu cell-day transitions\n", total_cell_updates_116);
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "Macro Throughput         : %.2f simulations / sec\n", throughput_sims_per_sec_117);
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "Kernel Throughput (MCUPS): %.2f Million Cell Updates / sec (MCUPS)\n", iftmp.12_86);
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "====================================================================================================\n");
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:79:10: missed: statement clobbers memory: __fprintf_chk (stderr.6_8, 2, "Error: No valid policies loaded from %s\n", iftmp.0_326);
+src/main.c:200:34: note: ***** Analysis succeeded with vector mode V4DI
+src/main.c:200:34: note: SLPing BB part
+src/main.c:200:34: note: Costing subgraph: 
+src/main.c:200:34: note: node 0x2b52778 (max_nunits=2, refcnt=1) vector(2) int
+src/main.c:200:34: note: op template: metrics.total_deaths = final_D.10_31;
+src/main.c:200:34: note: 	stmt 0 metrics.total_deaths = final_D.10_31;
+src/main.c:200:34: note: 	stmt 1 metrics.total_recoveries = final_R.11_32;
+src/main.c:200:34: note: 	children 0x2b52878
+src/main.c:200:34: note: node (external) 0x2b52878 (max_nunits=1, refcnt=1) vector(2) int
+src/main.c:200:34: note: 	{ final_D.10_31, final_R.11_32 }
+src/main.c:200:34: note: Cost model analysis: 
+src/main.c:200:34: note: Cost model analysis for part in loop 4:
+  Vector cost: 20
+  Scalar cost: 32
+src/main.c:200:34: note: Basic block will be vectorized using SLP
+src/main.c:200:34: note: Vectorizing SLP tree:
+src/main.c:200:34: note: node 0x2b52778 (max_nunits=2, refcnt=1) vector(2) int
+src/main.c:200:34: note: op template: metrics.total_deaths = final_D.10_31;
+src/main.c:200:34: note: 	stmt 0 metrics.total_deaths = final_D.10_31;
+src/main.c:200:34: note: 	stmt 1 metrics.total_recoveries = final_R.11_32;
+src/main.c:200:34: note: 	children 0x2b52878
+src/main.c:200:34: note: node (external) 0x2b52878 (max_nunits=1, refcnt=1) vector(2) int
+src/main.c:200:34: note: 	{ final_D.10_31, final_R.11_32 }
+src/main.c:200:34: note: ------>vectorizing SLP node starting from: metrics.total_deaths = final_D.10_31;
+src/main.c:200:34: note: vect_is_simple_use: operand final_R, type of def: internal
+src/main.c:200:34: note: transform store. ncopies = 1
+src/main.c:200:34: note: create vector_type-pointer variable to type: vector(2) int  vectorizing a pointer ref: metrics.total_deaths
+src/main.c:200:34: note: created &metrics.total_deaths
+src/main.c:200:34: note: add new stmt: MEM <vector(2) int> [(int *)&metrics + 12B] = _342;
+src/main.c:200:34: note: vectorizing stmts using SLP.
+src/main.c:200:34: optimized: basic block part vectorized using 32 byte vectors
+src/main.c:200:34: note: ***** The result for vector mode V32QI would be the same
+src/main.c:38:44: missed: couldn't vectorize loop
+src/main.c:38:44: missed: not vectorized: control flow in loop.
+src/main.c:26:5: note: vectorized 0 loops in function.
+src/main.c:28:18: missed: statement clobbers memory: file_21 = fopen (filename_19(D), "r");
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:200:12: missed: statement clobbers memory: _29 = __fgets_alias (&line, 256, file_21);
+src/main.c:54:5: missed: statement clobbers memory: fclose (file_21);
+src/main.c:39:31: missed: statement clobbers memory: _2 = strlen (&line);
+src/main.c:45:9: missed: statement clobbers memory: sscanf (&line, "%31s %f %f %lf %f", _13, _12, _11, _10, _6);
+src/main.c:30:9: missed: statement clobbers memory: perror ("Error opening policy configuration file");
+src/main.c:38:44: note: ***** Analysis failed with vector mode V32QI
+src/main.c:38:44: note: ***** The result for vector mode V32QI would be the same
+src/main.c:38:44: note: ***** Re-trying analysis with vector mode V16QI
+src/main.c:38:44: note: ***** Analysis failed with vector mode V16QI
+src/main.c:38:44: note: ***** Re-trying analysis with vector mode V8QI
+src/main.c:38:44: note: ***** Analysis failed with vector mode V8QI
+src/main.c:38:44: note: ***** Re-trying analysis with vector mode V4QI
+src/main.c:38:44: note: ***** Analysis failed with vector mode V4QI
+src/main.c:87:23: missed: couldn't vectorize loop
+src/main.c:88:38: missed: not vectorized: no vectype for stmt: _36 = _35->total_economic_cost;
+ scalar_type: const double
+src/main.c:65:23: missed: couldn't vectorize loop
+src/main.c:65:23: missed: not vectorized: control flow in loop.
+src/main.c:58:6: note: vectorized 0 loops in function.
+/usr/include/x86_64-linux-gnu/bits/string_fortified.h:59:10: missed: statement clobbers memory: __builtin_memset (stats_68(D), 0, 96);
+src/main.c:93:27: missed: statement clobbers memory: _104 = sqrt (_47);
+src/main.c:94:27: missed: statement clobbers memory: _111 = sqrt (prephitmp_256);
+src/main.c:95:27: missed: statement clobbers memory: _115 = sqrt (_52);
+src/main.c:83:25: note: ***** Analysis succeeded with vector mode V8SI
+src/main.c:83:25: note: SLPing BB part
+src/main.c:60:23: note: Costing subgraph: 
+src/main.c:60:23: note: node 0x42271a8 (max_nunits=2, refcnt=1) vector(2) int
+src/main.c:60:23: note: op template: stats_68(D)->min_deaths = 2000000000;
+src/main.c:60:23: note: 	stmt 0 stats_68(D)->min_deaths = 2000000000;
+src/main.c:60:23: note: 	stmt 1 stats_68(D)->max_deaths = -1;
+src/main.c:60:23: note: 	children 0x4227228
+src/main.c:60:23: note: node (constant) 0x4227228 (max_nunits=1, refcnt=1) vector(2) int
+src/main.c:60:23: note: 	{ 2000000000, -1 }
+src/main.c:60:23: note: Cost model analysis: 
+src/main.c:60:23: note: Cost model analysis for part in loop 0:
+  Vector cost: 32
+  Scalar cost: 32
+src/main.c:83:25: note: Costing subgraph: 
+src/main.c:83:25: note: node 0x4227328 (max_nunits=4, refcnt=1) vector(4) double
+src/main.c:83:25: note: op template: stats_68(D)->mean_fatigue = _32;
+src/main.c:83:25: note: 	stmt 0 stats_68(D)->mean_fatigue = _32;
+src/main.c:83:25: note: 	stmt 1 stats_68(D)->total_time_update_grid = _61;
+src/main.c:83:25: note: 	stmt 2 stats_68(D)->total_time_get_counts = _158;
+src/main.c:83:25: note: 	stmt 3 stats_68(D)->total_time_analytics = _58;
+src/main.c:83:25: note: 	children 0x4227428
+src/main.c:83:25: note: node (external) 0x4227428 (max_nunits=1, refcnt=1) vector(4) double
+src/main.c:83:25: note: 	{ _32, _61, _158, _58 }
+src/main.c:83:25: note: Cost model analysis: 
+src/main.c:83:25: note: Cost model analysis for part in loop 0:
+  Vector cost: 40
+  Scalar cost: 64
+src/main.c:83:25: note: Basic block will be vectorized using SLP
+src/main.c:83:25: note: Vectorizing SLP tree:
+src/main.c:83:25: note: node 0x42271a8 (max_nunits=2, refcnt=1) vector(2) int
+src/main.c:83:25: note: op template: stats_68(D)->min_deaths = 2000000000;
+src/main.c:83:25: note: 	stmt 0 stats_68(D)->min_deaths = 2000000000;
+src/main.c:83:25: note: 	stmt 1 stats_68(D)->max_deaths = -1;
+src/main.c:83:25: note: 	children 0x4227228
+src/main.c:83:25: note: node (constant) 0x4227228 (max_nunits=1, refcnt=1) vector(2) int
+src/main.c:83:25: note: 	{ 2000000000, -1 }
+src/main.c:83:25: note: ------>vectorizing SLP node starting from: stats_68(D)->min_deaths = 2000000000;
+src/main.c:83:25: note: vect_is_simple_use: operand -1, type of def: constant
+src/main.c:83:25: note: transform store. ncopies = 1
+src/main.c:83:25: note: create vector_type-pointer variable to type: vector(2) int  vectorizing a pointer ref: stats_68(D)->min_deaths
+src/main.c:83:25: note: created vectp.46_243
+src/main.c:83:25: note: add new stmt: MEM <vector(2) int> [(int *)vectp.46_243] = { 2000000000, -1 };
+src/main.c:83:25: note: vectorizing stmts using SLP.
+src/main.c:83:25: optimized: basic block part vectorized using 32 byte vectors
+src/main.c:83:25: note: Vectorizing SLP tree:
+src/main.c:83:25: note: node 0x4227328 (max_nunits=4, refcnt=1) vector(4) double
+src/main.c:83:25: note: op template: stats_68(D)->mean_fatigue = _32;
+src/main.c:83:25: note: 	stmt 0 stats_68(D)->mean_fatigue = _32;
+src/main.c:83:25: note: 	stmt 1 stats_68(D)->total_time_update_grid = _61;
+src/main.c:83:25: note: 	stmt 2 stats_68(D)->total_time_get_counts = _158;
+src/main.c:83:25: note: 	stmt 3 stats_68(D)->total_time_analytics = _58;
+src/main.c:83:25: note: 	children 0x4227428
+src/main.c:83:25: note: node (external) 0x4227428 (max_nunits=1, refcnt=1) vector(4) double
+src/main.c:83:25: note: 	{ _32, _61, _158, _58 }
+src/main.c:83:25: note: ------>vectorizing SLP node starting from: stats_68(D)->mean_fatigue = _32;
+src/main.c:83:25: note: vect_is_simple_use: operand _61 = PHI <_15(7)>, type of def: internal
+src/main.c:83:25: note: vect_is_simple_use: operand _158 = PHI <_18(7)>, type of def: internal
+src/main.c:83:25: note: vect_is_simple_use: operand _58 = PHI <_21(7)>, type of def: internal
+src/main.c:83:25: note: transform store. ncopies = 1
+src/main.c:83:25: note: create vector_type-pointer variable to type: vector(4) double  vectorizing a pointer ref: stats_68(D)->mean_fatigue
+src/main.c:83:25: note: created vectp.48_240
+src/main.c:83:25: note: add new stmt: MEM <vector(4) double> [(double *)vectp.48_240] = _241;
+src/main.c:83:25: note: vectorizing stmts using SLP.
+src/main.c:83:25: optimized: basic block part vectorized using 32 byte vectors
+src/main.c:83:25: note: ***** The result for vector mode V32QI would be the same
+src/main.c:255:23: missed: couldn't vectorize loop
+src/main.c:255:23: missed: not vectorized: control flow in loop.
+src/main.c:231:23: missed: couldn't vectorize loop
+src/main.c:232:40: missed: not vectorized: no vectype for stmt: _50 = all_stats[p_345].total_time_update_grid;
+ scalar_type: double
+src/main.c:136:33: missed: couldn't vectorize loop
+src/main.c:136:33: missed: not vectorized: multiple nested loops.
+src/main.c:141:27: missed: couldn't vectorize loop
+src/main.c:141:27: missed: not vectorized: control flow in loop.
+src/main.c:153:31: missed: couldn't vectorize loop
+src/main.c:153:31: missed: not vectorized: control flow in loop.
+src/main.c:98:5: note: vectorized 0 loops in function.
+/usr/include/stdlib.h:483:16: missed: statement clobbers memory: _187 = strtol (_1, 0B, 10);
+/usr/include/stdlib.h:483:16: missed: statement clobbers memory: _189 = strtol (_2, 0B, 10);
+/usr/include/stdlib.h:483:16: missed: statement clobbers memory: _191 = strtol (_3, 0B, 10);
+/usr/include/stdlib.h:483:16: missed: statement clobbers memory: _193 = strtol (_4, 0B, 10);
+/usr/include/stdlib.h:483:16: missed: statement clobbers memory: _195 = strtol (_5, 0B, 10);
+src/main.c:109:22: missed: statement clobbers memory: _83 = sqrt (_6);
+src/main.c:115:24: missed: statement clobbers memory: num_policies_112 = load_policy_config (iftmp.0_326, &policies, 8);
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "=================================================================\n");
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "  EPIDEMIOLOGICAL SIMULATOR PANDEMICSIM - MONTE CARLO\n");
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "=================================================================\n");
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "Simulated population : %d inhabitants (%dx%d cells)\n", prephitmp_373, prephitmp_371, prephitmp_371);
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "Simulation days      : %d days\n", iftmp.2_104);
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "Initial infected     : %d cases\n", iftmp.3_335);
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "Loaded policies      : %d policies\n", num_policies_112);
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "Replicas per policy  : %d Monte Carlo runs\n", iftmp.4_87);
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "Base seed            : %d\n", iftmp.5_92);
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "=================================================================\n\n");
+src/main.c:12:5: missed: statement clobbers memory: clock_gettime (1, &ts);
+src/main.c:137:22: missed: not vectorized: more than one data ref in stmt: cfg_base = policies[policy_336];
+src/main.c:138:36: missed: statement clobbers memory: replicas_133 = calloc (_374, 56);
+src/main.c:143:13: missed: statement clobbers memory: srand (_13);
+src/main.c:145:26: missed: not vectorized: more than one data ref in stmt: cfg = cfg_base;
+src/main.c:12:5: missed: statement clobbers memory: clock_gettime (1, &ts);
+src/main.c:150:26: missed: statement clobbers memory: grid_142 = create_grid (prephitmp_371, prephitmp_371);
+src/main.c:151:13: missed: statement clobbers memory: init_population (grid_142, iftmp.3_335);
+src/main.c:12:5: missed: statement clobbers memory: clock_gettime (1, &ts);
+src/main.c:157:17: missed: statement clobbers memory: get_counts (grid_142, &num_S, &num_I, &num_R, &num_D);
+src/main.c:12:5: missed: statement clobbers memory: clock_gettime (1, &ts);
+src/main.c:12:5: missed: statement clobbers memory: clock_gettime (1, &ts);
+src/main.c:178:49: missed: statement clobbers memory: excess_mortality_factor_171 = evaluate_healthcare_impact (num_I.8_23, prephitmp_373, &metrics);
+src/main.c:179:17: missed: statement clobbers memory: evaluate_economic_impact (num_I.9_24, prephitmp_373, &cfg, &metrics);
+src/main.c:180:36: missed: statement clobbers memory: compliance_174 = evaluate_social_impact (&cfg, &metrics);
+src/main.c:12:5: missed: statement clobbers memory: clock_gettime (1, &ts);
+src/main.c:12:5: missed: statement clobbers memory: clock_gettime (1, &ts);
+src/main.c:190:17: missed: statement clobbers memory: update_grid (grid_142, effective_beta_176, excess_mortality_factor_171);
+src/main.c:191:17: missed: statement clobbers memory: swap_buffer (grid_142);
+src/main.c:12:5: missed: statement clobbers memory: clock_gettime (1, &ts);
+src/main.c:198:13: missed: statement clobbers memory: get_counts (grid_142, &final_S, &final_I, &final_R, &final_D);
+src/main.c:12:5: missed: statement clobbers memory: clock_gettime (1, &ts);
+src/main.c:204:25: missed: not vectorized: more than one data ref in stmt: *_36 = metrics;
+src/main.c:205:13: missed: statement clobbers memory: destroy_grid (grid_142);
+src/main.c:209:9: missed: statement clobbers memory: compute_policy_stats (replicas_133, iftmp.4_87, _37);
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "=== Policy: %-16s ===\n", &cfg_base.name);
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "  Economic Cost (M\xe2\x82\xac) : %.2f \xc2\xb1 %.2f M\xe2\x82\xac\n", _41, _39);
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "  Total Deaths       : %.1f \xc2\xb1 %.1f people [Range: %d - %d]\n", _45, _44, _43, _42);
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "  ICU Collapse Days  : %.1f \xc2\xb1 %.1f days\n", _47, _46);
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "  Mean Social Fatigue: %.2f\n", _48);
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "  Total Compute Time : %.4f s (%d runs)\n\n", _49, iftmp.4_87);
+src/main.c:220:9: missed: statement clobbers memory: free (replicas_133);
+src/main.c:12:5: missed: statement clobbers memory: clock_gettime (1, &ts);
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "====================================================================================================\n");
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "                               PROFILING & EXECUTION TIME BREAKDOWN                                 \n");
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "====================================================================================================\n");
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "%-16s | %10s | %21s | %20s | %18s\n", "Policy", "Total (s)", "Update Grid (s)", "Get Counts (s)", "Analytics (s)");
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "-----------------+------------+-----------------------+----------------------+---------------------\n");
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "%-16s | %8.4f s | %8.4f s (%5.3f%%)   | %7.4f s (%5.3f%%) | %7.4f s (%5.3f%%)\n", _70, t_tot_122, pretmp_391, iftmp.15_89, pretmp_392, iftmp.14_333, pretmp_393, iftmp.13_332);
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "-----------------+------------+------------------------+----------------------+---------------------\n");
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "%-16s | %8.4f s | %8.4f s (%5.3f%%)   | %7.4f s (%5.3f%%)  | %7.4f s (%5.3f%%)\n", "TOTAL PHASES", sum_total_phases_114, sum_update_grid_93, iftmp.18_90, sum_get_counts_88, iftmp.17_280, sum_analytics_324, iftmp.16_107);
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "Total Wall-Clock Time: %.4f s\n", total_wall_time_113);
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "====================================================================================================\n");
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "                               SYSTEM THROUGHPUT & PERFORMANCE METRICS                              \n");
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "====================================================================================================\n");
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "Total Replicas Executed  : %d simulations (%d policies x %d runs)\n", total_simulations_115, num_policies_112, iftmp.4_87);
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "Total Cell Updates       : %llu cell-day transitions\n", total_cell_updates_116);
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "Macro Throughput         : %.2f simulations / sec\n", throughput_sims_per_sec_117);
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "Kernel Throughput (MCUPS): %.2f Million Cell Updates / sec (MCUPS)\n", iftmp.12_86);
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:86:10: missed: statement clobbers memory: __printf_chk (2, "====================================================================================================\n");
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:79:10: missed: statement clobbers memory: __fprintf_chk (stderr.6_8, 2, "Error: No valid policies loaded from %s\n", iftmp.0_326);
+src/main.c:200:34: note: ***** Analysis succeeded with vector mode V4DI
+src/main.c:200:34: note: SLPing BB part
+src/main.c:200:34: note: Costing subgraph: 
+src/main.c:200:34: note: node 0x41f7178 (max_nunits=2, refcnt=1) vector(2) int
+src/main.c:200:34: note: op template: metrics.total_deaths = final_D.10_31;
+src/main.c:200:34: note: 	stmt 0 metrics.total_deaths = final_D.10_31;
+src/main.c:200:34: note: 	stmt 1 metrics.total_recoveries = final_R.11_32;
+src/main.c:200:34: note: 	children 0x41f7278
+src/main.c:200:34: note: node (external) 0x41f7278 (max_nunits=1, refcnt=1) vector(2) int
+src/main.c:200:34: note: 	{ final_D.10_31, final_R.11_32 }
+src/main.c:200:34: note: Cost model analysis: 
+src/main.c:200:34: note: Cost model analysis for part in loop 4:
+  Vector cost: 20
+  Scalar cost: 32
+src/main.c:200:34: note: Basic block will be vectorized using SLP
+src/main.c:200:34: note: Vectorizing SLP tree:
+src/main.c:200:34: note: node 0x41f7178 (max_nunits=2, refcnt=1) vector(2) int
+src/main.c:200:34: note: op template: metrics.total_deaths = final_D.10_31;
+src/main.c:200:34: note: 	stmt 0 metrics.total_deaths = final_D.10_31;
+src/main.c:200:34: note: 	stmt 1 metrics.total_recoveries = final_R.11_32;
+src/main.c:200:34: note: 	children 0x41f7278
+src/main.c:200:34: note: node (external) 0x41f7278 (max_nunits=1, refcnt=1) vector(2) int
+src/main.c:200:34: note: 	{ final_D.10_31, final_R.11_32 }
+src/main.c:200:34: note: ------>vectorizing SLP node starting from: metrics.total_deaths = final_D.10_31;
+src/main.c:200:34: note: vect_is_simple_use: operand final_R, type of def: internal
+src/main.c:200:34: note: transform store. ncopies = 1
+src/main.c:200:34: note: create vector_type-pointer variable to type: vector(2) int  vectorizing a pointer ref: metrics.total_deaths
+src/main.c:200:34: note: created &metrics.total_deaths
+src/main.c:200:34: note: add new stmt: MEM <vector(2) int> [(int *)&metrics + 12B] = _342;
+src/main.c:200:34: note: vectorizing stmts using SLP.
+src/main.c:200:34: optimized: basic block part vectorized using 32 byte vectors
+src/main.c:200:34: note: ***** The result for vector mode V32QI would be the same
+src/simulator.c:10:26: missed: statement clobbers memory: grid_7 = malloc (32);
+src/simulator.c:18:42: missed: statement clobbers memory: _2 = calloc (_1, 4);
+src/simulator.c:19:42: missed: statement clobbers memory: _3 = calloc (_1, 4);
+src/simulator.c:20:42: missed: statement clobbers memory: _4 = calloc (_1, 4);
+src/simulator.c:12:18: note: ***** Analysis succeeded with vector mode V8SI
+src/simulator.c:12:18: note: SLPing BB part
+src/simulator.c:12:18: note: Costing subgraph: 
+src/simulator.c:12:18: note: node 0x31db9d8 (max_nunits=2, refcnt=1) vector(2) int
+src/simulator.c:12:18: note: op template: grid_7->height = height_8(D);
+src/simulator.c:12:18: note: 	stmt 0 grid_7->height = height_8(D);
+src/simulator.c:12:18: note: 	stmt 1 grid_7->width = width_10(D);
+src/simulator.c:12:18: note: 	children 0x31dba58
+src/simulator.c:12:18: note: node (external) 0x31dba58 (max_nunits=1, refcnt=1) vector(2) int
+src/simulator.c:12:18: note: 	{ height_8(D), width_10(D) }
+src/simulator.c:12:18: note: Cost model analysis: 
+src/simulator.c:12:18: note: Cost model analysis for part in loop 0:
+  Vector cost: 32
+  Scalar cost: 32
+src/simulator.c:12:18: note: Basic block will be vectorized using SLP
+src/simulator.c:12:18: note: Vectorizing SLP tree:
+src/simulator.c:12:18: note: node 0x31db9d8 (max_nunits=2, refcnt=1) vector(2) int
+src/simulator.c:12:18: note: op template: grid_7->height = height_8(D);
+src/simulator.c:12:18: note: 	stmt 0 grid_7->height = height_8(D);
+src/simulator.c:12:18: note: 	stmt 1 grid_7->width = width_10(D);
+src/simulator.c:12:18: note: 	children 0x31dba58
+src/simulator.c:12:18: note: node (external) 0x31dba58 (max_nunits=1, refcnt=1) vector(2) int
+src/simulator.c:12:18: note: 	{ height_8(D), width_10(D) }
+src/simulator.c:12:18: note: ------>vectorizing SLP node starting from: grid_7->height = height_8(D);
+src/simulator.c:12:18: note: vect_is_simple_use: operand width_10(D), type of def: external
+src/simulator.c:12:18: note: transform store. ncopies = 1
+src/simulator.c:12:18: note: create vector_type-pointer variable to type: vector(2) int  vectorizing a pointer ref: grid_7->height
+src/simulator.c:12:18: note: created vectp.9_20
+src/simulator.c:12:18: note: add new stmt: MEM <vector(2) int> [(int *)vectp.9_20] = _19;
+src/simulator.c:12:18: note: vectorizing stmts using SLP.
+src/simulator.c:12:18: optimized: basic block part vectorized using 32 byte vectors
+src/simulator.c:12:18: note: ***** The result for vector mode V32QI would be the same
+src/simulator.c:29:9: missed: statement clobbers memory: free (_1);
+src/simulator.c:30:9: missed: statement clobbers memory: free (_2);
+src/simulator.c:31:9: missed: statement clobbers memory: free (_3);
+src/simulator.c:32:9: missed: statement clobbers memory: free (grid_5(D));
+src/simulator.c:34:1: note: ***** Analysis failed with vector mode V4DI
+src/simulator.c:34:1: note: ***** Skipping vector mode V32QI, which would repeat the analysis for V4DI
+src/simulator.c:41:23: missed: couldn't vectorize loop
+src/simulator.c:42:19: missed: statement clobbers memory: _3 = rand ();
+src/simulator.c:37:6: note: vectorized 0 loops in function.
+src/simulator.c:42:19: missed: statement clobbers memory: _3 = rand ();
+src/simulator.c:47:1: note: ***** Analysis failed with vector mode V8SI
+src/simulator.c:47:1: note: ***** Skipping vector mode V32QI, which would repeat the analysis for V8SI
+src/simulator.c:63:23: missed: couldn't vectorize loop
+src/simulator.c:63:23: missed: not vectorized: loop nest containing two or more consecutive inner loops cannot be vectorized
+src/simulator.c:64:27: missed: couldn't vectorize loop
+src/simulator.c:64:27: missed: not vectorized: control flow in loop.
+src/simulator.c:64:27: missed: couldn't vectorize loop
+src/simulator.c:64:27: missed: not vectorized: control flow in loop.
+src/simulator.c:50:6: note: vectorized 0 loops in function.
+src/simulator.c:56:5: missed: statement clobbers memory: __asm__ __volatile__("# =====================================================================");
+src/simulator.c:57:5: missed: statement clobbers memory: __asm__ __volatile__("# [update_grid] BEGIN: outer row loop (i = 0..height)");
+src/simulator.c:58:5: missed: statement clobbers memory: __asm__ __volatile__("# VECTORIZATION TARGET: inner j-loop over current_grid[] (stride-1, row-major)");
+src/simulator.c:59:5: missed: statement clobbers memory: __asm__ __volatile__("# BARRIER: rand() call and powf() prevent auto-vectorization at -O3");
+src/simulator.c:60:5: missed: statement clobbers memory: __asm__ __volatile__("# =====================================================================");
+src/simulator.c:115:17: missed: statement clobbers memory: __asm__ __volatile__("# --- [INFECTED] Convalescence counter + death/recovery Monte Carlo ---");
+src/simulator.c:122:38: missed: statement clobbers memory: _39 = rand ();
+src/simulator.c:71:17: missed: statement clobbers memory: __asm__ __volatile__("# --- [SUSCEPTIBLE] Moore neighborhood scan (di=-1..1, dj=-1..1) ---");
+src/simulator.c:95:17: missed: statement clobbers memory: __asm__ __volatile__("# --- [SUSCEPTIBLE] Stochastic Monte Carlo: powf() + rand() ---");
+src/simulator.c:95:17: missed: statement clobbers memory: __asm__ __volatile__("# --- [SUSCEPTIBLE] Stochastic Monte Carlo: powf() + rand() ---");
+src/simulator.c:95:17: missed: statement clobbers memory: __asm__ __volatile__("# --- [SUSCEPTIBLE] Stochastic Monte Carlo: powf() + rand() ---");
+src/simulator.c:95:17: missed: statement clobbers memory: __asm__ __volatile__("# --- [SUSCEPTIBLE] Stochastic Monte Carlo: powf() + rand() ---");
+src/simulator.c:99:48: missed: statement clobbers memory: _22 = powf (_21, _20);
+src/simulator.c:100:38: missed: statement clobbers memory: _23 = rand ();
+src/simulator.c:115:17: missed: statement clobbers memory: __asm__ __volatile__("# --- [INFECTED] Convalescence counter + death/recovery Monte Carlo ---");
+src/simulator.c:122:38: missed: statement clobbers memory: _178 = rand ();
+src/simulator.c:71:17: missed: statement clobbers memory: __asm__ __volatile__("# --- [SUSCEPTIBLE] Moore neighborhood scan (di=-1..1, dj=-1..1) ---");
+src/simulator.c:95:17: missed: statement clobbers memory: __asm__ __volatile__("# --- [SUSCEPTIBLE] Stochastic Monte Carlo: powf() + rand() ---");
+src/simulator.c:95:17: missed: statement clobbers memory: __asm__ __volatile__("# --- [SUSCEPTIBLE] Stochastic Monte Carlo: powf() + rand() ---");
+src/simulator.c:95:17: missed: statement clobbers memory: __asm__ __volatile__("# --- [SUSCEPTIBLE] Stochastic Monte Carlo: powf() + rand() ---");
+src/simulator.c:95:17: missed: statement clobbers memory: __asm__ __volatile__("# --- [SUSCEPTIBLE] Stochastic Monte Carlo: powf() + rand() ---");
+src/simulator.c:99:48: missed: statement clobbers memory: _131 = powf (_133, _134);
+src/simulator.c:100:38: missed: statement clobbers memory: _128 = rand ();
+src/simulator.c:141:5: missed: statement clobbers memory: __asm__ __volatile__("# [update_grid] END ===================================================");
+src/simulator.c:142:1: note: ***** Analysis failed with vector mode V8SI
+src/simulator.c:142:1: note: ***** Skipping vector mode V32QI, which would repeat the analysis for V8SI
+src/simulator.c:151:24: note: ***** Analysis succeeded with vector mode V4DI
+src/simulator.c:151:24: note: SLPing BB part
+src/simulator.c:151:24: note: Costing subgraph: 
+src/simulator.c:151:24: note: node 0x32419e8 (max_nunits=2, refcnt=1) vector(2) long unsigned int
+src/simulator.c:151:24: note: op template: grid_3(D)->current_grid = _1;
+src/simulator.c:151:24: note: 	stmt 0 grid_3(D)->current_grid = _1;
+src/simulator.c:151:24: note: 	stmt 1 grid_3(D)->next_grid = temp_4;
+src/simulator.c:151:24: note: 	children 0x3241a68
+src/simulator.c:151:24: note: node 0x3241a68 (max_nunits=2, refcnt=1) vector(2) long unsigned int
+src/simulator.c:151:24: note: op template: _1 = grid_3(D)->next_grid;
+src/simulator.c:151:24: note: 	stmt 0 _1 = grid_3(D)->next_grid;
+src/simulator.c:151:24: note: 	stmt 1 temp_4 = grid_3(D)->current_grid;
+src/simulator.c:151:24: note: 	load permutation { 1 0 }
+src/simulator.c:151:24: note: Cost model analysis: 
+src/simulator.c:151:24: note: Cost model analysis for part in loop 0:
+  Vector cost: 36
+  Scalar cost: 56
+src/simulator.c:151:24: note: Basic block will be vectorized using SLP
+src/simulator.c:151:24: note: Vectorizing SLP tree:
+src/simulator.c:151:24: note: node 0x32419e8 (max_nunits=2, refcnt=1) vector(2) long unsigned int
+src/simulator.c:151:24: note: op template: grid_3(D)->current_grid = _1;
+src/simulator.c:151:24: note: 	stmt 0 grid_3(D)->current_grid = _1;
+src/simulator.c:151:24: note: 	stmt 1 grid_3(D)->next_grid = temp_4;
+src/simulator.c:151:24: note: 	children 0x3241a68
+src/simulator.c:151:24: note: node 0x3241a68 (max_nunits=2, refcnt=1) vector(2) long unsigned int
+src/simulator.c:151:24: note: op template: _1 = grid_3(D)->next_grid;
+src/simulator.c:151:24: note: 	stmt 0 _1 = grid_3(D)->next_grid;
+src/simulator.c:151:24: note: 	stmt 1 temp_4 = grid_3(D)->current_grid;
+src/simulator.c:151:24: note: 	load permutation { 1 0 }
+src/simulator.c:151:24: note: ------>vectorizing SLP node starting from: _1 = grid_3(D)->next_grid;
+src/simulator.c:151:24: note: transform load. ncopies = 1
+src/simulator.c:151:24: note: create vector_type-pointer variable to type: vector(2) long unsigned int  vectorizing a pointer ref: grid_3(D)->current_grid
+src/simulator.c:151:24: note: created vectp.61_7
+src/simulator.c:151:24: note: add new stmt: vect__1.62_8 = MEM <vector(2) long unsigned int> [(int * *)vectp.61_7];
+src/simulator.c:151:24: note: add new stmt: vect_temp_4.63_9 = VEC_PERM_EXPR <vect__1.62_8, vect__1.62_8, { 1, 0 }>;
+src/simulator.c:151:24: note: ------>vectorizing SLP node starting from: grid_3(D)->current_grid = _1;
+src/simulator.c:151:24: note: vect_is_simple_use: operand grid_3(D)->next_grid, type of def: internal
+src/simulator.c:151:24: note: vect_is_simple_use: operand grid_3(D)->current_grid, type of def: internal
+src/simulator.c:151:24: note: transform store. ncopies = 1
+src/simulator.c:151:24: note: create vector_type-pointer variable to type: vector(2) long unsigned int  vectorizing a pointer ref: grid_3(D)->current_grid
+src/simulator.c:151:24: note: created vectp.65_10
+src/simulator.c:151:24: note: add new stmt: MEM <vector(2) long unsigned int> [(int * *)vectp.65_10] = vect_temp_4.63_9;
+src/simulator.c:151:24: note: vectorizing stmts using SLP.
+src/simulator.c:151:24: optimized: basic block part vectorized using 32 byte vectors
+src/simulator.c:151:24: note: ***** The result for vector mode V32QI would be the same
+src/simulator.c:172:27: missed: couldn't vectorize loop
+src/simulator.c:172:27: missed: not vectorized: control flow in loop.
+src/simulator.c:156:6: note: vectorized 0 loops in function.
+src/simulator.c:167:5: missed: statement clobbers memory: __asm__ __volatile__("# =====================================================================");
+src/simulator.c:168:5: missed: statement clobbers memory: __asm__ __volatile__("# [get_counts] BEGIN: reduction loop (idx = 0..total_cells)");
+src/simulator.c:169:5: missed: statement clobbers memory: __asm__ __volatile__("# VECTORIZATION TARGET: simple switch/accumulator, no side effects");
+src/simulator.c:170:5: missed: statement clobbers memory: __asm__ __volatile__("# =====================================================================");
+src/simulator.c:181:5: missed: statement clobbers memory: __asm__ __volatile__("# [get_counts] END ====================================================");
+src/simulator.c:182:1: note: ***** Analysis failed with vector mode V8SI
+src/simulator.c:182:1: note: ***** Skipping vector mode V32QI, which would repeat the analysis for V8SI
+src/simulator.c:10:26: missed: statement clobbers memory: grid_7 = malloc (32);
+src/simulator.c:18:42: missed: statement clobbers memory: _2 = calloc (_1, 4);
+src/simulator.c:19:42: missed: statement clobbers memory: _3 = calloc (_1, 4);
+src/simulator.c:20:42: missed: statement clobbers memory: _4 = calloc (_1, 4);
+src/simulator.c:12:18: note: ***** Analysis succeeded with vector mode V8SI
+src/simulator.c:12:18: note: SLPing BB part
+src/simulator.c:12:18: note: Costing subgraph: 
+src/simulator.c:12:18: note: node 0x333fbc8 (max_nunits=2, refcnt=1) vector(2) int
+src/simulator.c:12:18: note: op template: grid_7->height = height_8(D);
+src/simulator.c:12:18: note: 	stmt 0 grid_7->height = height_8(D);
+src/simulator.c:12:18: note: 	stmt 1 grid_7->width = width_10(D);
+src/simulator.c:12:18: note: 	children 0x333fc48
+src/simulator.c:12:18: note: node (external) 0x333fc48 (max_nunits=1, refcnt=1) vector(2) int
+src/simulator.c:12:18: note: 	{ height_8(D), width_10(D) }
+src/simulator.c:12:18: note: Cost model analysis: 
+src/simulator.c:12:18: note: Cost model analysis for part in loop 0:
+  Vector cost: 32
+  Scalar cost: 32
+src/simulator.c:12:18: note: Basic block will be vectorized using SLP
+src/simulator.c:12:18: note: Vectorizing SLP tree:
+src/simulator.c:12:18: note: node 0x333fbc8 (max_nunits=2, refcnt=1) vector(2) int
+src/simulator.c:12:18: note: op template: grid_7->height = height_8(D);
+src/simulator.c:12:18: note: 	stmt 0 grid_7->height = height_8(D);
+src/simulator.c:12:18: note: 	stmt 1 grid_7->width = width_10(D);
+src/simulator.c:12:18: note: 	children 0x333fc48
+src/simulator.c:12:18: note: node (external) 0x333fc48 (max_nunits=1, refcnt=1) vector(2) int
+src/simulator.c:12:18: note: 	{ height_8(D), width_10(D) }
+src/simulator.c:12:18: note: ------>vectorizing SLP node starting from: grid_7->height = height_8(D);
+src/simulator.c:12:18: note: vect_is_simple_use: operand width_10(D), type of def: external
+src/simulator.c:12:18: note: transform store. ncopies = 1
+src/simulator.c:12:18: note: create vector_type-pointer variable to type: vector(2) int  vectorizing a pointer ref: grid_7->height
+src/simulator.c:12:18: note: created vectp.9_20
+src/simulator.c:12:18: note: add new stmt: MEM <vector(2) int> [(int *)vectp.9_20] = _19;
+src/simulator.c:12:18: note: vectorizing stmts using SLP.
+src/simulator.c:12:18: optimized: basic block part vectorized using 32 byte vectors
+src/simulator.c:12:18: note: ***** The result for vector mode V32QI would be the same
+src/simulator.c:29:9: missed: statement clobbers memory: free (_1);
+src/simulator.c:30:9: missed: statement clobbers memory: free (_2);
+src/simulator.c:31:9: missed: statement clobbers memory: free (_3);
+src/simulator.c:32:9: missed: statement clobbers memory: free (grid_5(D));
+src/simulator.c:34:1: note: ***** Analysis failed with vector mode V4DI
+src/simulator.c:34:1: note: ***** Skipping vector mode V32QI, which would repeat the analysis for V4DI
+src/simulator.c:41:23: missed: couldn't vectorize loop
+src/simulator.c:42:19: missed: statement clobbers memory: _3 = rand ();
+src/simulator.c:37:6: note: vectorized 0 loops in function.
+src/simulator.c:42:19: missed: statement clobbers memory: _3 = rand ();
+src/simulator.c:47:1: note: ***** Analysis failed with vector mode V8SI
+src/simulator.c:47:1: note: ***** Skipping vector mode V32QI, which would repeat the analysis for V8SI
+src/simulator.c:63:23: missed: couldn't vectorize loop
+src/simulator.c:63:23: missed: not vectorized: loop nest containing two or more consecutive inner loops cannot be vectorized
+src/simulator.c:64:27: missed: couldn't vectorize loop
+src/simulator.c:64:27: missed: not vectorized: control flow in loop.
+src/simulator.c:64:27: missed: couldn't vectorize loop
+src/simulator.c:64:27: missed: not vectorized: control flow in loop.
+src/simulator.c:50:6: note: vectorized 0 loops in function.
+src/simulator.c:56:5: missed: statement clobbers memory: __asm__ __volatile__("# =====================================================================");
+src/simulator.c:57:5: missed: statement clobbers memory: __asm__ __volatile__("# [update_grid] BEGIN: outer row loop (i = 0..height)");
+src/simulator.c:58:5: missed: statement clobbers memory: __asm__ __volatile__("# VECTORIZATION TARGET: inner j-loop over current_grid[] (stride-1, row-major)");
+src/simulator.c:59:5: missed: statement clobbers memory: __asm__ __volatile__("# BARRIER: rand() call and powf() prevent auto-vectorization at -O3");
+src/simulator.c:60:5: missed: statement clobbers memory: __asm__ __volatile__("# =====================================================================");
+src/simulator.c:115:17: missed: statement clobbers memory: __asm__ __volatile__("# --- [INFECTED] Convalescence counter + death/recovery Monte Carlo ---");
+src/simulator.c:122:38: missed: statement clobbers memory: _39 = rand ();
+src/simulator.c:71:17: missed: statement clobbers memory: __asm__ __volatile__("# --- [SUSCEPTIBLE] Moore neighborhood scan (di=-1..1, dj=-1..1) ---");
+src/simulator.c:95:17: missed: statement clobbers memory: __asm__ __volatile__("# --- [SUSCEPTIBLE] Stochastic Monte Carlo: powf() + rand() ---");
+src/simulator.c:95:17: missed: statement clobbers memory: __asm__ __volatile__("# --- [SUSCEPTIBLE] Stochastic Monte Carlo: powf() + rand() ---");
+src/simulator.c:95:17: missed: statement clobbers memory: __asm__ __volatile__("# --- [SUSCEPTIBLE] Stochastic Monte Carlo: powf() + rand() ---");
+src/simulator.c:95:17: missed: statement clobbers memory: __asm__ __volatile__("# --- [SUSCEPTIBLE] Stochastic Monte Carlo: powf() + rand() ---");
+src/simulator.c:99:48: missed: statement clobbers memory: _22 = powf (_21, _20);
+src/simulator.c:100:38: missed: statement clobbers memory: _23 = rand ();
+src/simulator.c:115:17: missed: statement clobbers memory: __asm__ __volatile__("# --- [INFECTED] Convalescence counter + death/recovery Monte Carlo ---");
+src/simulator.c:122:38: missed: statement clobbers memory: _178 = rand ();
+src/simulator.c:71:17: missed: statement clobbers memory: __asm__ __volatile__("# --- [SUSCEPTIBLE] Moore neighborhood scan (di=-1..1, dj=-1..1) ---");
+src/simulator.c:95:17: missed: statement clobbers memory: __asm__ __volatile__("# --- [SUSCEPTIBLE] Stochastic Monte Carlo: powf() + rand() ---");
+src/simulator.c:95:17: missed: statement clobbers memory: __asm__ __volatile__("# --- [SUSCEPTIBLE] Stochastic Monte Carlo: powf() + rand() ---");
+src/simulator.c:95:17: missed: statement clobbers memory: __asm__ __volatile__("# --- [SUSCEPTIBLE] Stochastic Monte Carlo: powf() + rand() ---");
+src/simulator.c:95:17: missed: statement clobbers memory: __asm__ __volatile__("# --- [SUSCEPTIBLE] Stochastic Monte Carlo: powf() + rand() ---");
+src/simulator.c:99:48: missed: statement clobbers memory: _131 = powf (_133, _134);
+src/simulator.c:100:38: missed: statement clobbers memory: _128 = rand ();
+src/simulator.c:141:5: missed: statement clobbers memory: __asm__ __volatile__("# [update_grid] END ===================================================");
+src/simulator.c:142:1: note: ***** Analysis failed with vector mode V8SI
+src/simulator.c:142:1: note: ***** Skipping vector mode V32QI, which would repeat the analysis for V8SI
+src/simulator.c:151:24: note: ***** Analysis succeeded with vector mode V4DI
+src/simulator.c:151:24: note: SLPing BB part
+src/simulator.c:151:24: note: Costing subgraph: 
+src/simulator.c:151:24: note: node 0x33a1c08 (max_nunits=2, refcnt=1) vector(2) long unsigned int
+src/simulator.c:151:24: note: op template: grid_3(D)->current_grid = _1;
+src/simulator.c:151:24: note: 	stmt 0 grid_3(D)->current_grid = _1;
+src/simulator.c:151:24: note: 	stmt 1 grid_3(D)->next_grid = temp_4;
+src/simulator.c:151:24: note: 	children 0x33a1c88
+src/simulator.c:151:24: note: node 0x33a1c88 (max_nunits=2, refcnt=1) vector(2) long unsigned int
+src/simulator.c:151:24: note: op template: _1 = grid_3(D)->next_grid;
+src/simulator.c:151:24: note: 	stmt 0 _1 = grid_3(D)->next_grid;
+src/simulator.c:151:24: note: 	stmt 1 temp_4 = grid_3(D)->current_grid;
+src/simulator.c:151:24: note: 	load permutation { 1 0 }
+src/simulator.c:151:24: note: Cost model analysis: 
+src/simulator.c:151:24: note: Cost model analysis for part in loop 0:
+  Vector cost: 36
+  Scalar cost: 56
+src/simulator.c:151:24: note: Basic block will be vectorized using SLP
+src/simulator.c:151:24: note: Vectorizing SLP tree:
+src/simulator.c:151:24: note: node 0x33a1c08 (max_nunits=2, refcnt=1) vector(2) long unsigned int
+src/simulator.c:151:24: note: op template: grid_3(D)->current_grid = _1;
+src/simulator.c:151:24: note: 	stmt 0 grid_3(D)->current_grid = _1;
+src/simulator.c:151:24: note: 	stmt 1 grid_3(D)->next_grid = temp_4;
+src/simulator.c:151:24: note: 	children 0x33a1c88
+src/simulator.c:151:24: note: node 0x33a1c88 (max_nunits=2, refcnt=1) vector(2) long unsigned int
+src/simulator.c:151:24: note: op template: _1 = grid_3(D)->next_grid;
+src/simulator.c:151:24: note: 	stmt 0 _1 = grid_3(D)->next_grid;
+src/simulator.c:151:24: note: 	stmt 1 temp_4 = grid_3(D)->current_grid;
+src/simulator.c:151:24: note: 	load permutation { 1 0 }
+src/simulator.c:151:24: note: ------>vectorizing SLP node starting from: _1 = grid_3(D)->next_grid;
+src/simulator.c:151:24: note: transform load. ncopies = 1
+src/simulator.c:151:24: note: create vector_type-pointer variable to type: vector(2) long unsigned int  vectorizing a pointer ref: grid_3(D)->current_grid
+src/simulator.c:151:24: note: created vectp.61_7
+src/simulator.c:151:24: note: add new stmt: vect__1.62_8 = MEM <vector(2) long unsigned int> [(int * *)vectp.61_7];
+src/simulator.c:151:24: note: add new stmt: vect_temp_4.63_9 = VEC_PERM_EXPR <vect__1.62_8, vect__1.62_8, { 1, 0 }>;
+src/simulator.c:151:24: note: ------>vectorizing SLP node starting from: grid_3(D)->current_grid = _1;
+src/simulator.c:151:24: note: vect_is_simple_use: operand grid_3(D)->next_grid, type of def: internal
+src/simulator.c:151:24: note: vect_is_simple_use: operand grid_3(D)->current_grid, type of def: internal
+src/simulator.c:151:24: note: transform store. ncopies = 1
+src/simulator.c:151:24: note: create vector_type-pointer variable to type: vector(2) long unsigned int  vectorizing a pointer ref: grid_3(D)->current_grid
+src/simulator.c:151:24: note: created vectp.65_10
+src/simulator.c:151:24: note: add new stmt: MEM <vector(2) long unsigned int> [(int * *)vectp.65_10] = vect_temp_4.63_9;
+src/simulator.c:151:24: note: vectorizing stmts using SLP.
+src/simulator.c:151:24: optimized: basic block part vectorized using 32 byte vectors
+src/simulator.c:151:24: note: ***** The result for vector mode V32QI would be the same
+src/simulator.c:172:27: missed: couldn't vectorize loop
+src/simulator.c:172:27: missed: not vectorized: control flow in loop.
+src/simulator.c:156:6: note: vectorized 0 loops in function.
+src/simulator.c:167:5: missed: statement clobbers memory: __asm__ __volatile__("# =====================================================================");
+src/simulator.c:168:5: missed: statement clobbers memory: __asm__ __volatile__("# [get_counts] BEGIN: reduction loop (idx = 0..total_cells)");
+src/simulator.c:169:5: missed: statement clobbers memory: __asm__ __volatile__("# VECTORIZATION TARGET: simple switch/accumulator, no side effects");
+src/simulator.c:170:5: missed: statement clobbers memory: __asm__ __volatile__("# =====================================================================");
+src/simulator.c:181:5: missed: statement clobbers memory: __asm__ __volatile__("# [get_counts] END ====================================================");
+src/simulator.c:182:1: note: ***** Analysis failed with vector mode V8SI
+src/simulator.c:182:1: note: ***** Skipping vector mode V32QI, which would repeat the analysis for V8SI
+src/society.c:13:12: note: ***** Analysis failed with vector mode V8SF
+src/society.c:13:12: note: ***** Skipping vector mode V32QI, which would repeat the analysis for V8SF
+src/society.c:13:12: note: ***** Analysis failed with vector mode V8SF
+src/society.c:13:12: note: ***** Skipping vector mode V32QI, which would repeat the analysis for V8SF
