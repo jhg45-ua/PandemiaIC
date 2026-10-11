@@ -1,58 +1,160 @@
-GCC Version: gcc version 13.2.0 (Ubuntu 13.2.0-23ubuntu4)
+# PandemicSim
 
-CPU: 
+Simulador epidemiológico y socioeconómico de alto rendimiento escrito en C11.
+El proyecto modela la evolución de una epidemia sobre una malla bidimensional y
+permite comparar distintas políticas de intervención mediante réplicas Monte
+Carlo.
+
+## Características
+
+- Modelo epidemiológico SIRD: susceptibles, infectados, recuperados y
+  fallecidos.
+- Autómata celular con vecindario de Moore de ocho vecinos y doble búfer.
+- Políticas configurables de intervención, como `LaissezFaire`, `Lockdown`,
+  `RemoteWork` y `DynamicSignals`.
+- Evaluación del impacto sanitario, económico y social de cada política.
+- Réplicas Monte Carlo reproducibles mediante una semilla configurable.
+- Medición del tiempo de ejecución, del *throughput* y del rendimiento del
+  kernel en MCUPS.
+- Escenarios de simulación sintéticos y territoriales: ciudad, provincia,
+  comunidad autónoma y España.
+
+La descripción completa del modelo y de las fórmulas utilizadas está en
+[`docs/modelo.md`](docs/modelo.md).
+
+## Requisitos
+
+- GCC en Linux o Clang en macOS.
+- `make`.
+- Una shell compatible con Bash para ejecutar los scripts de escenarios.
+
+El código utiliza funciones POSIX para la medición temporal. El `Makefile`
+selecciona GCC por defecto; en macOS se puede compilar con Clang cambiando la
+variable `CC`.
+
+## Compilación
+
+Desde la raíz del repositorio:
+
 ```bash
-    alumno@L025I-12:~/Documentos/PandemiaIC$ lscpu
-    Arquitectura:                            x86_64
-    modo(s) de operación de las CPUs:      32-bit, 64-bit
-    Address sizes:                         39 bits physical, 48 bits virtual
-    Orden de los bytes:                    Little Endian
-    CPU(s):                                  12
-    Lista de la(s) CPU(s) en línea:        0-11
-    ID de fabricante:                        GenuineIntel
-    Nombre del modelo:                     12th Gen Intel(R) Core(TM) i5-12400
-        Familia de CPU:                      6
-        Modelo:                              151
-        Hilo(s) de procesamiento por núcleo: 2
-        Núcleo(s) por «socket»:              6
-        «Socket(s)»                          1
-        Revisión:                            5
-        CPU(s) scaling MHz:                  18%
-        CPU MHz máx.:                        4400,0000
-        CPU MHz mín.:                        800,0000
-        BogoMIPS:                            4992,00
-        Indicadores:                         fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm 
-                                            constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf tsc_known_freq pni pclmulqdq dtes64 monitor ds_cpl vmx es
-                                            t tm2 ssse3 sdbg fma cx16 xtpr pdcm sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch cpuid_fa
-                                            ult epb ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx sm
-                                            ap clflushopt clwb intel_pt sha_ni xsaveopt xsavec xgetbv1 xsaves split_lock_detect user_shstk avx_vnni dtherm ida arat pln pts hwp hwp_notify hwp_ac
-                                            t_window hwp_epp hwp_pkg_req hfi vnmi umip pku ospke waitpkg gfni vaes vpclmulqdq rdpid movdiri movdir64b fsrm md_clear serialize arch_lbr ibt flush_
-                                            l1d arch_capabilities
-    Virtualization features:                 
-    Virtualización:                        VT-x
-    Caches (sum of all):                     
-    L1d:                                   288 KiB (6 instances)
-    L1i:                                   192 KiB (6 instances)
-    L2:                                    7,5 MiB (6 instances)
-    L3:                                    18 MiB (1 instance)
-    NUMA:                                    
-    Modo(s) NUMA:                          1
-    CPU(s) del nodo NUMA 0:                0-11
-    Vulnerabilities:                         
-    Gather data sampling:                  Not affected
-    Itlb multihit:                         Not affected
-    L1tf:                                  Not affected
-    Mds:                                   Not affected
-    Meltdown:                              Not affected
-    Mmio stale data:                       Not affected
-    Reg file data sampling:                Not affected
-    Retbleed:                              Not affected
-    Spec rstack overflow:                  Not affected
-    Spec store bypass:                     Mitigation; Speculative Store Bypass disabled via prctl
-    Spectre v1:                            Mitigation; usercopy/swapgs barriers and __user pointer sanitization
-    Spectre v2:                            Mitigation; Enhanced / Automatic IBRS; IBPB conditional; RSB filling; PBRSB-eIBRS SW sequence; BHI BHI_DIS_S
-    Srbds:                                 Not affected
-    Tsx async abort:                       Not affected
-    alumno@L025I-12:~/Documentos/PandemiaIC$
-
+make
 ```
+
+El binario se genera en `bin/sim`. La compilación también genera código
+ensamblador anotado en `build/asm/`.
+
+Para consultar todos los objetivos disponibles:
+
+```bash
+make help
+```
+
+## Ejecución
+
+### Escenarios preconfigurados
+
+```bash
+# Alicante capital
+make run
+
+# Provincia de Alicante
+make run-provincia
+
+# Comunitat Valenciana
+make run-comunidad
+```
+
+Los scripts de escenario establecen el fichero de políticas, la población,
+los focos iniciales y el número de réplicas. En `make run` se puede indicar
+opcionalmente la duración:
+
+```bash
+./scripts/run_ciudad.sh 100
+```
+
+### Ejecución directa
+
+El ejecutable acepta los siguientes parámetros posicionales:
+
+```text
+./bin/sim [config_file] [population] [days] [initial_infected] [n_sim] [seed]
+```
+
+Si no se especifican, se utilizan estos valores:
+
+| Parámetro | Valor predeterminado |
+| --- | ---: |
+| `config_file` | `config/policies.conf` |
+| `population` | `100000` |
+| `days` | `150` |
+| `initial_infected` | `10` |
+| `n_sim` | `20` |
+| `seed` | `29` |
+
+Ejemplo:
+
+```bash
+./bin/sim config/policies.conf 100000 150 10 20 29
+```
+
+La población solicitada se adapta a una malla cuadrada; por ello, el número
+real de celdas puede ser ligeramente inferior al valor indicado.
+
+## Configuración
+
+Los ficheros de [`config/`](config/) contienen una política por línea con este
+formato:
+
+```text
+nombre beta trade_restriction daily_subsidy_expense dynamic_ICU_threshold
+```
+
+Los escenarios disponibles son:
+
+- [`policies.conf`](config/policies.conf): escenario sintético.
+- [`policies_ciudad.conf`](config/policies_ciudad.conf): Alicante capital.
+- [`policies_provincia.conf`](config/policies_provincia.conf): provincia de
+  Alicante.
+- [`policies_comunidad.conf`](config/policies_comunidad.conf): Comunitat
+  Valenciana.
+- [`policies_espana.conf`](config/policies_espana.conf): escenario nacional.
+
+## Estructura del repositorio
+
+```text
+.
+├── config/      # Políticas y parámetros de los escenarios
+├── docs/        # Documentación detallada del modelo
+├── include/     # Cabeceras públicas del simulador
+├── scripts/     # Lanzadores y batería de benchmarks
+├── src/         # Implementación en C
+└── results/     # Resultados y gráficas de experimentos
+```
+
+## Optimización y benchmarks
+
+El proyecto incluye objetivos para inspeccionar el ensamblador y los informes
+de autovectorización:
+
+```bash
+make asm OPTFLAGS=-O3
+make vectorization
+```
+
+La batería completa de experimentos de compilación se encuentra en
+[`scripts/run_benchmarks.sh`](scripts/run_benchmarks.sh). Sus resultados se
+guardan en [`results/`](results/).
+
+## Limpieza
+
+```bash
+make clean
+```
+
+Este comando elimina el binario y los artefactos generados en `bin/` y
+`build/`.
+
+## Licencia
+
+Este proyecto se distribuye bajo la licencia MIT. Consulta
+[`LICENSE`](LICENSE).
