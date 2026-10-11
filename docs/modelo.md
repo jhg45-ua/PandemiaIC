@@ -423,8 +423,7 @@ El ejecutable `bin/sim` acepta parámetros posicionales:
 
 ```bash
 make                     # Compila bin/sim y genera ensamblador anotado en build/asm/*.s
-make run                 # Ejecuta la simulación base (100k hab, 150 días, 320 réplicas)
-make run-ciudad          # Ejecuta el escenario Alicante Capital (~350k hab, 200 días, 80 réplicas)
+make run                 # Ejecuta el escenario Alicante Capital (~350k hab, 200 días, 80 réplicas)
 make run-provincia       # Ejecuta el escenario Provincia de Alicante (~2.0M hab, 200 días, 80 réplicas)
 make run-comunidad       # Ejecuta el escenario Comunitat Valenciana (~5.1M hab, 200 días, 80 réplicas)
 make asm OPTFLAGS=-O3    # Regenera el código ensamblador (.s) con el nivel de optimización indicado
