@@ -6,6 +6,8 @@
 #include <math.h>
 #include <time.h>
 
+#include <mpi.h> // MPI header for parallel processing
+
 // High-resolution monotonic timer returning seconds
 static inline double get_time_sec(void) {
     struct timespec ts;
@@ -96,6 +98,13 @@ void compute_policy_stats(const ReplicaMetrics *replicas, int n_sim, PolicyStats
 }
 
 int main(int argc, char *argv[]) {
+    // Initialize MPI environment
+    int rank, numprocs;
+    MPI_Init(&argc, &argv);
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    MPI_Comm_size(MPI_COMM_WORLD, &numprocs);
+
+
     // CLI Parameters or defaults
     const char *conf_file = (argc > 1) ? argv[1] : "config/policies.conf";
     int n_hab = (argc > 2) ? atoi(argv[2]) : 100000;
@@ -118,27 +127,35 @@ int main(int argc, char *argv[]) {
         return EXIT_FAILURE;
     }
 
-    printf("=================================================================\n");
-    printf("  EPIDEMIOLOGICAL SIMULATOR PANDEMICSIM - MONTE CARLO\n");
-    printf("=================================================================\n");
-    printf("Simulated population : %d inhabitants (%dx%d cells)\n", total_population, height, width);
-    printf("Simulation days      : %d days\n", days);
-    printf("Initial infected     : %d cases\n", initial_infected);
-    printf("Loaded policies      : %d policies\n", num_policies);
-    printf("Replicas per policy  : %d Monte Carlo runs\n", n_sim);
-    printf("Base seed            : %d\n", seed);
-    printf("=================================================================\n\n");
+    if (rank == 0) {
+        printf("=================================================================\n");
+        printf("  EPIDEMIOLOGICAL SIMULATOR PANDEMICSIM - MONTE CARLO\n");
+        printf("=================================================================\n");
+        printf("Simulated population : %d inhabitants (%dx%d cells)\n", total_population, height, width);
+        printf("Simulation days      : %d days\n", days);
+        printf("Initial infected     : %d cases\n", initial_infected);
+        printf("Loaded policies      : %d policies\n", num_policies);
+        printf("Replicas per policy  : %d Monte Carlo runs\n", n_sim);
+        printf("Base seed            : %d\n", seed);
+        printf("=================================================================\n\n");
+    }
 
     PolicyStats all_stats[MAX_POLICIES];
-    double total_sim_start = get_time_sec();
+    double total_sim_start = MPI_Wtime();
 
     // 1. Inter-policy loop
     for (int policy = 0; policy < num_policies; policy++) {
         PolicyConfig cfg_base = policies[policy];
         ReplicaMetrics *replicas = calloc(n_sim, sizeof(ReplicaMetrics));
 
+        // Distribution of replicas across MPI processes (block distribution)
+        int chunk = n_sim / numprocs;
+        int r_start = rank * chunk;
+        int r_end = (rank == numprocs - 1) ? n_sim : r_start + chunk;
+        int local_count = r_end - r_start;
+
         // 2. Monte Carlo Replicas loop
-        for (int r = 0; r < n_sim; r++) {
+        for (int r = r_start; r < r_end; r++) {
             // Unique reproducible seed per replica
             srand(seed + policy * 1000 + r);
 
@@ -205,22 +222,35 @@ int main(int argc, char *argv[]) {
             destroy_grid(grid);
         }
 
-        // Aggregate statistics for policy
-        compute_policy_stats(replicas, n_sim, &all_stats[policy]);
+        // Communication: gather replica metrics to rank 0
+        if (rank != 0) {
+            MPI_Send(&replicas[r_start], local_count * sizeof(ReplicaMetrics), MPI_BYTE, 0, 0, MPI_COMM_WORLD);
+        } else {
+            for (int p = 1; p < numprocs; p++) {
+                int p_start = p * chunk;
+                int p_end   = (p == numprocs - 1) ? n_sim : p_start + chunk;
+                int p_count = p_end - p_start;
+                MPI_Recv(&replicas[p_start], p_count * sizeof(ReplicaMetrics), MPI_BYTE, p, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+            }
 
-        printf("=== Policy: %-16s ===\n", cfg_base.name);
-        printf("  Economic Cost (M€) : %.2f ± %.2f M€\n", all_stats[policy].mean_cost / 1e6, all_stats[policy].std_cost / 1e6);
-        printf("  Total Deaths       : %.1f ± %.1f people [Range: %d - %d]\n",
-               all_stats[policy].mean_deaths, all_stats[policy].std_deaths,
-               all_stats[policy].min_deaths, all_stats[policy].max_deaths);
-        printf("  ICU Collapse Days  : %.1f ± %.1f days\n", all_stats[policy].mean_icu_days, all_stats[policy].std_icu_days);
-        printf("  Mean Social Fatigue: %.2f\n", all_stats[policy].mean_fatigue);
-        printf("  Total Compute Time : %.4f s (%d runs)\n\n", all_stats[policy].total_time, n_sim);
+            // Aggregate statistics for policy (only on rank 0)
+            compute_policy_stats(replicas, n_sim, &all_stats[policy]);
+
+            printf("=== Policy: %-16s ===\n", cfg_base.name);
+            printf("  Economic Cost (M€) : %.2f ± %.2f M€\n", all_stats[policy].mean_cost / 1e6, all_stats[policy].std_cost / 1e6);
+            printf("  Total Deaths       : %.1f ± %.1f people [Range: %d - %d]\n",
+                all_stats[policy].mean_deaths, all_stats[policy].std_deaths,
+                all_stats[policy].min_deaths, all_stats[policy].max_deaths);
+            printf("  ICU Collapse Days  : %.1f ± %.1f days\n", all_stats[policy].mean_icu_days, all_stats[policy].std_icu_days);
+            printf("  Mean Social Fatigue: %.2f\n", all_stats[policy].mean_fatigue);
+            printf("  Total Compute Time : %.4f s (%d runs)\n\n", all_stats[policy].total_time, n_sim);
+        }
 
         free(replicas);
     }
 
-    double total_sim_end = get_time_sec();
+    MPI_Barrier(MPI_COMM_WORLD);
+    double total_sim_end = MPI_Wtime();
     double total_wall_time = total_sim_end - total_sim_start;
 
     // Aggregate total times across all policies for profiling and performance metrics
@@ -245,44 +275,50 @@ int main(int argc, char *argv[]) {
                    ((double)total_cell_updates / (sum_update_grid * 1e6)) : 0.0;
 
     // Profiling Report Breakdown
-    printf("====================================================================================================\n");
-    printf("                               PROFILING & EXECUTION TIME BREAKDOWN                                 \n");
-    printf("====================================================================================================\n");
-    printf("%-16s | %10s | %21s | %20s | %18s\n", 
-           "Policy", "Total (s)", "Update Grid (s)", "Get Counts (s)", "Analytics (s)");
-    printf("-----------------+------------+-----------------------+----------------------+---------------------\n");
-    
-    for (int p = 0; p < num_policies; p++) {
-        double t_tot = all_stats[p].total_time;
-        printf("%-16s | %8.4f s | %8.4f s (%5.3f%%)   | %7.4f s (%5.3f%%) | %7.4f s (%5.3f%%)\n",
-               policies[p].name,
-               t_tot,
-               all_stats[p].total_time_update_grid,
-               t_tot > 0 ? (all_stats[p].total_time_update_grid / t_tot) * 100.0 : 0.0,
-               all_stats[p].total_time_get_counts,
-               t_tot > 0 ? (all_stats[p].total_time_get_counts / t_tot) * 100.0 : 0.0,
-               all_stats[p].total_time_analytics,
-               t_tot > 0 ? (all_stats[p].total_time_analytics / t_tot) * 100.0 : 0.0);
+    if (rank == 0) {
+        printf("====================================================================================================\n");
+        printf("                               PROFILING & EXECUTION TIME BREAKDOWN                                 \n");
+        printf("====================================================================================================\n");
+        printf("%-16s | %10s | %21s | %20s | %18s\n", 
+            "Policy", "Total (s)", "Update Grid (s)", "Get Counts (s)", "Analytics (s)");
+        printf("-----------------+------------+-----------------------+----------------------+---------------------\n");
+        
+        for (int p = 0; p < num_policies; p++) {
+            double t_tot = all_stats[p].total_time;
+            printf("%-16s | %8.4f s | %8.4f s (%5.3f%%)   | %7.4f s (%5.3f%%) | %7.4f s (%5.3f%%)\n",
+                policies[p].name,
+                t_tot,
+                all_stats[p].total_time_update_grid,
+                t_tot > 0 ? (all_stats[p].total_time_update_grid / t_tot) * 100.0 : 0.0,
+                all_stats[p].total_time_get_counts,
+                t_tot > 0 ? (all_stats[p].total_time_get_counts / t_tot) * 100.0 : 0.0,
+                all_stats[p].total_time_analytics,
+                t_tot > 0 ? (all_stats[p].total_time_analytics / t_tot) * 100.0 : 0.0);
+        }
+        printf("-----------------+------------+------------------------+----------------------+---------------------\n");
+        printf("%-16s | %8.4f s | %8.4f s (%5.3f%%)   | %7.4f s (%5.3f%%)  | %7.4f s (%5.3f%%)\n",
+            "TOTAL PHASES",
+            sum_total_phases,
+            sum_update_grid,
+            sum_total_phases > 0 ? (sum_update_grid / sum_total_phases) * 100.0 : 0.0,
+            sum_get_counts,
+            sum_total_phases > 0 ? (sum_get_counts / sum_total_phases) * 100.0 : 0.0,
+            sum_analytics,
+            sum_total_phases > 0 ? (sum_analytics / sum_total_phases) * 100.0 : 0.0);
+        printf("Total Wall-Clock Time: %.4f s\n", total_wall_time);
+        printf("====================================================================================================\n");
+        printf("                               SYSTEM THROUGHPUT & PERFORMANCE METRICS                              \n");
+        printf("====================================================================================================\n");
+        printf("Total Replicas Executed  : %d simulations (%d policies x %d runs)\n", total_simulations, num_policies, n_sim);
+        printf("Total Cell Updates       : %llu cell-day transitions\n", total_cell_updates);
+        printf("Macro Throughput         : %.2f simulations / sec\n", throughput_sims_per_sec);
+        printf("Kernel Throughput (MCUPS): %.2f Million Cell Updates / sec (MCUPS)\n", mcups);
+        printf("====================================================================================================\n");
     }
-    printf("-----------------+------------+------------------------+----------------------+---------------------\n");
-    printf("%-16s | %8.4f s | %8.4f s (%5.3f%%)   | %7.4f s (%5.3f%%)  | %7.4f s (%5.3f%%)\n",
-           "TOTAL PHASES",
-           sum_total_phases,
-           sum_update_grid,
-           sum_total_phases > 0 ? (sum_update_grid / sum_total_phases) * 100.0 : 0.0,
-           sum_get_counts,
-           sum_total_phases > 0 ? (sum_get_counts / sum_total_phases) * 100.0 : 0.0,
-           sum_analytics,
-           sum_total_phases > 0 ? (sum_analytics / sum_total_phases) * 100.0 : 0.0);
-    printf("Total Wall-Clock Time: %.4f s\n", total_wall_time);
-    printf("====================================================================================================\n");
-    printf("                               SYSTEM THROUGHPUT & PERFORMANCE METRICS                              \n");
-    printf("====================================================================================================\n");
-    printf("Total Replicas Executed  : %d simulations (%d policies x %d runs)\n", total_simulations, num_policies, n_sim);
-    printf("Total Cell Updates       : %llu cell-day transitions\n", total_cell_updates);
-    printf("Macro Throughput         : %.2f simulations / sec\n", throughput_sims_per_sec);
-    printf("Kernel Throughput (MCUPS): %.2f Million Cell Updates / sec (MCUPS)\n", mcups);
-    printf("====================================================================================================\n");
+
+
+    // Finalize MPI environment
+    MPI_Finalize();
 
     return EXIT_SUCCESS;
 }

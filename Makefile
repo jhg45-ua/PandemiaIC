@@ -4,6 +4,7 @@
 # Clang -> MacOS
 
 CC			:= gcc
+MPICC		:= mpicc
 CFLAGS		:= -Wall -Wextra -Werror -std=c11
 # Optimization flags, such as -OX or -march=native
 OPTFLAGS	:= -O0
@@ -20,6 +21,7 @@ BIN_DIR		:= bin
 
 # Exec name
 TARGET		:= $(BIN_DIR)/sim
+TARGET_MPI	:= $(BIN_DIR)/sim_mpi
 
 # Source & Object files
 SRCS		:= $(wildcard $(SRC_DIR)/*.c)
@@ -32,22 +34,28 @@ INCLUDES	:= -I $(INC_DIR)
 CONFIG_FILE	:= config/policies.conf
 N_HAB		:= 100000 # 100,000 Inhabitants
 DAYS		:= 150    # 150 Days
-N_SIM		:= 320     # 80 Monte Carlo Replicas per policy
+N_SIM		:= 80     # 80 Monte Carlo Replicas per policy
 
 .PHONY: all asm run run-provincia run-comunidad clean help vectorization
 
 all: $(TARGET)
 
+all_mpi: $(TARGET_MPI)
+
 $(TARGET): $(OBJS) | $(BIN_DIR)
 	$(CC) $(CFLAGS) $(OPTFLAGS) $(OBJS) -o $@ -lm
 	@echo "Build complete: $(TARGET)"
+
+$(TARGET_MPI): $(OBJS) | $(BIN_DIR)
+	$(MPICC) $(CFLAGS) $(OPTFLAGS) $(OBJS) -o $@ -lm
+	@echo "Build complete: $(TARGET_MPI)"
 
 # Rule to compile source files into object files (.c -> .o).
 # Each compilation also generates an annotated assembly listing (.s) in build/asm/
 # so the compiler-generated code can be inspected for vectorization, inlining, etc.
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c | $(BUILD_DIR) $(ASM_DIR)
-	$(CC) $(CFLAGS) $(OPTFLAGS) $(INCLUDES) -c $< -o $@
-	$(CC) $(CFLAGS) $(OPTFLAGS) $(INCLUDES) -S -fverbose-asm $< -o $(ASM_DIR)/$(*F).s
+	$(MPICC) $(CFLAGS) $(OPTFLAGS) $(INCLUDES) -c $< -o $@
+	$(MPICC) $(CFLAGS) $(OPTFLAGS) $(INCLUDES) -S -fverbose-asm $< -o $(ASM_DIR)/$(*F).s
 
 # Create output dirs if they don't exist
 $(BUILD_DIR):
@@ -68,6 +76,9 @@ run-provincia: $(TARGET)
 
 run-comunidad: $(TARGET)
 	@./scripts/run_comunidad.sh
+
+run-mpi: $(TARGET_MPI)
+	@mpirun -np 4 ./bin/sim_mpi config/policies.conf $(N_HAB) $(DAYS) 10 $(N_SIM) 29
 
 # Standalone target: regenerate all .s files without touching the .o / binary.
 # Supports overriding OPTFLAGS from the CLI, e.g.:
