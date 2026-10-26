@@ -34,7 +34,7 @@ N_HAB		:= 100000 # 100,000 Inhabitants
 DAYS		:= 150    # 150 Days
 N_SIM		:= 320     # 80 Monte Carlo Replicas per policy
 
-.PHONY: all asm run run-ciudad run-provincia run-comunidad clean help vectorization
+.PHONY: all asm run run-provincia run-comunidad clean help vectorization
 
 all: $(TARGET)
 
@@ -59,13 +59,8 @@ $(ASM_DIR):
 $(BIN_DIR):
 	mkdir -p $(BIN_DIR)
 
-# Run the simulation with default parameters
+# Run the default city-scale simulation
 run: $(TARGET)
-	@echo "Running simulation with $(N_HAB) inhabitants for $(DAYS) days, $(N_SIM) replicas per policy..."
-	@./$(TARGET) $(CONFIG_FILE) $(N_HAB) $(DAYS) 10 29 $(N_SIM)
-
-# Dedicated scenarios by geographic scale
-run-ciudad: $(TARGET)
 	@./scripts/run_ciudad.sh
 
 run-provincia: $(TARGET)
@@ -102,9 +97,8 @@ help:
 	@echo "  make                        - Compile the project (-O0) + generate build/asm/*.s"
 	@echo "  make asm                    - (Re)generate assembly only, with current OPTFLAGS"
 	@echo "  make asm OPTFLAGS=-O3       - Generate assembly at a specific optimization level"
-	@echo "  make run                    - Execute default simulation ($(N_HAB) hab, $(DAYS) days)"
-	@echo "  make run-ciudad             - Execute Alicante City scale (~350k hab)"
+	@echo "  make run                    - Execute Alicante City scale (~350k hab)"
 	@echo "  make run-provincia          - Execute Alicante Province scale (~2.0M hab)"
 	@echo "  make run-comunidad          - Execute Comunitat Valenciana scale (~5.1M hab)"
-# 	@echo "  make vectorization          - Compile with -O3 -mavx2 and SIMD analyzer report"
+	@echo "  make vectorization          - Compile with vectorization flags and reports"
 	@echo "  make clean                  - Remove build artifacts and binaries"
