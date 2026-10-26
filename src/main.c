@@ -5,6 +5,7 @@
 #include <string.h>
 #include <math.h>
 #include <time.h>
+#include <unistd.h>
 
 #include <mpi.h> // MPI header for parallel processing
 
