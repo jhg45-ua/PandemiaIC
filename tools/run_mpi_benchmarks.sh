@@ -33,7 +33,7 @@ PROCS=(1 2 4 6 8)
 # Detectar hostfile
 MPI_EXTRA_ARGS=""
 if [ -f "hosts" ] && [ "$5" != "--local" ]; then
-    MPI_EXTRA_ARGS="-mca plm_rsh_no_tree_spawn 1 -hostfile hosts"
+    MPI_EXTRA_ARGS=" -hostfile hosts"
     MODO_EJECUCION="Cluster (archivo hosts)"
 else
     MODO_EJECUCION="Local"
