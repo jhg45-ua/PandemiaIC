@@ -32,6 +32,7 @@ typedef struct {
     double time_update_grid;
     double time_get_counts;
     double time_analytics;
+    double time_comm;                   // MPI communication and synchronization time
     double time_total;
 } ReplicaMetrics;
 
@@ -53,6 +54,7 @@ typedef struct {
     double total_time_update_grid;
     double total_time_get_counts;
     double total_time_analytics;
+    double total_time_comm;             // Total MPI communication and synchronization time
     double total_time;
 } PolicyStats;
 

@@ -25,11 +25,12 @@ fi
 
 # Parámetros de simulación por defecto (ajustables vía variables de entorno o argumentos)
 CONFIG_FILE="${1:-config/policies_ciudad.conf}"
-N_HAB="${2:-350000}"        # 100.000 habitantes
-DAYS="${3:-200}"            # 150 días
+N_HAB="${2:-350000}"        # 350.000 habitantes
+DAYS="${3:-200}"            # 200 días
 INITIAL_INFECTED=35
 N_SIM="${4:-80}"           # 80 réplicas (fácilmente divisible entre 1, 2, 4, 8)
 SEED=29
+STRATEGY="${6:-macro}"     # "macro" o "micro"
 
 # Lista de configuraciones de procesos a evaluar
 PROCS=(1 2 4 6 8)
@@ -47,6 +48,7 @@ echo "================================================================="
 echo "  BATERÍA DE BENCHMARKS MPI - TAREA 3"
 echo "================================================================="
 echo "Modo de ejecución    : $MODO_EJECUCION"
+echo "Estrategia Paralela  : $STRATEGY"
 echo "Configuración        : $CONFIG_FILE"
 echo "Población            : $N_HAB habitantes"
 echo "Días                 : $DAYS"
@@ -57,19 +59,19 @@ echo "================================================================="
 echo ""
 
 # Cabecera del archivo CSV
-echo "Procesos,Tiempo_WallClock_s,Speedup,Eficiencia_Pct,Kernel_MCUPS,Macro_Throughput_sim_s" > "$CSV_FILE"
+echo "Procesos,Estrategia,Tiempo_WallClock_s,Speedup,Eficiencia_Pct,Kernel_MCUPS,Pct_Comunicacion,Macro_Throughput_sim_s" > "$CSV_FILE"
 
 # Variable para almacenar el tiempo base secuencial (T1)
 T1=""
 
 # Bucle sobre cada número de procesos
 for np in "${PROCS[@]}"; do
-    LOG_FILE="$RESULTS_DIR/log_np_${np}.txt"
-    echo -n "-> Ejecutando con $np proceso(s) MPI... "
+    LOG_FILE="$RESULTS_DIR/log_np_${np}_${STRATEGY}.txt"
+    echo -n "-> Ejecutando con $np proceso(s) MPI ($STRATEGY)... "
 
     # Ejecutar mpirun guardando salida en log
     mpirun $MPI_EXTRA_ARGS -np "$np" ./bin/sim_mpi \
-        "$CONFIG_FILE" "$N_HAB" "$DAYS" "$INITIAL_INFECTED" "$N_SIM" "$SEED" > "$LOG_FILE" 2>&1
+        "$CONFIG_FILE" "$N_HAB" "$DAYS" "$INITIAL_INFECTED" "$N_SIM" "$SEED" "$STRATEGY" > "$LOG_FILE" 2>&1
 
     if [ $? -ne 0 ]; then
         echo "  Error en la ejecución con np=$np (ver $LOG_FILE)"
@@ -80,6 +82,7 @@ for np in "${PROCS[@]}"; do
     wall_time=$(grep "Total Wall-Clock Time:" "$LOG_FILE" | awk '{print $4}')
     mcups=$(grep "Kernel Throughput (MCUPS):" "$LOG_FILE" | awk '{print $4}')
     macro_tput=$(grep "Macro Throughput" "$LOG_FILE" | awk '{print $4}')
+    comm_pct=$(grep "Total Comm & Sync Time" "$LOG_FILE" | awk -F'(' '{print $2}' | awk -F'%' '{print $1}')
 
     if [ -z "$wall_time" ]; then
         echo "  No se pudo extraer el tiempo de ejecución."
@@ -98,20 +101,20 @@ for np in "${PROCS[@]}"; do
     fi
 
     # Guardar fila en CSV
-    echo "$np,$wall_time,$speedup,$efficiency,$mcups,$macro_tput" >> "$CSV_FILE"
+    echo "$np,$STRATEGY,$wall_time,$speedup,$efficiency,$mcups,$comm_pct,$macro_tput" >> "$CSV_FILE"
 
-    echo "  Completado: Tiempo=${wall_time}s | Speedup=${speedup}x | Eficiencia=${efficiency}%"
+    echo "  Completado: Tiempo=${wall_time}s | Speedup=${speedup}x | Eficiencia=${efficiency}% | Comm=${comm_pct}%"
 done
 
 echo ""
 echo "================================================================="
 echo "  RESUMEN DE RESULTADOS PARA LA MEMORIA (TAREA 3)"
 echo "================================================================="
-printf "%-10s | %-12s | %-10s | %-14s | %-14s\n" "Procesos" "Tiempo (s)" "Speed-up" "Eficiencia (%)" "MCUPS"
-printf -- "-----------+--------------+------------+----------------+---------------\n"
+printf "%-10s | %-12s | %-10s | %-14s | %-12s | %-12s\n" "Procesos" "Tiempo (s)" "Speed-up" "Eficiencia (%)" "MCUPS" "% Comm"
+printf -- "-----------+--------------+------------+----------------+--------------+-------------\n"
 
-tail -n +2 "$CSV_FILE" | while IFS=',' read -r p t s e mcu mac; do
-    printf "%-10s | %-12s | %-10s | %-14s | %-14s\n" "$p" "${t} s" "${s}x" "${e}%" "$mcu"
+tail -n +2 "$CSV_FILE" | while IFS=',' read -r p strat t s e mcu comm mac; do
+    printf "%-10s | %-12s | %-10s | %-14s | %-12s | %-12s\n" "$p" "${t} s" "${s}x" "${e}%" "$mcu" "${comm}%"
 done | tee "$SUMMARY_FILE"
 
 printf "=================================================================\n"
