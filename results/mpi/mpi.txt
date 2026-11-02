@@ -1,0 +1,401 @@
+usuariocp@L025I-11:~/PandemiaIC$ ./tools/run_mpi_benchmarks.sh 
+=================================================================
+BENCHMARKS MPI - TAREA 3
+=================================================================
+Modo        : Cluster (archivo hosts)
+Estrategia  : macro
+Config      : config/policies_ciudad.conf
+Poblacion   : 350000 habitantes
+Dias        : 200 dias
+Replicas    : 80 por politica
+Procesos    : 1 2 4 6 8
+=================================================================
+
+=================================================================
+>>> EJECUTANDO CON NP=1 (macro) <<<
+=================================================================
+[Rank 0 de 1] Ejecutando en la máquina: L025I-10 (PID: 26675)
+=================================================================
+  EPIDEMIOLOGICAL SIMULATOR PANDEMICSIM - MONTE CARLO (MPI)
+=================================================================
+Parallel Strategy    : MACRO (Task Farm (Replica Distribution))
+MPI Processes        : 1 processes
+Simulated population : 349281 inhabitants (591x591 cells)
+Simulation days      : 200 days
+Initial infected     : 35 cases
+Loaded policies      : 4 policies
+Replicas per policy  : 80 Monte Carlo runs
+Base seed            : 29
+=================================================================
+
+=== Policy: LaissezFaire     ===
+  Economic Cost (M€) : 754.13 ± 1.71 M€
+  Total Deaths       : 7753.5 ± 337.0 people [Range: 6979 - 8506]
+  ICU Collapse Days  : 40.2 ± 4.4 days
+  Mean Social Fatigue: 0.00
+  Total Compute Time : 43.5779 s (80 runs)
+
+=== Policy: Lockdown         ===
+  Economic Cost (M€) : 5552.41 ± 26.62 M€
+  Total Deaths       : 6030.4 ± 267.9 people [Range: 5275 - 6601]
+  ICU Collapse Days  : 0.0 ± 0.0 days
+  Mean Social Fatigue: 1.20
+  Total Compute Time : 82.3084 s (80 runs)
+
+=== Policy: RemoteWork       ===
+  Economic Cost (M€) : 1915.37 ± 9.23 M€
+  Total Deaths       : 6904.6 ± 127.4 people [Range: 6428 - 7245]
+  ICU Collapse Days  : 1.0 ± 3.5 days
+  Mean Social Fatigue: 0.30
+  Total Compute Time : 58.3351 s (80 runs)
+
+=== Policy: DynamicSignals   ===
+  Economic Cost (M€) : 4646.81 ± 1.85 M€
+  Total Deaths       : 6978.2 ± 76.0 people [Range: 6777 - 7163]
+  ICU Collapse Days  : 0.0 ± 0.0 days
+  Mean Social Fatigue: 1.00
+  Total Compute Time : 50.6010 s (80 runs)
+
+========================================================================================================================
+                                          PROFILING & EXECUTION TIME BREAKDOWN                                          
+========================================================================================================================
+Policy           |  Total (s) |     Update Grid (s) |     Get Counts (s) |   Analytics (s) |    Comm & Sync (s)
+-----------------+------------+---------------------+--------------------+-----------------+--------------------
+LaissezFaire     |  43.5779 s |  36.3041 s (83.31%) |  7.2283 s (16.59%) |  0.0007 s ( 0.00%) |  0.0000 s ( 0.00%)
+Lockdown         |  82.3084 s |  74.7496 s (90.82%) |  7.5095 s ( 9.12%) |  0.0007 s ( 0.00%) |  0.0000 s ( 0.00%)
+RemoteWork       |  58.3351 s |  50.8680 s (87.20%) |  7.4223 s (12.72%) |  0.0007 s ( 0.00%) |  0.0000 s ( 0.00%)
+DynamicSignals   |  50.6010 s |  43.2726 s (85.52%) |  7.2837 s (14.39%) |  0.0007 s ( 0.00%) |  0.0000 s ( 0.00%)
+-----------------+------------+---------------------+--------------------+-----------------+--------------------
+TOTAL PHASES     | 234.6447 s | 205.1943 s (87.45%) | 29.4438 s (12.55%) |  0.0029 s ( 0.00%) |  0.0036 s ( 0.00%)
+Total Wall-Clock Time: 234.8656 s
+========================================================================================================================
+                                    COMPUTATION VS COMMUNICATION RATIO (TAREA 3)                                        
+========================================================================================================================
+Total Computation Time   : 234.6411 s (100.00% of phased time)
+Total Comm & Sync Time   : 0.0036 s (0.00% of phased time)
+Computation / Comm Ratio : 65148.19 : 1
+========================================================================================================================
+                                      SYSTEM THROUGHPUT & PERFORMANCE METRICS                                           
+========================================================================================================================
+Total Replicas Executed  : 320 simulations (4 policies x 80 runs)
+Total Cell Updates       : 22353984000 cell-day transitions
+Macro Throughput         : 1.36 simulations / sec
+Kernel Throughput (MCUPS): 108.94 Million Cell Updates / sec (MCUPS)
+========================================================================================================================
+
+=================================================================
+>>> EJECUTANDO CON NP=2 (macro) <<<
+=================================================================
+[Rank 0 de 2] Ejecutando en la máquina: L025I-10 (PID: 28180)
+=================================================================
+  EPIDEMIOLOGICAL SIMULATOR PANDEMICSIM - MONTE CARLO (MPI)
+=================================================================
+Parallel Strategy    : MACRO (Task Farm (Replica Distribution))
+MPI Processes        : 2 processes
+Simulated population : 349281 inhabitants (591x591 cells)
+Simulation days      : 200 days
+Initial infected     : 35 cases
+Loaded policies      : 4 policies
+Replicas per policy  : 80 Monte Carlo runs
+Base seed            : 29
+=================================================================
+
+[Rank 1 de 2] Ejecutando en la máquina: L025I-11 (PID: 43995)
+=== Policy: LaissezFaire     ===
+  Economic Cost (M€) : 754.13 ± 1.71 M€
+  Total Deaths       : 7753.5 ± 337.0 people [Range: 6979 - 8506]
+  ICU Collapse Days  : 40.2 ± 4.4 days
+  Mean Social Fatigue: 0.00
+  Total Compute Time : 44.0861 s (80 runs)
+
+=== Policy: Lockdown         ===
+  Economic Cost (M€) : 5552.41 ± 26.62 M€
+  Total Deaths       : 6030.4 ± 267.9 people [Range: 5275 - 6601]
+  ICU Collapse Days  : 0.0 ± 0.0 days
+  Mean Social Fatigue: 1.20
+  Total Compute Time : 82.3541 s (80 runs)
+
+=== Policy: RemoteWork       ===
+  Economic Cost (M€) : 1915.37 ± 9.23 M€
+  Total Deaths       : 6904.6 ± 127.4 people [Range: 6428 - 7245]
+  ICU Collapse Days  : 1.0 ± 3.5 days
+  Mean Social Fatigue: 0.30
+  Total Compute Time : 58.2672 s (80 runs)
+
+=== Policy: DynamicSignals   ===
+  Economic Cost (M€) : 4646.81 ± 1.85 M€
+  Total Deaths       : 6978.2 ± 76.0 people [Range: 6777 - 7163]
+  ICU Collapse Days  : 0.0 ± 0.0 days
+  Mean Social Fatigue: 1.00
+  Total Compute Time : 50.6019 s (80 runs)
+
+========================================================================================================================
+                                          PROFILING & EXECUTION TIME BREAKDOWN                                          
+========================================================================================================================
+Policy           |  Total (s) |     Update Grid (s) |     Get Counts (s) |   Analytics (s) |    Comm & Sync (s)
+-----------------+------------+---------------------+--------------------+-----------------+--------------------
+LaissezFaire     |  44.0861 s |  36.7490 s (83.36%) |  7.2906 s (16.54%) |  0.0008 s ( 0.00%) |  0.3595 s ( 0.82%)
+Lockdown         |  82.3541 s |  74.7745 s (90.80%) |  7.5301 s ( 9.14%) |  0.0008 s ( 0.00%) |  0.0413 s ( 0.05%)
+RemoteWork       |  58.2672 s |  50.7818 s (87.15%) |  7.4404 s (12.77%) |  0.0008 s ( 0.00%) |  0.0000 s ( 0.00%)
+DynamicSignals   |  50.6019 s |  43.2472 s (85.47%) |  7.3099 s (14.45%) |  0.0007 s ( 0.00%) |  0.0734 s ( 0.15%)
+-----------------+------------+---------------------+--------------------+-----------------+--------------------
+TOTAL PHASES     | 235.6280 s | 205.5524 s (87.24%) | 29.5709 s (12.55%) |  0.0031 s ( 0.00%) |  0.5015 s ( 0.21%)
+Total Wall-Clock Time: 117.9720 s
+========================================================================================================================
+                                    COMPUTATION VS COMMUNICATION RATIO (TAREA 3)                                        
+========================================================================================================================
+Total Computation Time   : 235.1264 s (99.79% of phased time)
+Total Comm & Sync Time   : 0.5015 s (0.21% of phased time)
+Computation / Comm Ratio : 468.82 : 1
+========================================================================================================================
+                                      SYSTEM THROUGHPUT & PERFORMANCE METRICS                                           
+========================================================================================================================
+Total Replicas Executed  : 320 simulations (4 policies x 80 runs)
+Total Cell Updates       : 22353984000 cell-day transitions
+Macro Throughput         : 2.71 simulations / sec
+Kernel Throughput (MCUPS): 108.75 Million Cell Updates / sec (MCUPS)
+========================================================================================================================
+
+=================================================================
+>>> EJECUTANDO CON NP=4 (macro) <<<
+=================================================================
+[Rank 0 de 4] Ejecutando en la máquina: L025I-10 (PID: 29010)
+=================================================================
+  EPIDEMIOLOGICAL SIMULATOR PANDEMICSIM - MONTE CARLO (MPI)
+=================================================================
+Parallel Strategy    : MACRO (Task Farm (Replica Distribution))
+MPI Processes        : 4 processes
+Simulated population : 349281 inhabitants (591x591 cells)
+Simulation days      : 200 days
+Initial infected     : 35 cases
+Loaded policies      : 4 policies
+Replicas per policy  : 80 Monte Carlo runs
+Base seed            : 29
+=================================================================
+
+[Rank 1 de 4] Ejecutando en la máquina: L025I-11 (PID: 44770)
+[Rank 2 de 4] Ejecutando en la máquina: L025I-10 (PID: 29011)
+[Rank 3 de 4] Ejecutando en la máquina: L025I-11 (PID: 44771)
+=== Policy: LaissezFaire     ===
+  Economic Cost (M€) : 754.13 ± 1.71 M€
+  Total Deaths       : 7753.5 ± 337.0 people [Range: 6979 - 8506]
+  ICU Collapse Days  : 40.2 ± 4.4 days
+  Mean Social Fatigue: 0.00
+  Total Compute Time : 46.5022 s (80 runs)
+
+=== Policy: Lockdown         ===
+  Economic Cost (M€) : 5552.41 ± 26.62 M€
+  Total Deaths       : 6030.4 ± 267.9 people [Range: 5275 - 6601]
+  ICU Collapse Days  : 0.0 ± 0.0 days
+  Mean Social Fatigue: 1.20
+  Total Compute Time : 88.8407 s (80 runs)
+
+=== Policy: RemoteWork       ===
+  Economic Cost (M€) : 1915.37 ± 9.23 M€
+  Total Deaths       : 6904.6 ± 127.4 people [Range: 6428 - 7245]
+  ICU Collapse Days  : 1.0 ± 3.5 days
+  Mean Social Fatigue: 0.30
+  Total Compute Time : 62.9649 s (80 runs)
+
+=== Policy: DynamicSignals   ===
+  Economic Cost (M€) : 4646.81 ± 1.85 M€
+  Total Deaths       : 6978.2 ± 76.0 people [Range: 6777 - 7163]
+  ICU Collapse Days  : 0.0 ± 0.0 days
+  Mean Social Fatigue: 1.00
+  Total Compute Time : 55.0183 s (80 runs)
+
+========================================================================================================================
+                                          PROFILING & EXECUTION TIME BREAKDOWN                                          
+========================================================================================================================
+Policy           |  Total (s) |     Update Grid (s) |     Get Counts (s) |   Analytics (s) |    Comm & Sync (s)
+-----------------+------------+---------------------+--------------------+-----------------+--------------------
+LaissezFaire     |  46.5022 s |  38.9568 s (83.77%) |  7.4976 s (16.12%) |  0.0008 s ( 0.00%) |  0.0001 s ( 0.00%)
+Lockdown         |  88.8407 s |  80.9376 s (91.10%) |  7.8517 s ( 8.84%) |  0.0008 s ( 0.00%) |  0.0001 s ( 0.00%)
+RemoteWork       |  62.9649 s |  55.1244 s (87.55%) |  7.7930 s (12.38%) |  0.0008 s ( 0.00%) |  0.0001 s ( 0.00%)
+DynamicSignals   |  55.0183 s |  47.2554 s (85.89%) |  7.7151 s (14.02%) |  0.0007 s ( 0.00%) |  0.0001 s ( 0.00%)
+-----------------+------------+---------------------+--------------------+-----------------+--------------------
+TOTAL PHASES     | 253.1353 s | 222.2741 s (87.81%) | 30.8575 s (12.19%) |  0.0032 s ( 0.00%) |  0.0005 s ( 0.00%)
+Total Wall-Clock Time: 66.0646 s
+========================================================================================================================
+                                    COMPUTATION VS COMMUNICATION RATIO (TAREA 3)                                        
+========================================================================================================================
+Total Computation Time   : 253.1348 s (100.00% of phased time)
+Total Comm & Sync Time   : 0.0005 s (0.00% of phased time)
+Computation / Comm Ratio : 531993.57 : 1
+========================================================================================================================
+                                      SYSTEM THROUGHPUT & PERFORMANCE METRICS                                           
+========================================================================================================================
+Total Replicas Executed  : 320 simulations (4 policies x 80 runs)
+Total Cell Updates       : 22353984000 cell-day transitions
+Macro Throughput         : 4.84 simulations / sec
+Kernel Throughput (MCUPS): 100.57 Million Cell Updates / sec (MCUPS)
+========================================================================================================================
+
+=================================================================
+>>> EJECUTANDO CON NP=6 (macro) <<<
+=================================================================
+[Rank 1 de 6] Ejecutando en la máquina: L025I-11 (PID: 45202)
+[Rank 0 de 6] Ejecutando en la máquina: L025I-10 (PID: 29475)
+=================================================================
+  EPIDEMIOLOGICAL SIMULATOR PANDEMICSIM - MONTE CARLO (MPI)
+=================================================================
+Parallel Strategy    : MACRO (Task Farm (Replica Distribution))
+MPI Processes        : 6 processes
+Simulated population : 349281 inhabitants (591x591 cells)
+Simulation days      : 200 days
+Initial infected     : 35 cases
+Loaded policies      : 4 policies
+Replicas per policy  : 80 Monte Carlo runs
+Base seed            : 29
+=================================================================
+
+[Rank 3 de 6] Ejecutando en la máquina: L025I-11 (PID: 45203)
+[Rank 2 de 6] Ejecutando en la máquina: L025I-10 (PID: 29476)
+[Rank 5 de 6] Ejecutando en la máquina: L025I-11 (PID: 45204)
+[Rank 4 de 6] Ejecutando en la máquina: L025I-10 (PID: 29477)
+=== Policy: LaissezFaire     ===
+  Economic Cost (M€) : 754.13 ± 1.71 M€
+  Total Deaths       : 7753.5 ± 337.0 people [Range: 6979 - 8506]
+  ICU Collapse Days  : 40.2 ± 4.4 days
+  Mean Social Fatigue: 0.00
+  Total Compute Time : 49.1679 s (80 runs)
+
+=== Policy: Lockdown         ===
+  Economic Cost (M€) : 5552.41 ± 26.62 M€
+  Total Deaths       : 6030.4 ± 267.9 people [Range: 5275 - 6601]
+  ICU Collapse Days  : 0.0 ± 0.0 days
+  Mean Social Fatigue: 1.20
+  Total Compute Time : 97.3846 s (80 runs)
+
+=== Policy: RemoteWork       ===
+  Economic Cost (M€) : 1915.37 ± 9.23 M€
+  Total Deaths       : 6904.6 ± 127.4 people [Range: 6428 - 7245]
+  ICU Collapse Days  : 1.0 ± 3.5 days
+  Mean Social Fatigue: 0.30
+  Total Compute Time : 68.7306 s (80 runs)
+
+=== Policy: DynamicSignals   ===
+  Economic Cost (M€) : 4646.81 ± 1.85 M€
+  Total Deaths       : 6978.2 ± 76.0 people [Range: 6777 - 7163]
+  ICU Collapse Days  : 0.0 ± 0.0 days
+  Mean Social Fatigue: 1.00
+  Total Compute Time : 59.9671 s (80 runs)
+
+========================================================================================================================
+                                          PROFILING & EXECUTION TIME BREAKDOWN                                          
+========================================================================================================================
+Policy           |  Total (s) |     Update Grid (s) |     Get Counts (s) |   Analytics (s) |    Comm & Sync (s)
+-----------------+------------+---------------------+--------------------+-----------------+--------------------
+LaissezFaire     |  49.1679 s |  41.2764 s (83.95%) |  7.8403 s (15.95%) |  0.0009 s ( 0.00%) |  0.0001 s ( 0.00%)
+Lockdown         |  97.3846 s |  88.7919 s (91.18%) |  8.5372 s ( 8.77%) |  0.0009 s ( 0.00%) |  0.2108 s ( 0.22%)
+RemoteWork       |  68.7306 s |  60.2645 s (87.68%) |  8.4141 s (12.24%) |  0.0009 s ( 0.00%) |  0.0001 s ( 0.00%)
+DynamicSignals   |  59.9671 s |  51.6183 s (86.08%) |  8.2973 s (13.84%) |  0.0008 s ( 0.00%) |  0.0001 s ( 0.00%)
+-----------------+------------+---------------------+--------------------+-----------------+--------------------
+TOTAL PHASES     | 275.2547 s | 241.9511 s (87.90%) | 33.0890 s (12.02%) |  0.0036 s ( 0.00%) |  0.2111 s ( 0.08%)
+Total Wall-Clock Time: 49.3270 s
+========================================================================================================================
+                                    COMPUTATION VS COMMUNICATION RATIO (TAREA 3)                                        
+========================================================================================================================
+Total Computation Time   : 275.0436 s (99.92% of phased time)
+Total Comm & Sync Time   : 0.2111 s (0.08% of phased time)
+Computation / Comm Ratio : 1302.71 : 1
+========================================================================================================================
+                                      SYSTEM THROUGHPUT & PERFORMANCE METRICS                                           
+========================================================================================================================
+Total Replicas Executed  : 320 simulations (4 policies x 80 runs)
+Total Cell Updates       : 22353984000 cell-day transitions
+Macro Throughput         : 6.49 simulations / sec
+Kernel Throughput (MCUPS): 92.39 Million Cell Updates / sec (MCUPS)
+========================================================================================================================
+
+=================================================================
+>>> EJECUTANDO CON NP=8 (macro) <<<
+=================================================================
+[Rank 1 de 8] Ejecutando en la máquina: L025I-11 (PID: 45540)
+[Rank 3 de 8] Ejecutando en la máquina: L025I-11 (PID: 45541)
+[Rank 0 de 8] Ejecutando en la máquina: L025I-10 (PID: 29854)
+=================================================================
+  EPIDEMIOLOGICAL SIMULATOR PANDEMICSIM - MONTE CARLO (MPI)
+=================================================================[Rank 5 de 8] Ejecutando en la máquina: L025I-11 (PID: 45542)
+[Rank 2 de 8] Ejecutando en la máquina: L025I-10 (PID: 29855)
+[Rank 7 de 8] Ejecutando en la máquina: L025I-11 (PID: 45543)
+[Rank 4 de 8] Ejecutando en la máquina: L025I-10 (PID: 29856)
+
+Parallel Strategy    : MACRO (Task Farm (Replica Distribution))
+MPI Processes        : 8 processes
+Simulated population : 349281 inhabitants (591x591 cells)
+Simulation days      : 200 days
+Initial infected     : 35 cases
+Loaded policies      : 4 policies
+Replicas per policy  : 80 Monte Carlo runs
+Base seed            : 29
+=================================================================
+
+[Rank 6 de 8] Ejecutando en la máquina: L025I-10 (PID: 29857)
+=== Policy: LaissezFaire     ===
+  Economic Cost (M€) : 754.13 ± 1.71 M€
+  Total Deaths       : 7753.5 ± 337.0 people [Range: 6979 - 8506]
+  ICU Collapse Days  : 40.2 ± 4.4 days
+  Mean Social Fatigue: 0.00
+  Total Compute Time : 54.4388 s (80 runs)
+
+=== Policy: Lockdown         ===
+  Economic Cost (M€) : 5552.41 ± 26.62 M€
+  Total Deaths       : 6030.4 ± 267.9 people [Range: 5275 - 6601]
+  ICU Collapse Days  : 0.0 ± 0.0 days
+  Mean Social Fatigue: 1.20
+  Total Compute Time : 110.0845 s (80 runs)
+
+=== Policy: RemoteWork       ===
+  Economic Cost (M€) : 1915.37 ± 9.23 M€
+  Total Deaths       : 6904.6 ± 127.4 people [Range: 6428 - 7245]
+  ICU Collapse Days  : 1.0 ± 3.5 days
+  Mean Social Fatigue: 0.30
+  Total Compute Time : 82.2843 s (80 runs)
+
+=== Policy: DynamicSignals   ===
+  Economic Cost (M€) : 4646.81 ± 1.85 M€
+  Total Deaths       : 6978.2 ± 76.0 people [Range: 6777 - 7163]
+  ICU Collapse Days  : 0.0 ± 0.0 days
+  Mean Social Fatigue: 1.00
+  Total Compute Time : 67.6127 s (80 runs)
+
+========================================================================================================================
+                                          PROFILING & EXECUTION TIME BREAKDOWN                                          
+========================================================================================================================
+Policy           |  Total (s) |     Update Grid (s) |     Get Counts (s) |   Analytics (s) |    Comm & Sync (s)
+-----------------+------------+---------------------+--------------------+-----------------+--------------------
+LaissezFaire     |  54.4388 s |  45.7108 s (83.97%) |  8.6714 s (15.93%) |  0.0010 s ( 0.00%) |  0.3028 s ( 0.56%)
+Lockdown         | 110.0845 s | 100.4220 s (91.22%) |  9.5993 s ( 8.72%) |  0.0011 s ( 0.00%) |  0.6494 s ( 0.59%)
+RemoteWork       |  82.2843 s |  72.2110 s (87.76%) | 10.0109 s (12.17%) |  0.0011 s ( 0.00%) |  0.4719 s ( 0.57%)
+DynamicSignals   |  67.6127 s |  58.1579 s (86.02%) |  9.3965 s (13.90%) |  0.0010 s ( 0.00%) |  0.2395 s ( 0.35%)
+-----------------+------------+---------------------+--------------------+-----------------+--------------------
+TOTAL PHASES     | 315.8475 s | 276.5017 s (87.54%) | 37.6780 s (11.93%) |  0.0042 s ( 0.00%) |  1.6636 s ( 0.53%)
+Total Wall-Clock Time: 41.9494 s
+========================================================================================================================
+                                    COMPUTATION VS COMMUNICATION RATIO (TAREA 3)                                        
+========================================================================================================================
+Total Computation Time   : 314.1838 s (99.47% of phased time)
+Total Comm & Sync Time   : 1.6636 s (0.53% of phased time)
+Computation / Comm Ratio : 188.85 : 1
+========================================================================================================================
+                                      SYSTEM THROUGHPUT & PERFORMANCE METRICS                                           
+========================================================================================================================
+Total Replicas Executed  : 320 simulations (4 policies x 80 runs)
+Total Cell Updates       : 22353984000 cell-day transitions
+Macro Throughput         : 7.63 simulations / sec
+Kernel Throughput (MCUPS): 80.85 Million Cell Updates / sec (MCUPS)
+========================================================================================================================
+
+=================================================================
+TABLA DE RESULTADOS FINAL (COPIAR Y PEGAR EN LA MEMORIA)
+=================================================================
+Procesos   | Tiempo (s)   | Speed-up   | Eficiencia (%)  | MCUPS      | % Comm    
+-----------+--------------+------------+-----------------+------------+-----------
+1          | 234.8656 s   | 1.00x      | 100.0%          | 108.94     | 0.00%     
+2          | 117.9720 s   | 1.99x      | 99.5%           | 108.75     | 0.21%     
+4          | 66.0646 s    | 3.56x      | 89.0%           | 100.57     | 0.00%     
+6          | 49.3270 s    | 4.76x      | 79.3%           | 92.39      | 0.08%     
+8          | 41.9494 s    | 5.60x      | 70.0%           | 80.85      | 0.53%     
+=================================================================
+usuariocp@L025I-11:~/PandemiaIC$
