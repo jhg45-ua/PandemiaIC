@@ -7,119 +7,102 @@
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$REPO_ROOT" || exit 1
 
-# Asegurar permisos de ejecución
-chmod +x scripts/*.sh 2>/dev/null || true
-
-# Configuración del entorno de salida
 RESULTS_DIR="results/mpi"
 mkdir -p "$RESULTS_DIR"
 
 CSV_FILE="$RESULTS_DIR/mpi_benchmarks.csv"
-SUMMARY_FILE="$RESULTS_DIR/resumen_escalabilidad.txt"
 
 # Compilar binario MPI si no existe
 if [ ! -f "bin/sim_mpi" ]; then
-    echo "Compilando versión MPI..."
+    echo "[INFO] Compilando version MPI..."
     make all_mpi || exit 1
 fi
 
-# Parámetros de simulación por defecto (ajustables vía variables de entorno o argumentos)
+# Parámetros de simulación por defecto
 CONFIG_FILE="${1:-config/policies_ciudad.conf}"
-N_HAB="${2:-350000}"        # 350.000 habitantes
-DAYS="${3:-200}"            # 200 días
+N_HAB="${2:-350000}"
+DAYS="${3:-200}"
 INITIAL_INFECTED=35
-N_SIM="${4:-80}"           # 80 réplicas (fácilmente divisible entre 1, 2, 4, 8)
+N_SIM="${4:-80}"
 SEED=29
 STRATEGY="${6:-macro}"     # "macro" o "micro"
 
-# Lista de configuraciones de procesos a evaluar
+# Lista de procesos a evaluar
 PROCS=(1 2 4 6 8)
 
-# Detectar si se debe usar el hostfile del clúster o modo local
+# Detectar hostfile
 MPI_EXTRA_ARGS=""
 if [ -f "hosts" ] && [ "$5" != "--local" ]; then
     MPI_EXTRA_ARGS="-mca plm_rsh_no_tree_spawn 1 -hostfile hosts"
-    MODO_EJECUCION="Clúster Distribuido (usando archivo 'hosts')"
+    MODO_EJECUCION="Cluster (archivo hosts)"
 else
-    MODO_EJECUCION="Local (múltiples núcleos en esta máquina)"
+    MODO_EJECUCION="Local"
 fi
 
 echo "================================================================="
-echo "  BATERÍA DE BENCHMARKS MPI - TAREA 3"
+echo "BENCHMARKS MPI - TAREA 3"
 echo "================================================================="
-echo "Modo de ejecución    : $MODO_EJECUCION"
-echo "Estrategia Paralela  : $STRATEGY"
-echo "Configuración        : $CONFIG_FILE"
-echo "Población            : $N_HAB habitantes"
-echo "Días                 : $DAYS"
-echo "Réplicas Monte Carlo : $N_SIM por política"
-echo "Procesos a probar    : ${PROCS[*]}"
-echo "Archivo de salida    : $CSV_FILE"
+echo "Modo        : $MODO_EJECUCION"
+echo "Estrategia  : $STRATEGY"
+echo "Config      : $CONFIG_FILE"
+echo "Poblacion   : $N_HAB habitantes"
+echo "Dias        : $DAYS dias"
+echo "Replicas    : $N_SIM por politica"
+echo "Procesos    : ${PROCS[*]}"
 echo "================================================================="
 echo ""
 
-# Cabecera del archivo CSV
-echo "Procesos,Estrategia,Tiempo_WallClock_s,Speedup,Eficiencia_Pct,Kernel_MCUPS,Pct_Comunicacion,Macro_Throughput_sim_s" > "$CSV_FILE"
+echo "Procesos,Estrategia,Tiempo_s,Speedup,Eficiencia_Pct,MCUPS,Pct_Comm" > "$CSV_FILE"
 
-# Variable para almacenar el tiempo base secuencial (T1)
 T1=""
 
-# Bucle sobre cada número de procesos
 for np in "${PROCS[@]}"; do
     LOG_FILE="$RESULTS_DIR/log_np_${np}_${STRATEGY}.txt"
-    echo -n "-> Ejecutando con $np proceso(s) MPI ($STRATEGY)... "
+    echo -n "Ejecutando con np=$np ($STRATEGY)... "
 
-    # Ejecutar mpirun guardando salida en log
     mpirun $MPI_EXTRA_ARGS -np "$np" ./bin/sim_mpi \
         "$CONFIG_FILE" "$N_HAB" "$DAYS" "$INITIAL_INFECTED" "$N_SIM" "$SEED" "$STRATEGY" > "$LOG_FILE" 2>&1
 
     if [ $? -ne 0 ]; then
-        echo "  Error en la ejecución con np=$np (ver $LOG_FILE)"
+        echo "ERROR (ver $LOG_FILE)"
         continue
     fi
 
-    # Extraer métricas de rendimiento del log
     wall_time=$(grep "Total Wall-Clock Time:" "$LOG_FILE" | awk '{print $4}')
     mcups=$(grep "Kernel Throughput (MCUPS):" "$LOG_FILE" | awk '{print $4}')
-    macro_tput=$(grep "Macro Throughput" "$LOG_FILE" | awk '{print $4}')
     comm_pct=$(grep "Total Comm & Sync Time" "$LOG_FILE" | awk -F'(' '{print $2}' | awk -F'%' '{print $1}')
 
     if [ -z "$wall_time" ]; then
-        echo "  No se pudo extraer el tiempo de ejecución."
+        echo "ERROR extrayendo tiempos."
         continue
     fi
 
-    # Si es np=1, se toma como referencia secuencial T1
     if [ "$np" -eq 1 ] || [ -z "$T1" ]; then
         T1="$wall_time"
         speedup="1.00"
         efficiency="100.0"
     else
-        # Calcular Speedup = T1 / Tp y Eficiencia = (Speedup / p) * 100
         speedup=$(awk -v t1="$T1" -v tp="$wall_time" 'BEGIN { printf "%.2f", t1 / tp }')
         efficiency=$(awk -v s="$speedup" -v p="$np" 'BEGIN { printf "%.1f", (s / p) * 100.0 }')
     fi
 
-    # Guardar fila en CSV
-    echo "$np,$STRATEGY,$wall_time,$speedup,$efficiency,$mcups,$comm_pct,$macro_tput" >> "$CSV_FILE"
+    [ -z "$comm_pct" ] && comm_pct="0.0"
 
-    echo "  Completado: Tiempo=${wall_time}s | Speedup=${speedup}x | Eficiencia=${efficiency}% | Comm=${comm_pct}%"
+    echo "$np,$STRATEGY,$wall_time,$speedup,$efficiency,$mcups,$comm_pct" >> "$CSV_FILE"
+    echo "Hecho (Tiempo: ${wall_time}s | Speedup: ${speedup}x | Eficiencia: ${efficiency}% | Comm: ${comm_pct}%)"
 done
 
 echo ""
 echo "================================================================="
-echo "  RESUMEN DE RESULTADOS PARA LA MEMORIA (TAREA 3)"
+echo "TABLA DE RESULTADOS (COPIAR Y PEGAR EN LA MEMORIA)"
 echo "================================================================="
-printf "%-10s | %-12s | %-10s | %-14s | %-12s | %-12s\n" "Procesos" "Tiempo (s)" "Speed-up" "Eficiencia (%)" "MCUPS" "% Comm"
-printf -- "-----------+--------------+------------+----------------+--------------+-------------\n"
+printf "%-10s | %-12s | %-10s | %-15s | %-10s | %-10s\n" "Procesos" "Tiempo (s)" "Speed-up" "Eficiencia (%)" "MCUPS" "% Comm"
+printf -- "-----------+--------------+------------+-----------------+------------+-----------\n"
 
-tail -n +2 "$CSV_FILE" | while IFS=',' read -r p strat t s e mcu comm mac; do
-    printf "%-10s | %-12s | %-10s | %-14s | %-12s | %-12s\n" "$p" "${t} s" "${s}x" "${e}%" "$mcu" "${comm}%"
-done | tee "$SUMMARY_FILE"
+tail -n +2 "$CSV_FILE" | while IFS=',' read -r p strat t s e mcu comm; do
+    printf "%-10s | %-12s | %-10s | %-15s | %-10s | %-10s\n" "$p" "${t} s" "${s}x" "${e}%" "$mcu" "${comm}%"
+done
 
-printf "=================================================================\n"
-echo "Datos guardados en:"
-echo "  - CSV: $CSV_FILE"
-echo "  - Resumen: $SUMMARY_FILE"
-echo "  - Logs individuales: $RESULTS_DIR/log_np_*.txt"
+echo "================================================================="
+echo "Datos guardados en CSV: $CSV_FILE"
 echo "================================================================="

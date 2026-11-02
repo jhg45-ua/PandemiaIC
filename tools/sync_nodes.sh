@@ -15,7 +15,7 @@ TARGET_DIR="~/"
 echo "=== [1/3] Compilando binario MPI (sim_mpi) ==="
 make all_mpi
 if [ $? -ne 0 ]; then
-    echo "❌ Error en la compilación. Abortando sincronización."
+    echo "[ERROR] Error en la compilacion. Abortando sincronizacion."
     exit 1
 fi
 echo "Binario listo: bin/sim_mpi"
