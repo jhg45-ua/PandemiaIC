@@ -56,13 +56,20 @@ for np in "${PROCS[@]}"; do
     echo ">>> EJECUTANDO CON NP=$np ($STRATEGY) <<<"
     echo "================================================================="
 
-    # Ejecutar mpirun mostrando toda la salida en directo por terminal sin guardar archivos
-    OUTPUT=$(mpirun $MPI_EXTRA_ARGS -np "$np" ./bin/sim_mpi \
-        "$CONFIG_FILE" "$N_HAB" "$DAYS" "$INITIAL_INFECTED" "$N_SIM" "$SEED" "$STRATEGY" 2>&1 | tee /dev/stderr)
+    # Usar buffer temporal en /tmp que se borra al instante
+    TMP_OUT=$(mktemp /tmp/sim_mpi.XXXXXX)
 
-    wall_time=$(echo "$OUTPUT" | grep "Total Wall-Clock Time:" | awk '{print $4}')
-    mcups=$(echo "$OUTPUT" | grep "Kernel Throughput (MCUPS):" | awk '{print $4}')
-    comm_pct=$(echo "$OUTPUT" | grep "Total Comm & Sync Time" | awk -F'(' '{print $2}' | awk -F'%' '{print $1}')
+    mpirun $MPI_EXTRA_ARGS -np "$np" ./bin/sim_mpi \
+        "$CONFIG_FILE" "$N_HAB" "$DAYS" "$INITIAL_INFECTED" "$N_SIM" "$SEED" "$STRATEGY" > "$TMP_OUT" 2>&1
+
+    # Imprimir todo el contenido por la terminal
+    cat "$TMP_OUT"
+
+    wall_time=$(grep "Total Wall-Clock Time:" "$TMP_OUT" | awk '{print $4}')
+    mcups=$(grep "Kernel Throughput (MCUPS):" "$TMP_OUT" | awk '{print $4}')
+    comm_pct=$(grep "Total Comm & Sync Time" "$TMP_OUT" | awk -F'(' '{print $2}' | awk -F'%' '{print $1}')
+
+    rm -f "$TMP_OUT"
 
     if [ -z "$wall_time" ]; then
         echo "[ERROR] No se pudo obtener el tiempo para np=$np"
