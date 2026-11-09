@@ -14,21 +14,47 @@ if [ ! -f "bin/sim_mpi" ]; then
     make all_mpi || exit 1
 fi
 
-# Parámetros de simulación
-CONFIG_FILE="${1:-config/policies_ciudad.conf}"
-N_HAB="${2:-350000}"
-DAYS="${3:-200}"
+# Parámetros de simulación por defecto
+CONFIG_FILE="config/policies_ciudad.conf"
+N_HAB="350000"
+DAYS="200"
 INITIAL_INFECTED=35
-N_SIM="${4:-80}"
+N_SIM="80"
 SEED=29
-STRATEGY="${6:-macro}"     # "macro" o "micro"
+STRATEGY="macro"     # "macro" o "micro"
+USE_LOCAL=0
+
+# Detectar parámetros simplificados
+if [ "$1" = "macro" ] || [ "$1" = "micro" ]; then
+    STRATEGY="$1"
+    [ "$2" = "--local" ] && USE_LOCAL=1
+elif [ "$1" = "--macro" ]; then
+    STRATEGY="macro"
+    [ "$2" = "--local" ] && USE_LOCAL=1
+elif [ "$1" = "--micro" ]; then
+    STRATEGY="micro"
+    [ "$2" = "--local" ] && USE_LOCAL=1
+elif [ "$1" = "--local" ]; then
+    USE_LOCAL=1
+    if [ "$2" = "macro" ] || [ "$2" = "micro" ]; then
+        STRATEGY="$2"
+    fi
+else
+    # Soporte para paso posicional completo
+    CONFIG_FILE="${1:-config/policies_ciudad.conf}"
+    N_HAB="${2:-350000}"
+    DAYS="${3:-200}"
+    N_SIM="${4:-80}"
+    [ "$5" = "--local" ] && USE_LOCAL=1
+    STRATEGY="${6:-macro}"
+fi
 
 # Lista de procesos a evaluar
 PROCS=(1 2 4 6 8)
 
 # Detectar hostfile
 MPI_EXTRA_ARGS=""
-if [ -f "hosts" ] && [ "$5" != "--local" ]; then
+if [ -f "hosts" ] && [ "$USE_LOCAL" -eq 0 ]; then
     MPI_EXTRA_ARGS="-hostfile hosts"
     MODO_EJECUCION="Cluster (archivo hosts)"
 else

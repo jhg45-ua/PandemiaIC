@@ -9,7 +9,7 @@ REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$REPO_ROOT" || exit 1
 
 HOSTS_FILE="hosts"
-TARGET_DIR="~/"
+TARGET_DIR="${PANDEMIA_DIR:-$(pwd)}"
 
 # 1. Compilar la versión MPI si es necesario
 echo "=== [1/3] Compilando binario MPI (sim_mpi) ==="
@@ -49,7 +49,7 @@ echo "=== [3/3] Sincronizando con los nodos ==="
 for node in "${NODES[@]}"; do
     echo "-> Enviando a $node..."
     # Asegurar que el directorio de destino existe
-    ssh -o ConnectTimeout=4 -o BatchMode=yes "$node" "mkdir -p $TARGET_DIR/bin $TARGET_DIR/config" 2>/dev/null
+    ssh -o ConnectTimeout=4 -o BatchMode=yes -o StrictHostKeyChecking=no "$node" "mkdir -p $TARGET_DIR/bin $TARGET_DIR/config" 2>/dev/null
     
     if [ $? -ne 0 ]; then
         echo "     No se pudo conectar vía SSH con $node. Comprueba la IP y la clave SSH."
@@ -57,9 +57,9 @@ for node in "${NODES[@]}"; do
     fi
 
     # Copiar binario y archivos de configuración
-    scp bin/sim_mpi "$node:$TARGET_DIR/bin/" >/dev/null 2>&1
-    scp config/*.conf "$node:$TARGET_DIR/config/" >/dev/null 2>&1
-    ssh "$node" "chmod +x $TARGET_DIR/bin/sim_mpi" 2>/dev/null
+    scp -o StrictHostKeyChecking=no bin/sim_mpi "$node:$TARGET_DIR/bin/" >/dev/null 2>&1
+    scp -o StrictHostKeyChecking=no config/*.conf "$node:$TARGET_DIR/config/" >/dev/null 2>&1
+    ssh -o StrictHostKeyChecking=no "$node" "chmod +x $TARGET_DIR/bin/sim_mpi" 2>/dev/null
 
     if [ $? -eq 0 ]; then
         echo "     Sincronización exitosa en $node"
